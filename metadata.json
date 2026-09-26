@@ -1,0 +1,6 @@
+{
+  "name": "پیوند ساخت | Pavand Sakht",
+  "description": "بزرگترین سوپر اپلیکیشن ساخت و ساز و املاک ایران - سامانه معاملات ملکی، مشارکت در ساخت، متریال و مصالح و خدمات ساختمانی",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
