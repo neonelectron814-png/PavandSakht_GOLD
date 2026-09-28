@@ -327,12 +327,32 @@ export default function App() {
   const renderPageContent = () => {
     switch (activeTab) {
       case 'home':
-        return (
-          <PayvandHome
+        return effectiveIsDesktop ? (
+          <PayvandWebDesktop
+            currentUser={currentUser}
+            activeRole={activeRole}
+            properties={properties}
+            priceIndices={mockPriceIndices}
+            tickerItems={tickerItems}
+            selectedCity={selectedCity}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
             onNavigateTab={(tab) => {
               setActiveTab(tab);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
+            onSelectProperty={handleSelectProperty}
+            onEnterDealRoom={handleEnterDealRoom}
+            onOpenRegisterModal={() => {
+              setSubmitModalType('property');
+              setIsSubmitModalOpen(true);
+            }}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            hideHeader={true}
+          />
+        ) : (
+          <PayvandHome
+            onNavigateTab={(tab) => setActiveTab(tab)}
             onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
             onOpenCityModal={() => setIsCityModalOpen(true)}
             onOpenNotifications={() => setActiveTab('notifications')}
@@ -599,12 +619,114 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#ede8dc] text-[#1c1d22] font-sans selection:bg-amber-400 selection:text-slate-950 flex flex-col relative items-center justify-start overflow-x-hidden" dir="rtl">
+    <div className="min-h-screen bg-[#faf8f4] text-[#1c1d22] font-sans selection:bg-amber-400 selection:text-slate-950 flex flex-col relative overflow-x-hidden" dir="rtl">
       
-      {/* Android Application Main Responsive Container */}
-      <div className="w-full max-w-lg min-h-screen bg-[#faf8f4] shadow-2xl flex flex-col relative sm:my-3 sm:rounded-[36px] sm:border-2 sm:border-[#e2d8c3] overflow-hidden">
-        {renderMobileContent()}
-      </div>
+      {/* Desktop Web Layout Mode vs Android Mobile Responsive Mode */}
+      {effectiveIsDesktop ? (
+        <div className="w-full flex-1 flex flex-col">
+          {/* Universal Sticky Desktop Header */}
+          <DesktopHeader
+            currentUser={currentUser}
+            activeRole={activeRole}
+            onRoleChange={handleRoleChange}
+            activeTab={activeTab}
+            onNavigateTab={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            unreadCount={unreadNotificationsCount}
+            onOpenNotifications={() => setActiveTab('notifications')}
+            selectedCity={selectedCity}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
+            onOpenRegisterModal={() => {
+              setSubmitModalType('property');
+              setIsSubmitModalOpen(true);
+            }}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            tickerItems={tickerItems}
+            isDevicePreview={forcedViewMode === 'mobile'}
+            onToggleDevicePreview={() => setForcedViewMode(forcedViewMode === 'mobile' ? 'desktop' : 'mobile')}
+            onLogout={handleLogout}
+          />
+
+          {/* Desktop Main Content */}
+          {activeTab === 'home' ? (
+            renderPageContent()
+          ) : (
+            <div className="w-full max-w-7xl mx-auto px-6 py-6 flex-1 flex flex-col">
+              {/* Desktop Breadcrumb Bar */}
+              <div className="mb-6 bg-white border border-[#eae2d5] rounded-2xl px-6 py-3.5 flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-3 text-xs font-bold">
+                  <button
+                    onClick={() => setActiveTab('home')}
+                    className="flex items-center gap-1.5 text-slate-500 hover:text-amber-800 transition-colors cursor-pointer"
+                  >
+                    <HomeIcon className="w-4 h-4 text-amber-700" />
+                    <span>صفحه اصلی</span>
+                  </button>
+                  <span className="text-slate-300 font-normal">/</span>
+                  <span className="text-slate-900 font-black text-sm">
+                    {getPageTitle(activeTab)}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setActiveTab('home')}
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-800 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>بازگشت به خانه</span>
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Subpage Main Content */}
+              <div className="flex-1 w-full bg-white/70 border border-[#eae2d5] rounded-3xl p-6 shadow-sm">
+                {renderPageContent()}
+              </div>
+            </div>
+          )}
+
+          {/* Global Desktop Footer */}
+          <footer className="bg-white border-t border-[#ede6d8] py-8 px-6 text-slate-600 text-xs mt-auto">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base font-black text-slate-900">پیوندساخت</span>
+                <span className="text-slate-400">|</span>
+                <span className="text-[11px] text-amber-900 font-black">سوپر اپلیکیشن و اکوسیستم زنجیره ارزش ساختمان و مسکن</span>
+              </div>
+              <div className="flex items-center gap-4 text-slate-500 text-[11px]">
+                <button 
+                  onClick={() => setForcedViewMode('mobile')}
+                  className="hover:text-amber-800 underline cursor-pointer font-bold"
+                >
+                  مشاهده در قالب اپلیکیشن اندروید
+                </button>
+                <span>|</span>
+                <span>© کلیه حقوق مادی و معنوی محفوظ است.</span>
+              </div>
+            </div>
+          </footer>
+        </div>
+      ) : (
+        /* Android Mobile Responsive View Mode */
+        <div className="flex-1 w-full max-w-lg mx-auto min-h-screen bg-[#faf8f4] shadow-xs flex flex-col relative">
+          {forcedViewMode === 'mobile' && (
+            <div className="bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-bold flex items-center justify-between">
+              <span>نمای شبیه‌ساز موبایل (Android)</span>
+              <button 
+                onClick={() => setForcedViewMode('desktop')}
+                className="underline text-[11px] font-black cursor-pointer"
+              >
+                بازگشت به وب دسکتاپ
+              </button>
+            </div>
+          )}
+          {renderMobileContent()}
+        </div>
+      )}
 
       {/* Global Modals & Overlays */}
       <CitySelectModal
