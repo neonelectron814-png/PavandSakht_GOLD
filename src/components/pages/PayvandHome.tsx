@@ -235,10 +235,10 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
           onSubmit={handleSearchSubmit}
           className="flex-1 h-11 bg-white rounded-2xl border-2 border-[#dfc282] shadow-[0_3px_10px_rgba(0,0,0,0.03)] flex items-center px-1.5 focus-within:border-[#caa758] transition-all min-w-0"
         >
-          {/* Gold Search Button - Perfectly Centered & Symmetrical */}
+          {/* 3D Gold Search Button - Perfectly Centered */}
           <button
             type="submit"
-            className="w-8 h-8 rounded-xl bg-gradient-to-b from-[#fde68a] via-[#f59e0b] to-[#d97706] border border-[#d4a749] shadow-xs flex items-center justify-center shrink-0 cursor-pointer active:scale-95 transition-all text-[#2c1b04]"
+            className="btn-3d-gold w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-transform"
             title="جستجو"
             aria-label="جستجو"
           >
@@ -346,32 +346,26 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
         </div>
       </div>
 
-      {/* =========================================================================
-          MAIN CATEGORIES HORIZONTAL SCROLLABLE TRACK (اسکرول افقی روان)
-          ========================================================================= */}
-      <main className="w-full px-3.5 sm:px-4 mt-2.5 z-10 max-w-lg mx-auto">
-        <div 
-          className="w-full flex items-center gap-3 overflow-x-auto no-scrollbar pb-3 pt-1 scroll-smooth px-1"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          dir="rtl"
-        >
+      {/* Main Categories Grid - Exactly 2 Columns Side-by-Side */}
+      <main className="w-full px-3.5 sm:px-4 mt-2 z-10 max-w-lg mx-auto">
+        <div className="grid grid-cols-2 gap-3" dir="rtl">
           {categories.map((cat) => {
             const IconComponent = cat.isComponent ? cat.component : null;
             return (
               <motion.button
                 key={cat.id}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.94, y: 1 }}
                 whileHover={{ y: -2 }}
                 onClick={cat.action}
-                className="bg-white rounded-[22px] p-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_6px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_0_#b88a31,0_10px_20px_rgba(180,130,40,0.15)] transition-all flex flex-col items-center justify-between text-center w-[124px] h-[142px] shrink-0 cursor-pointer group select-none relative overflow-hidden"
+                className="bg-white rounded-[22px] px-2 py-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_6px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_0_#b88a31,0_10px_20px_rgba(180,130,40,0.15)] transition-all flex flex-col items-center justify-center text-center h-[138px] sm:h-[142px] cursor-pointer group select-none relative overflow-hidden"
               >
                 {/* Golden 3D Accent corner line */}
                 <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
 
                 {/* 3D Realistic Golden Icon */}
-                <div className="w-13 h-13 rounded-2xl flex items-center justify-center transform group-hover:scale-108 transition-transform shrink-0 mt-1">
+                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center transform group-hover:scale-106 transition-transform shrink-0">
                   {IconComponent ? (
-                    <IconComponent className="w-12 h-12" />
+                    <IconComponent className="w-full h-full" />
                   ) : (
                     <img
                       src={cat.image}
@@ -384,12 +378,12 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                   )}
                 </div>
 
-                {/* Title & Subtitle */}
-                <div className="w-full flex flex-col items-center justify-center mt-1">
-                  <span className="text-[11px] font-black text-slate-950 truncate w-full group-hover:text-amber-900 transition-colors">
+                {/* 2-line Label: Crisp Persian Typography with Clear Hierarchy */}
+                <div className="mt-1.5 w-full px-0.5 flex flex-col items-center justify-center">
+                  <span className="block text-[12px] sm:text-[12.5px] font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
                     {cat.title}
                   </span>
-                  <span className="text-[9px] font-bold text-[#644b1c] truncate w-full mt-0.5">
+                  <span className="block text-[10px] sm:text-[10.5px] font-bold text-[#644b1c] leading-tight tracking-tight mt-0.5 whitespace-nowrap">
                     {cat.subtitle}
                   </span>
                 </div>
