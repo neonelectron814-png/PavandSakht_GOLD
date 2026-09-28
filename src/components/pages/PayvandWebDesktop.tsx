@@ -9,11 +9,14 @@ import {
   Sparkles, 
   PlusCircle, 
   Award,
-  ChevronLeft
+  ChevronLeft,
+  Megaphone,
+  Clock
 } from 'lucide-react';
 import { Property, User, UserRole, PriceIndex, LiveTickerItem } from '../../types';
 import { formatTomanShort, toPersianDigits } from '../../utils/formatters';
-import { SvgGoldDefs, PayvandLogoV3 } from '../common/Golden3DIcons';
+import { SvgGoldDefs, PayvandLogoV3, GoldenInstallment3D, GoldenAiMatch3D, Golden3DStudio, GoldenBarter3D } from '../common/Golden3DIcons';
+import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
 
 import factoryIconImg from '../../assets/images/gold_factory_icon_1790348345530.jpg';
 import materialsIconImg from '../../assets/images/gold_materials_icon_1790348354545.jpg';
@@ -38,6 +41,7 @@ interface PayvandWebDesktopProps {
   onOpenRegisterModal: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  hideHeader?: boolean;
 }
 
 export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
@@ -54,10 +58,45 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
   onOpenRegisterModal,
   searchQuery,
   setSearchQuery,
+  hideHeader = false,
 }) => {
   const [localSearch, setLocalSearch] = useState('');
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
+  const [adScope, setAdScope] = useState<'national' | 'provincial'>('national');
+  const [currentAd, setCurrentAd] = useState<SponsoredAd>({
+    id: 'ad-default',
+    brandName: PRESET_SPONSOR_MEDIA[0].title,
+    slogan: PRESET_SPONSOR_MEDIA[0].slogan,
+    subText: PRESET_SPONSOR_MEDIA[0].subText,
+    mediaUrl: PRESET_SPONSOR_MEDIA[0].url,
+    isGif: true,
+    targetUrl: 'https://payvand-sakht.ir/sponsor',
+    durationLabel: '۱ ساعت ویژه (پربازدید)',
+    durationHours: 1,
+    pricePaid: 1000000,
+  });
 
   const services = [
+    {
+      id: 'building_3d',
+      title: 'استودیو ۳بعدی و هوش مصنوعی',
+      subtitle: 'مدل‌سازی WebGL، برآورد متره، محاسبه مالی و استعلام کارخانه',
+      isComponent: true,
+      component: Golden3DStudio,
+      badge: 'هوش مصنوعی سه‌بعدی',
+      highlight: true,
+      onClick: () => onNavigateTab('building_3d'),
+    },
+    {
+      id: 'barter',
+      title: 'تهاتر و معاوضه تخصصی',
+      subtitle: 'مبادله ملک با متریال، خودرو یا واحدهای آماده',
+      isComponent: true,
+      component: GoldenBarter3D,
+      badge: 'تهاتر بدون واسطه',
+      onClick: () => onNavigateTab('barter'),
+    },
     {
       id: 'industrial',
       title: 'کارخانجات و شهرک‌های صنعتی',
@@ -126,6 +165,24 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       badge: 'مجریان ذیصلاح',
       onClick: () => onNavigateTab('craftsmen'),
     },
+    {
+      id: 'installments',
+      title: 'فروش اقساطی ملک و تجهیزات',
+      subtitle: 'طرح‌های پرداخت منعطف برای پروژه و متریال',
+      isComponent: true,
+      component: GoldenInstallment3D,
+      badge: 'طرح اقساطی',
+      onClick: () => onNavigateTab('installments'),
+    },
+    {
+      id: 'ai_matching',
+      title: 'درخواست‌های مشتری و تطبیق هوشمند',
+      subtitle: 'ثبت نیاز متریال و ملک با دریافت استعلام آنی',
+      isComponent: true,
+      component: GoldenAiMatch3D,
+      badge: 'استعلام آنی',
+      onClick: () => onNavigateTab('customer_requests'),
+    },
   ];
 
   const handleHeroSearch = (e: React.FormEvent) => {
@@ -143,136 +200,78 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       {/* =========================================================================
           TOP DESKTOP HEADER BAR (Wide Web Layout)
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#ece6d9] shadow-xs">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-6">
-          
-          {/* Brand Logo & Title */}
-          <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => onNavigateTab('home')}>
-            <PayvandLogoV3 className="w-10 h-10" />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-black text-slate-900">
-                  پیوندساخت
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
-                  سامانه ملی
-                </span>
+      {!hideHeader && (
+        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#ece6d9] shadow-xs">
+          <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-6">
+            
+            {/* Brand Logo & Title */}
+            <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => onNavigateTab('home')}>
+              <PayvandLogoV3 className="w-10 h-10" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-black text-slate-900">
+                    پیوندساخت
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+                    سامانه ملی
+                  </span>
+                </div>
+                <p className="text-[11px] text-amber-900 font-black">
+                  اتصالِ هوشمندانه
+                </p>
               </div>
-              <p className="text-[11px] text-slate-500 font-normal">
-                آغاز هر ساخت‌وساز، یک پیوند است
-              </p>
             </div>
-          </div>
 
-          {/* Desktop Search Input with City Selector */}
-          <form onSubmit={handleHeroSearch} className="flex-1 max-w-xl flex items-center bg-[#faf9f6] border border-[#e5ded2] rounded-2xl p-1.5 focus-within:border-[#caa758] focus-within:ring-2 focus-within:ring-[#caa758]/20 transition-all shadow-inner">
-            <button
-              type="button"
-              onClick={onOpenCityModal}
-              className="px-3 py-1.5 rounded-xl bg-white border border-[#e8e2d7] hover:bg-amber-50/60 text-xs font-bold text-slate-700 flex items-center gap-1.5 shrink-0 transition-colors cursor-pointer"
-            >
-              <MapPin className="w-3.5 h-3.5 text-amber-600" />
-              <span className="max-w-[90px] truncate">{selectedCity === 'انتخاب استان / شهر' ? 'تهران' : selectedCity}</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
-            </button>
-
-            <input
-              type="text"
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="جستجو در آگهی‌ها، محصولات، خدمات و ..."
-              className="flex-1 bg-transparent px-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
-            />
-
-            <button
-              type="submit"
-              className="w-9 h-9 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white flex items-center justify-center transition-transform hover:scale-105 shrink-0 cursor-pointer shadow-sm"
-              title="جستجو"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          </form>
-
-          {/* Desktop Quick Actions */}
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => onNavigateTab('deal_room')}
-              className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
-            >
-              <Lock className="w-3.5 h-3.5 text-amber-700" />
-              <span>اتاق معامله محرمانه</span>
-            </button>
-
-            <button
-              onClick={onOpenRegisterModal}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#b88c42] to-[#8d6520] hover:from-[#a67c35] hover:to-[#7a5518] text-white text-xs font-black flex items-center gap-2 shadow-md transition-all hover:scale-102 cursor-pointer"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>ثبت آگهی جدید</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* =========================================================================
-          HERO BANNER
-          ========================================================================= */}
-      <section className="py-10 px-6 max-w-7xl mx-auto">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#171d24] via-[#1c222b] to-[#12161b] text-white p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8 border border-white/10">
-          
-          <div className="absolute top-0 left-0 w-1/2 h-full overflow-hidden pointer-events-none hidden md:block">
-            <img
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000"
-              alt="ساختمان مدرن"
-              className="w-full h-full object-cover opacity-85"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#1c222b]/60 to-[#171d24]" />
-          </div>
-
-          <div className="relative z-10 max-w-xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/30">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>پلتفرم جامع صنعت ساختمان و صنایع وابسته</span>
-            </div>
-            
-            <h1 className="text-3xl sm:text-4xl font-black text-white leading-tight">
-              ساختن آینده با پیوندساخت
-            </h1>
-            
-            <p className="text-sm text-slate-300 font-light leading-relaxed">
-              بزرگترین سوپر اپلیکیشن و اکوسیستم تخصصی ساخت‌وساز، معاملات ملکی اعتبارسنجی‌شده، متریال مستقیم کارخانه، مشارکت در پروژه‌ها و ماشین‌آلات عمرانی در ایران.
-            </p>
-
-            <div className="pt-2 flex items-center gap-3">
+            {/* Desktop Search Input with City Selector */}
+            <form onSubmit={handleHeroSearch} className="flex-1 max-w-xl flex items-center bg-[#faf9f6] border border-[#e5ded2] rounded-2xl p-1.5 focus-within:border-[#caa758] focus-within:ring-2 focus-within:ring-[#caa758]/20 transition-all shadow-inner">
               <button
-                onClick={() => onNavigateTab('market')}
-                className="px-6 py-3 rounded-full bg-[#b88c42] hover:bg-[#a67c35] text-white text-xs font-bold flex items-center gap-2 shadow-lg transition-all cursor-pointer"
+                type="button"
+                onClick={onOpenCityModal}
+                className="px-3 py-1.5 rounded-xl bg-white border border-[#e8e2d7] hover:bg-amber-50/60 text-xs font-bold text-slate-700 flex items-center gap-1.5 shrink-0 transition-colors cursor-pointer"
               >
-                <span>اطلاعات بیشتر و جستجو</span>
-                <ChevronLeft className="w-4 h-4" />
+                <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                <span className="max-w-[90px] truncate">{selectedCity === 'انتخاب استان / شهر' ? 'تهران' : selectedCity}</span>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
+
+              <input
+                type="text"
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                placeholder="جستجو در آگهی‌ها، محصولات، خدمات و ..."
+                className="flex-1 bg-transparent px-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
+              />
+
+              <button
+                type="submit"
+                className="w-9 h-9 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white flex items-center justify-center transition-transform hover:scale-105 shrink-0 cursor-pointer shadow-sm"
+                title="جستجو"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            </form>
+
+            {/* Desktop Quick Actions */}
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => onNavigateTab('deal_room')}
+                className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5 text-amber-700" />
+                <span>اتاق معامله محرمانه</span>
+              </button>
+
               <button
                 onClick={onOpenRegisterModal}
-                className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#b88c42] to-[#8d6520] hover:from-[#a67c35] hover:to-[#7a5518] text-white text-xs font-black flex items-center gap-2 shadow-md transition-all hover:scale-102 cursor-pointer"
               >
-                ثبت آگهی رایگان
+                <PlusCircle className="w-4 h-4" />
+                <span>ثبت آگهی جدید</span>
               </button>
             </div>
           </div>
-
-          {/* Quick Stats */}
-          <div className="relative z-10 grid grid-cols-2 gap-3 w-full md:w-auto shrink-0">
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center">
-              <span className="text-2xl font-black text-amber-300">{toPersianDigits(properties.length)}+</span>
-              <p className="text-xs text-slate-300 mt-1">فایل ملکی فعال</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center">
-              <span className="text-2xl font-black text-emerald-300">۱۰۰٪</span>
-              <p className="text-xs text-slate-300 mt-1">سلامت اسناد ثبتی</p>
-            </div>
-          </div>
-        </div>
-      </section>
+        </header>
+      )}
 
       {/* =========================================================================
           THE 8 MAIN CATEGORIES (4 Columns on Desktop)
@@ -280,54 +279,61 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       <section className="py-8 px-6 max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-black text-slate-900">دسته‌بندی‌های اصلی پیوند ساخت</h2>
-            <p className="text-xs text-slate-500 mt-0.5">دسترسی مستقیم به ۸ بخش تخصصی صنعت ساختمان</p>
+            <h2 className="text-2xl font-black text-slate-900">دسته‌بندی‌های ۱۰‌گانه پیوندساخت</h2>
+            <p className="text-xs text-slate-500 mt-0.5">اکوسیستم جامع و اعتبارسنجی‌شده صنعت مسکن، ساختمان و متریال</p>
           </div>
           <span className="text-xs font-bold text-amber-900 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
-            ۸ دسته‌بندی فعال
+            ۱۰ دسته‌بندی تخصصی فعال
           </span>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {services.map((service) => (
-            <motion.button
-              key={service.id}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              onClick={service.onClick}
-              className={`bg-white rounded-3xl p-5 border text-right transition-all flex flex-col justify-between min-h-[190px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_25px_rgba(180,130,40,0.12)] cursor-pointer group select-none ${
-                service.highlight
-                  ? 'border-2 border-[#caa758] ring-2 ring-[#caa758]/20'
-                  : 'border-[#eee6d9] hover:border-[#dfb76c]'
-              }`}
-            >
-              <div className="w-full flex items-center justify-between">
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 group-hover:bg-amber-100 group-hover:text-amber-900 transition-colors">
-                  {service.badge}
-                </span>
-                {service.highlight && <Award className="w-4 h-4 text-amber-600" />}
-              </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {services.map((service) => {
+            const IconComponent = (service as any).isComponent ? (service as any).component : null;
+            return (
+              <motion.button
+                key={service.id}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                onClick={service.onClick}
+                className={`bg-white rounded-3xl p-5 border text-right transition-all flex flex-col justify-between min-h-[190px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_25px_rgba(180,130,40,0.12)] cursor-pointer group select-none ${
+                  service.highlight
+                    ? 'border-2 border-[#caa758] ring-2 ring-[#caa758]/20'
+                    : 'border-[#eee6d9] hover:border-[#dfb76c]'
+                }`}
+              >
+                <div className="w-full flex items-center justify-between">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 group-hover:bg-amber-100 group-hover:text-amber-900 transition-colors">
+                    {service.badge}
+                  </span>
+                  {service.highlight && <Award className="w-4 h-4 text-amber-600" />}
+                </div>
 
-              <div className="my-2 flex justify-center transform group-hover:scale-108 transition-transform">
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                  className="w-16 h-16 object-contain filter drop-shadow-[0_4px_8px_rgba(160,118,48,0.22)]"
-                />
-              </div>
+                <div className="my-2 flex justify-center transform group-hover:scale-108 transition-transform">
+                  {IconComponent ? (
+                    <IconComponent className="w-16 h-16" />
+                  ) : (
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="w-16 h-16 object-contain filter drop-shadow-[0_4px_8px_rgba(160,118,48,0.22)]"
+                    />
+                  )}
+                </div>
 
-              <div>
-                <h3 className="font-black text-sm text-slate-900 group-hover:text-[#9a7224] transition-colors leading-snug">
-                  {service.title}
-                </h3>
-                <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">
-                  {service.subtitle}
-                </p>
-              </div>
-            </motion.button>
-          ))}
+                <div>
+                  <h3 className="font-black text-sm text-slate-900 group-hover:text-[#9a7224] transition-colors leading-snug">
+                    {service.title}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                    {service.subtitle}
+                  </p>
+                </div>
+              </motion.button>
+            );
+          })}
         </div>
       </section>
 
@@ -340,13 +346,20 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
             <PayvandLogoV3 className="w-7 h-7" />
             <span className="text-base font-black text-slate-900">پیوندساخت</span>
             <span className="text-slate-400">|</span>
-            <span className="text-[11px] text-slate-500">آغاز هر ساخت‌وساز، یک پیوند است</span>
+            <span className="text-[11px] text-amber-900 font-black">اتصالِ هوشمندانه</span>
           </div>
           <span className="text-slate-400 text-[11px]">
             © تمامی حقوق برای سوپر اپلیکیشن پیوند ساخت محفوظ است.
           </span>
         </div>
       </footer>
+
+      {/* Ad Booking & Ordering Modal */}
+      <AdOrderModal
+        isOpen={isAdModalOpen}
+        onClose={() => setIsAdModalOpen(false)}
+        onAdActivated={(newAd) => setCurrentAd(newAd)}
+      />
     </div>
   );
 };

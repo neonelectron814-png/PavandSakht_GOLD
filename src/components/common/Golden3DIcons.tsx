@@ -349,3 +349,105 @@ export const GoldenEngineer3D: React.FC<{ className?: string }> = ({ className =
     </svg>
   </div>
 );
+
+// 9. Golden Calendar & Credit / Installments (فروش اقساطی)
+export const GoldenInstallment3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      {/* Soft Ground Shadow */}
+      <ellipse cx="50" cy="86" rx="35" ry="6" fill="#78500c" fillOpacity="0.22" />
+
+      {/* Main Calendar Card Body */}
+      <rect x="20" y="24" width="60" height="58" rx="7" fill="url(#gold-radial)" stroke="#4a2e02" strokeWidth="1.8" />
+      
+      {/* Top Header Bar */}
+      <path d="M20 31C20 27.134 23.134 24 27 24H73C76.866 24 80 27.134 80 31V38H20V31Z" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.5" />
+      
+      {/* Calendar Rings */}
+      <rect x="32" y="18" width="6" height="12" rx="3" fill="url(#gold-metal-primary)" stroke="#4a2e02" strokeWidth="1.2" />
+      <rect x="62" y="18" width="6" height="12" rx="3" fill="url(#gold-metal-primary)" stroke="#4a2e02" strokeWidth="1.2" />
+
+      {/* Grid of Dates */}
+      <circle cx="34" cy="48" r="3" fill="#4a2e02" />
+      <circle cx="50" cy="48" r="3" fill="#4a2e02" />
+      <circle cx="66" cy="48" r="3" fill="#4a2e02" />
+      
+      <circle cx="34" cy="60" r="3" fill="#4a2e02" />
+      <circle cx="50" cy="60" r="3" fill="#4a2e02" />
+      <circle cx="66" cy="60" r="3" fill="#4a2e02" />
+
+      {/* Highlighted Verified Payment Badge */}
+      <circle cx="62" cy="68" r="13" fill="url(#gold-metal-primary)" stroke="#3e2501" strokeWidth="1.5" />
+      <path d="M57 68L60.5 71.5L67 65" stroke="#3e2501" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </div>
+);
+
+// 10. AI Smart Matching & Inquiries (درخواست‌های مشتری و تطبیق هوشمند)
+export const GoldenAiMatch3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      {/* Soft Ground Shadow */}
+      <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
+
+      {/* Core Glowing Polygonal Node */}
+      <circle cx="50" cy="50" r="16" fill="url(#gold-radial)" stroke="#4a2e02" strokeWidth="2" />
+      <circle cx="50" cy="50" r="9" fill="url(#gold-metal-primary)" stroke="#fff" strokeWidth="1.2" />
+
+      {/* Orbiting Connection Nodes */}
+      <circle cx="26" cy="34" r="9" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.5" />
+      <circle cx="74" cy="34" r="9" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.5" />
+      <circle cx="26" cy="66" r="9" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.5" />
+      <circle cx="74" cy="66" r="9" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.5" />
+
+      {/* Smart Synaptic Connecting Beams */}
+      <line x1="33" y1="39" x2="42" y2="44" stroke="#4a2e02" strokeWidth="2.5" strokeDasharray="3 1.5" />
+      <line x1="67" y1="39" x2="58" y2="44" stroke="#4a2e02" strokeWidth="2.5" strokeDasharray="3 1.5" />
+      <line x1="33" y1="61" x2="42" y2="56" stroke="#4a2e02" strokeWidth="2.5" strokeDasharray="3 1.5" />
+      <line x1="67" y1="61" x2="58" y2="56" stroke="#4a2e02" strokeWidth="2.5" strokeDasharray="3 1.5" />
+
+      {/* Sparkle Rays */}
+      <polygon points="50,22 52,28 58,30 52,32 50,38 48,32 42,30 48,28" fill="#fff5d2" stroke="#4a2e02" strokeWidth="0.8" />
+      <polygon points="76,70 77,74 81,75 77,76 76,80 75,76 71,75 75,74" fill="#fff5d2" stroke="#4a2e02" strokeWidth="0.8" />
+    </svg>
+  </div>
+);
+
+// 11. 3D Architectural Building & AI Studio (طراحی سه‌بعدی و هوش مصنوعی)
+export const Golden3DStudio: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
+      {/* 3D Isometric Cube / Building */}
+      {/* Top Face */}
+      <polygon points="50,18 78,32 50,46 22,32" fill="url(#gold-radial)" stroke="#4a2e02" strokeWidth="1.6" />
+      {/* Left Face */}
+      <polygon points="22,32 50,46 50,78 22,64" fill="url(#gold-metal-primary)" stroke="#4a2e02" strokeWidth="1.6" />
+      {/* Right Face */}
+      <polygon points="50,46 78,32 78,64 50,78" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.6" />
+      {/* Wireframe grids */}
+      <line x1="36" y1="39" x2="36" y2="71" stroke="#3e2501" strokeWidth="1.2" strokeDasharray="2 1" />
+      <line x1="64" y1="39" x2="64" y2="71" stroke="#3e2501" strokeWidth="1.2" strokeDasharray="2 1" />
+      {/* AI Pulse Sparkle */}
+      <polygon points="50,6 52,12 58,14 52,16 50,22 48,16 42,14 48,12" fill="#fff5d2" stroke="#4a2e02" strokeWidth="0.8" />
+    </svg>
+  </div>
+);
+
+// 12. Barter & Material Exchange 3D (تهاتر و مبادله)
+export const GoldenBarter3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
+      {/* Circular Arrows */}
+      <path d="M26 48C26 34 37 24 50 24C60 24 69 30 73 38" stroke="url(#gold-radial)" strokeWidth="7" strokeLinecap="round" />
+      <polygon points="73,26 84,38 68,42" fill="url(#gold-radial)" stroke="#4a2e02" strokeWidth="1.2" />
+
+      <path d="M74 52C74 66 63 76 50 76C40 76 31 70 27 62" stroke="url(#gold-shadow)" strokeWidth="7" strokeLinecap="round" />
+      <polygon points="27,74 16,62 32,58" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.2" />
+
+      {/* Center Building Symbol */}
+      <rect x="42" y="42" width="16" height="16" rx="3" fill="url(#gold-metal-primary)" stroke="#4a2e02" strokeWidth="1.5" />
+    </svg>
+  </div>
+);

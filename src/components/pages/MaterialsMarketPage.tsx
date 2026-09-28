@@ -35,28 +35,25 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
   });
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 text-[#1c1d22]">
       
       {/* Header Banner */}
-      <div className="glass-card text-white p-6 sm:p-7 rounded-3xl border border-emerald-500/30 space-y-3 relative overflow-hidden shadow-glass-3d">
-        <div className="absolute top-0 -left-10 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 -right-10 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-[#ded5c5] space-y-3 relative overflow-hidden shadow-xs">
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 glass-emerald text-emerald-200 border border-emerald-400/40 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-sm">
-              <Mountain className="w-3.5 h-3.5 text-amber-400" />
-              <span>پایانه معادن، مصالح ساختمانی و مواد اولیه پیوند ساخت</span>
+            <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-900 border border-amber-300 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-xs">
+              <Package className="w-3.5 h-3.5 text-amber-600" />
+              <span>بازار رسمی متریال و مصالح ساختمانی پیوندساخت</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white">تأمین مستقیم از سینه کار معدن و کارخانه</h1>
-            <p className="text-xs text-slate-300 font-light mt-1 max-w-2xl leading-relaxed">
-              اتصال بی‌واسطه به معادن سنگ کوپ، پوکه معدنی، سیلیس، کارخانجات سیمان و مقاطع فولادی با محاسبه کرایه حمل و شعاع تحویل پای کارگاه.
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900">تأمین مستقیم متریال ساختمانی از کارخانجات و معادن رسمی</h1>
+            <p className="text-xs text-slate-600 font-medium mt-1 max-w-2xl leading-relaxed">
+              خرید و استعلام بی‌واسطه کاشی و سرامیک، سنگ ساختمانی، میلگرد و فولاد، سیمان، گچ، لوله و اتصالات، شیشه و درب و پنجره با قیمت مصوب.
             </p>
           </div>
 
           <button
             onClick={() => onOpenMaterialQuoteModal()}
-            className="btn-3d-emerald text-white text-xs font-black px-5 py-3 rounded-2xl shadow-lg transition-all shrink-0 cursor-pointer border border-emerald-300/40"
+            className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-xs font-black px-5 py-3 rounded-2xl shadow-md transition-all shrink-0 cursor-pointer"
           >
             + استعلام قیمت عمومی پای‌کار
           </button>
@@ -64,15 +61,15 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
       </div>
 
       {/* Supplier Type Toggle & Radius Filter */}
-      <div className="glass-card p-5 rounded-3xl border border-white/15 shadow-glass-3d space-y-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+      <div className="bg-white p-5 rounded-3xl border border-[#ded5c5] shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-[#eee7db] pb-3.5">
           
           {/* Supplier Type Toggle */}
-          <div className="flex flex-wrap items-center gap-1.5 glass-panel-dark p-1.5 rounded-2xl w-full sm:w-auto border border-white/10">
+          <div className="flex flex-wrap items-center gap-1.5 bg-[#faf8f4] p-1.5 rounded-2xl w-full sm:w-auto border border-[#ded5c5]">
             <button
               onClick={() => setSupplierType('all')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                supplierType === 'all' ? 'glass-panel-dark text-white border border-white/30 shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                supplierType === 'all' ? 'bg-amber-500 text-white shadow-xs font-black' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               همه تامین‌کنندگان
@@ -80,68 +77,74 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
 
             <button
               onClick={() => setSupplierType('mine')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-                supplierType === 'mine' ? 'glass-amber text-amber-300 border border-amber-400/50 shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                supplierType === 'mine' ? 'bg-amber-500 text-white shadow-xs font-black' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Mountain className="w-3.5 h-3.5 text-amber-400" />
+              <Mountain className="w-3.5 h-3.5 text-amber-600" />
               <span>معدن‌دار / سینه کار</span>
             </button>
 
             <button
               onClick={() => setSupplierType('factory')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-                supplierType === 'factory' ? 'glass-emerald text-emerald-200 border border-emerald-400/40 shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                supplierType === 'factory' ? 'bg-amber-500 text-white shadow-xs font-black' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Factory className="w-3.5 h-3.5" />
+              <Factory className="w-3.5 h-3.5 text-amber-600" />
               <span>کارخانه تولیدی</span>
             </button>
 
             <button
               onClick={() => setSupplierType('local')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-                supplierType === 'local' ? 'glass-blue text-blue-200 border border-blue-400/40 shadow-md' : 'text-slate-400 hover:text-white'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                supplierType === 'local' ? 'bg-amber-500 text-white shadow-xs font-black' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Store className="w-3.5 h-3.5" />
-              <span>فروشنده محلی</span>
+              <Store className="w-3.5 h-3.5 text-amber-600" />
+              <span>فروشگاه محلی</span>
             </button>
           </div>
 
-          {/* Distance Radius Range Slider */}
-          <div className="flex items-center gap-3 w-full sm:w-auto text-xs">
-            <span className="text-slate-300 font-bold shrink-0">شعاع تحویل پروژه:</span>
+          {/* Distance Slider */}
+          <div className="flex items-center gap-3 w-full sm:w-72 bg-[#faf8f4] px-4 py-2.5 rounded-2xl border border-[#ded5c5]">
+            <span className="text-[11px] font-bold text-slate-700 whitespace-nowrap">شعاع ارسال:</span>
             <input
               type="range"
-              min={10}
-              max={600}
+              min={20}
+              max={1000}
               step={20}
               value={maxDistance}
               onChange={(e) => setMaxDistance(Number(e.target.value))}
-              className="w-32 accent-amber-400 cursor-pointer"
+              className="flex-1 accent-amber-500 cursor-pointer"
             />
-            <span className="font-black text-amber-400 font-mono w-20">{toPersianDigits(maxDistance)} کیلومتر</span>
+            <span className="text-xs font-black text-amber-900 font-mono w-16 text-left">
+              {toPersianDigits(maxDistance)} کیلومتر
+            </span>
           </div>
-
         </div>
 
-        {/* Categories Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth touch-pan-x pt-1">
+        {/* Categories Carousel */}
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all ${
-              selectedCategory === 'all' ? 'glass-panel-dark text-white border border-white/30' : 'glass-card text-slate-300 hover:text-white border border-white/10'
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
+              selectedCategory === 'all'
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
+                : 'bg-[#faf8f4] text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
             }`}
           >
             همه دسته‌ها
           </button>
+
           {categoriesList.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all ${
-                selectedCategory === cat ? 'glass-emerald text-emerald-200 border border-emerald-400/40' : 'glass-card text-slate-300 hover:text-white border border-white/10'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
+                  : 'bg-[#faf8f4] text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
               }`}
             >
               {cat}
@@ -150,106 +153,82 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
         </div>
       </div>
 
-      {/* Material Product Cards */}
+      {/* Material Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredMaterials.map((product) => (
+        {filteredMaterials.map((item) => (
           <div
-            key={product.id}
-            className="glass-card rounded-3xl border border-white/15 overflow-hidden shadow-glass-3d card-3d-tilt flex flex-col justify-between group"
+            key={item.id}
+            className="bg-white rounded-3xl border border-[#ded5c5] overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group"
           >
-            {/* Image */}
-            <div className="relative h-48 bg-slate-950 overflow-hidden group">
+            {/* Image & Badges */}
+            <div className="relative h-48 bg-slate-100 overflow-hidden">
               <img
-                src={product.images[0]}
-                alt={product.title}
+                src={item.images[0] || 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=700'}
+                alt={item.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
 
-              <span className="absolute top-3 right-3 glass-panel-dark text-white text-[10px] px-2.5 py-1 rounded-xl font-mono font-bold border border-white/20">
-                {product.code}
-              </span>
+              <div className="absolute top-3 right-3 flex flex-col gap-1">
+                <span className="bg-white/90 backdrop-blur-sm text-slate-900 text-[10px] px-2.5 py-1 rounded-xl font-mono font-bold border border-slate-200">
+                  {item.category}
+                </span>
+                {item.verifiedStatus === 'verified' && (
+                  <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-xl font-bold flex items-center gap-1 shadow-sm">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>تأییدشده رسمی</span>
+                  </span>
+                )}
+              </div>
 
-              <span className={`absolute top-3 left-3 text-[10px] px-3 py-1 rounded-xl font-black shadow-md border ${
-                product.supplierType === 'mine'
-                  ? 'glass-amber text-amber-200 border-amber-400/50'
-                  : product.supplierType === 'factory' 
-                    ? 'glass-emerald text-emerald-200 border-emerald-400/40' 
-                    : 'glass-blue text-blue-200 border-blue-400/40'
-              }`}>
-                {product.supplierType === 'mine' ? 'سینه کار معدن' : product.supplierType === 'factory' ? 'تولیدکننده کارخانه' : 'فروشنده محلی'}
-              </span>
+              <div className="absolute top-3 left-3 bg-amber-500 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-xl border border-amber-400">
+                فاصله: {toPersianDigits(item.distanceKm)} کیلومتر
+              </div>
             </div>
 
-            {/* Info */}
-            <div className="p-4.5 space-y-3.5 flex-1 flex flex-col justify-between">
+            {/* Content */}
+            <div className="p-4.5 space-y-3 flex-1 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-                  <span className="font-bold text-emerald-300">{product.supplierName}</span>
-                  <div className="flex items-center gap-1 text-slate-400 font-mono">
-                    <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                    <span>فاصله: {toPersianDigits(product.distanceKm)} ک‌م</span>
-                  </div>
+                <h3 className="font-black text-sm text-slate-900 line-clamp-2 leading-snug">
+                  {item.title}
+                </h3>
+
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 mt-2 font-bold">
+                  {item.supplierType === 'mine' ? (
+                    <Mountain className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  ) : item.supplierType === 'factory' ? (
+                    <Factory className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  ) : (
+                    <Store className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                  )}
+                  <span className="truncate">{item.supplierName}</span>
                 </div>
 
-                <h3 className="font-extrabold text-sm text-white line-clamp-2 leading-snug">{product.title}</h3>
+                <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-1 font-semibold">
+                  <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
+                  <span>{item.location}</span>
+                  <span className="text-slate-300">|</span>
+                  <span>حداقل سفارش: {toPersianDigits(item.minOrder)} {item.unit}</span>
+                </div>
               </div>
 
-              {/* Mine details pill if available */}
-              {product.mineDetails && (
-                <div className="glass-panel-dark border border-amber-400/30 p-2.5 rounded-2xl text-[11px] text-amber-200 space-y-1">
-                  <div className="flex items-center justify-between font-bold">
-                    <span className="flex items-center gap-1">
-                      <Mountain className="w-3.5 h-3.5 text-amber-400" />
-                      {product.mineDetails.mineName || product.mineDetails.quarryName || 'معدن و سینه کار'}
-                    </span>
-                    {product.mineDetails.grade && (
-                      <span className="text-[10px] glass-amber px-2 py-0.5 rounded text-amber-300 font-mono">
-                        عیار/گرید: {product.mineDetails.grade}
-                      </span>
-                    )}
-                    {product.mineDetails.assayPurityPercent && (
-                      <span className="text-[10px] glass-emerald px-2 py-0.5 rounded text-emerald-300 font-mono">
-                        خلوص: {toPersianDigits(product.mineDetails.assayPurityPercent)}٪
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-300 font-light">
-                    ظرفیت استخراج: {toPersianDigits(product.mineDetails.monthlyCapacityTons || product.mineDetails.monthlyExtractionTons || 0)} تن ماهیانه
-                    {product.mineDetails.licenseNumber ? ` | پروانه: ${product.mineDetails.licenseNumber}` : ''}
-                  </p>
-                </div>
-              )}
-
-              {/* Spec sheet */}
-              {product.specSheet && (
-                <div className="glass-panel-dark border border-white/10 p-2.5 rounded-2xl text-[11px] text-slate-300 flex items-start gap-2">
-                  <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                  <span className="line-clamp-2">{product.specSheet}</span>
-                </div>
-              )}
-
-              {/* Price & Unit */}
-              <div className="pt-2 flex items-center justify-between border-t border-white/10 text-xs">
+              {/* Price & Actions */}
+              <div className="pt-3 border-t border-[#eee7db] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 block">قیمت واحد ({product.unit}):</span>
-                  <span className="text-sm font-black text-amber-400">{formatTomanShort(product.price)}</span>
+                  <span className="text-[10px] text-slate-500 block font-bold">قیمت واحد ({item.unit}):</span>
+                  <span className="text-sm font-black text-slate-900 font-mono">
+                    {formatToman(item.price)}
+                  </span>
                 </div>
-                <div className="text-left">
-                  <span className="text-[10px] text-slate-400 block">حداقل سفارش:</span>
-                  <span className="text-xs font-black text-white font-mono">{toPersianDigits(product.minOrder)} {product.unit}</span>
-                </div>
+
+                <button
+                  onClick={() => onOpenMaterialQuoteModal(item)}
+                  className="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-black px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                >
+                  <Send className="w-3 h-3 text-amber-700" />
+                  <span>استعلام پیش‌فاکتور</span>
+                </button>
               </div>
-
-              {/* Action Button */}
-              <button
-                onClick={() => onOpenMaterialQuoteModal(product)}
-                className="w-full btn-3d-emerald text-white font-black py-3 rounded-2xl text-xs flex items-center justify-center gap-2 cursor-pointer border border-emerald-300/40"
-              >
-                <Send className="w-3.5 h-3.5" />
-                <span>درخواست پیش‌فاکتور و استعلام قیمت</span>
-              </button>
             </div>
-
           </div>
         ))}
       </div>

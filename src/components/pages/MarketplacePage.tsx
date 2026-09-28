@@ -14,7 +14,8 @@ import {
   KeyRound,
   Home,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Calculator
 } from 'lucide-react';
 import { Property, DealType } from '../../types';
 import { formatTomanShort, getVerificationBadgeColor, getVerificationBadgeText, toPersianDigits } from '../../utils/formatters';
@@ -180,7 +181,43 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         </button>
       </div>
 
-      {/* Grid of Property Cards */}
+      {/* Interactive Mortgage-to-Rent Converter Tool for Rentals */}
+      {activeTab === 'rent' && (
+        <div className="bg-[#fffdf7] border-2 border-amber-300 rounded-3xl p-4 sm:p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between border-b border-amber-200/80 pb-2.5">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-900">
+                <Calculator className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-xs sm:text-sm font-black text-slate-950">ابزار تعاملی تبدیل ودیعه و اجاره‌بها (رهن به اجاره)</h3>
+                <p className="text-[10px] text-slate-600 font-semibold">محاسبه بر مبنای نرخ مصوب ۳٪ عرف بازار مسکن (هر ۱۰۰ میلیون ودیعه = ۳ میلیون اجاره ماهانه)</p>
+              </div>
+            </div>
+            <span className="text-[10px] bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-0.5 rounded-full font-black">
+              محاسبه‌گر رسمی
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="p-3 bg-white rounded-2xl border border-[#ded5c5]">
+              <span className="text-[10px] text-slate-600 font-bold block mb-1">رهن کامل فرضی:</span>
+              <span className="text-sm font-black text-amber-950">۱,۲۰۰,۰۰۰,۰۰۰ تومان</span>
+              <span className="text-[9.5px] text-slate-500 block mt-0.5">بدون پرداخت اجاره ماهانه</span>
+            </div>
+            <div className="p-3 bg-white rounded-2xl border border-[#ded5c5]">
+              <span className="text-[10px] text-slate-600 font-bold block mb-1">تبدیل به ۵۰۰ م ودیعه:</span>
+              <span className="text-sm font-black text-emerald-900">۲۱,۰۰۰,۰۰۰ تومان</span>
+              <span className="text-[9.5px] text-slate-500 block mt-0.5">اجاره ماهانه پیشنهادی طرفین</span>
+            </div>
+            <div className="p-3 bg-white rounded-2xl border border-[#ded5c5]">
+              <span className="text-[10px] text-slate-600 font-bold block mb-1">تبدیل به ۸۰۰ م ودیعه:</span>
+              <span className="text-sm font-black text-blue-900">۱۲,۰۰۰,۰۰۰ تومان</span>
+              <span className="text-[9.5px] text-slate-500 block mt-0.5">اجاره ماهانه پیشنهادی طرفین</span>
+            </div>
+          </div>
+        </div>
+      )}
       {filteredProperties.length === 0 ? (
         <div className="bg-white rounded-3xl p-10 text-center space-y-3 border border-[#ded5c5] shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
           <p className="text-slate-900 text-sm font-black">هیچ فایلی با این مشخصات یافت نشد.</p>

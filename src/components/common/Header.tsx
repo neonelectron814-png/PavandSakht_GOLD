@@ -13,6 +13,7 @@ import {
   RefreshCw, 
   Layers, 
   LineChart, 
+  TrendingUp,
   UserCheck, 
   Shield, 
   Sparkles,
@@ -122,12 +123,14 @@ const roleConfigs: RoleConfig[] = [
 ];
 
 const quickServices = [
-  { id: 'market', title: 'بازار املاک', icon: Building2, badge: 'فعال', badgeBg: 'bg-amber-100 text-amber-800' },
-  { id: 'partnership', title: 'مشارکت در ساخت', icon: Handshake, badge: 'پروژه‌ها', badgeBg: 'bg-emerald-100 text-emerald-800' },
-  { id: 'materials', title: 'متریال و مصالح', icon: Package, badge: 'قیمت روز', badgeBg: 'bg-blue-100 text-blue-800' },
-  { id: 'craftsmen', title: 'پیوند عمران', icon: Hammer, badge: 'مجریان', badgeBg: 'bg-purple-100 text-purple-800' },
-  { id: 'rate_cutter', title: 'تخفیفات ویژه', icon: Flame, badge: 'کمپین', badgeBg: 'bg-rose-100 text-rose-800' },
-  { id: 'deal_room', title: 'اتاق معامله', icon: Lock, badge: 'محرمانه', badgeBg: 'bg-amber-100 text-amber-800' },
+  { id: 'market', title: 'املاک و مستغلات', icon: Building2, badge: 'رهن و فروش', badgeBg: 'bg-amber-100 text-amber-800' },
+  { id: 'partnership', title: 'مشارکت در ساخت', icon: Handshake, badge: 'سازندگان رتبه‌دار', badgeBg: 'bg-emerald-100 text-emerald-800' },
+  { id: 'materials', title: 'مصالح و متریال', icon: Package, badge: 'قیمت بورس', badgeBg: 'bg-blue-100 text-blue-800' },
+  { id: 'craftsmen', title: 'پیوند عمران و معادن', icon: Hammer, badge: 'ماشین‌آلات و معدن', badgeBg: 'bg-purple-100 text-purple-800' },
+  { id: 'rate_cutter', title: 'فرصت‌های طلایی و نرخ‌شکن', icon: Flame, badge: 'زیر قیمت', badgeBg: 'bg-rose-100 text-rose-800' },
+  { id: 'deal_room', title: 'اتاق معامله امن', icon: Lock, badge: 'محرمانه', badgeBg: 'bg-amber-100 text-amber-800' },
+  { id: 'barter', title: 'اتاق تهاتر', icon: RefreshCw, badge: 'ملک با متریال', badgeBg: 'bg-indigo-100 text-indigo-800' },
+  { id: 'price_data', title: 'استعلام قیمت و متراژ', icon: TrendingUp, badge: 'داده زنده', badgeBg: 'bg-emerald-100 text-emerald-800' },
 ];
 
 export const Header: React.FC<HeaderProps> = ({
@@ -182,11 +185,11 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                   <span className="bg-amber-100 text-amber-900 text-[9px] px-2 py-0.5 rounded-full font-bold hidden sm:inline-flex items-center gap-1 border border-amber-300">
                     <ShieldCheck className="w-2.5 h-2.5 text-amber-700" />
-                    سامانه رسمی
+                    اتصالِ هوشمندانه
                   </span>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-700 font-bold truncate max-w-[130px] sm:max-w-none">
-                  سوپر اپلیکیشن ساخت و ساز و املاک
+                  آغاز هر ساخت‌وساز، یک پیوند است
                 </p>
               </div>
             </motion.button>

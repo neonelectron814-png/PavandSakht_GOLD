@@ -13,7 +13,7 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
-import { SvgGoldDefs, PayvandLogoV3 } from '../common/Golden3DIcons';
+import { SvgGoldDefs, PayvandLogoV3, GoldenInstallment3D, GoldenAiMatch3D } from '../common/Golden3DIcons';
 import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
 
 import factoryIconImg from '../../assets/images/gold_factory_icon_1790348345530.jpg';
@@ -49,6 +49,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
   const [internalSearch, setInternalSearch] = useState(searchQuery);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
+  const [adScope, setAdScope] = useState<'national' | 'provincial'>('national');
 
   // Active Sponsored Ad state
   const [currentAd, setCurrentAd] = useState<SponsoredAd>({
@@ -77,66 +78,97 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
   };
 
   const categories = [
-    // ROW 1 (From Right to Left in RTL)
+    // 1. املاک و مستغلات (Real Estate Market)
     {
-      id: 'industrial',
-      title: 'کارخانجات و',
-      subtitle: 'شهرک‌های صنعتی',
-      image: factoryIconImg,
-      action: () => {
-        onNavigateTab('materials');
-      },
+      id: 'real_estate',
+      title: 'املاک و مستغلات',
+      subtitle: 'رهن، اجاره و فروش',
+      image: villaIconImg,
+      badge: 'رهن و فروش',
+      action: () => onNavigateTab('market'),
     },
-    {
-      id: 'materials_mines',
-      title: 'معادن سنگ، سیمان',
-      subtitle: 'و مصالح ساختمانی',
-      image: materialsIconImg,
-      action: () => onNavigateTab('materials'),
-    },
+    // 2. مشارکت در ساخت (Construction Partnership)
     {
       id: 'participation',
       title: 'مشارکت در ساخت',
-      subtitle: 'و تهاتر ملکی',
+      subtitle: 'مالکین و سازندگان',
       image: handshakeIconImg,
+      badge: 'سازندگان رتبه‌دار',
       action: () => onNavigateTab('partnership'),
     },
+    // 3. مصالح و متریال ساختمانی (Construction Materials)
     {
-      id: 'real_estate',
-      title: 'املاک مسکونی',
-      subtitle: 'و تجاری سالم',
-      image: villaIconImg,
-      action: () => onNavigateTab('market'),
+      id: 'materials_mines',
+      title: 'مصالح و متریال',
+      subtitle: 'کاشی، فولاد، سیمان و...',
+      image: materialsIconImg,
+      badge: 'قیمت بورس',
+      action: () => onNavigateTab('materials'),
     },
-
-    // ROW 2 (From Right to Left in RTL)
+    // 4. کارخانجات و شهرک‌های صنعتی (Manufacturers & Industrial Hubs)
     {
-      id: 'inquiry',
-      title: 'استعلام قیمت',
-      subtitle: 'و متراژ',
-      image: documentIconImg,
-      action: () => onNavigateTab('price_data'),
+      id: 'industrial',
+      title: 'کارخانجات و شهرک‌ها',
+      subtitle: 'خرید مستقیم تولیدکننده',
+      image: factoryIconImg,
+      badge: 'تولید دست اول',
+      action: () => onNavigateTab('materials'),
     },
+    // 5. پیوند عمران (Civil & Mining Heavy Machinery)
+    {
+      id: 'machinery',
+      title: 'پیوند عمران و معادن',
+      subtitle: 'ماشین‌آلات سنگین و معدن',
+      image: excavatorIconImg,
+      badge: 'تجهیزات راه و معدن',
+      action: () => onNavigateTab('craftsmen'),
+    },
+    // 6. فرصت‌های طلایی و نرخ‌شکن (Distressed Deals & Bargains)
     {
       id: 'auctions_deals',
       title: 'فرصت‌های طلایی',
-      subtitle: 'و مزایده و...',
+      subtitle: 'مزایدات و نرخ‌شکن',
       image: gavelIconImg,
+      badge: 'زیر قیمت',
       action: () => onNavigateTab('rate_cutter'),
     },
+    // 7. استعلام قیمت و متراژ (Price & Specification Inquiry)
     {
-      id: 'machinery',
-      title: 'ماشین‌آلات و',
-      subtitle: 'تجهیزات',
-      image: excavatorIconImg,
-      action: () => onNavigateTab('craftsmen'),
+      id: 'inquiry',
+      title: 'استعلام قیمت و متراژ',
+      subtitle: 'شاخص آهن، سیمان و ملک',
+      image: documentIconImg,
+      badge: 'داده زنده',
+      action: () => onNavigateTab('price_data'),
     },
+    // 8. پیمانکاران و مجریان ساخت (Contractors & Craftsmen)
     {
       id: 'contractors',
-      title: 'پیمانکاران و',
-      subtitle: 'مجریان ساخت',
+      title: 'پیمانکاران و مجریان',
+      subtitle: 'استادکاران و مهندسین',
       image: engineerIconImg,
+      badge: 'مجریان ذیصلاح',
       action: () => onNavigateTab('craftsmen'),
+    },
+    // 9. فروش اقساطی (Instalment Sales)
+    {
+      id: 'installments',
+      title: 'فروش اقساطی',
+      subtitle: 'ملک، متریال و تجهیزات',
+      isComponent: true,
+      component: GoldenInstallment3D,
+      badge: 'شرایطی و منعطف',
+      action: () => onNavigateTab('installments'),
+    },
+    // 10. درخواست‌های مشتری و تطبیق هوشمند (Customer Requests & AI Matching)
+    {
+      id: 'ai_matching',
+      title: 'درخواست‌های مشتری',
+      subtitle: 'تطبیق هوشمند نیازها',
+      isComponent: true,
+      component: GoldenAiMatch3D,
+      badge: 'استعلام آنی',
+      action: () => onNavigateTab('customer_requests'),
     },
   ];
 
@@ -176,8 +208,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-none">
               پیوندساخت
             </h1>
-            <p className="text-[10px] sm:text-[10.5px] text-slate-700 font-black tracking-tight mt-1">
-              آغاز هر ساخت‌وساز، یک پیوند است
+            <p className="text-[10px] sm:text-[10.5px] text-amber-900 font-black tracking-tight mt-1">
+              اتصالِ هوشمندانه
             </p>
           </div>
           <PayvandLogoV3 className="w-8 h-8 sm:w-9 sm:h-9 shrink-0" />
@@ -226,165 +258,54 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
         </form>
       </div>
 
-      {/* =========================================================================
-          HERO BANNER: SPONSORSHIP & ADVERTISING BANNER / GIF SHOWCASE
-          ========================================================================= */}
-      <div className="w-full px-4 mt-3.5 z-10">
-        <div className="relative rounded-[26px] overflow-hidden bg-gradient-to-r from-[#171d24] via-[#1c222b] to-[#12161b] text-white shadow-[0_8px_26px_rgba(0,0,0,0.18)] min-h-[175px] sm:min-h-[190px] flex items-center border-2 border-[#d4a749]">
-          
-          {/* Background Sponsored Media (Image / GIF) */}
-          <div className="absolute top-0 left-0 w-1/2 h-full overflow-hidden pointer-events-none">
-            <img
-              src={currentAd.mediaUrl}
-              alt={currentAd.brandName}
-              className="w-full h-full object-cover object-center opacity-95 transition-opacity duration-700"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-            />
-            {/* Smooth Gradient Blend to Dark Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#1c222b]/60 to-[#171d24]" />
-          </div>
-
-          {/* Left / Text Side */}
-          <div className="relative z-10 p-4 sm:p-5 max-w-[64%] sm:max-w-[60%] flex flex-col justify-between h-full space-y-2">
-            
-            {/* Top Badge: Sponsor Indicator */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="inline-flex items-center gap-1 text-[9.5px] bg-[#d4a749]/25 text-[#fce7b0] border border-[#d4a749]/50 px-2.5 py-0.5 rounded-full font-black backdrop-blur-xs">
-                <Sparkles className="w-3 h-3 text-[#fce7b0] animate-pulse" />
-                <span>جایگاه ویژه اسپانسرینگ (GIF / بنر)</span>
-              </span>
-              {currentAd.isGif && (
-                <span className="text-[9px] bg-rose-600/80 text-white font-black px-1.5 py-0.2 rounded-md">
-                  GIF پویا
-                </span>
-              )}
-            </div>
-
-            <div>
-              <h2 className="text-sm sm:text-base font-black tracking-tight leading-snug text-white">
-                {currentAd.slogan}
-              </h2>
-              <p className="text-[10px] sm:text-[10.5px] text-slate-300 font-semibold mt-1 leading-relaxed line-clamp-2">
-                {currentAd.subText}
-              </p>
-            </div>
-
-            {/* 3D Gold Action Buttons on Banner */}
-            <div className="pt-1 flex flex-wrap items-center gap-2">
-              {/* Primary 3D Gold: Order / Place Ad Button */}
-              <button
-                onClick={() => setIsAdModalOpen(true)}
-                className="btn-3d-gold px-3.5 py-1.5 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-md cursor-pointer"
-                title="سفارش بنر یا گیف در این جایگاه"
-              >
-                <Megaphone className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>سفارش و درج بنر شما 👈</span>
-              </button>
-
-              {/* Secondary Button: Visit Sponsor Destination */}
-              <button
-                onClick={() => {
-                  if (currentAd.targetUrl.startsWith('http')) {
-                    window.open(currentAd.targetUrl, '_blank');
-                  } else {
-                    onNavigateTab('market');
-                  }
-                }}
-                className="btn-3d-gold-dark px-3 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 cursor-pointer"
-                title="مشاهده اطلاعات اسپانسر"
-              >
-                <span>مشاهده برند</span>
-                <ChevronLeft className="w-3 h-3" />
-              </button>
-            </div>
-
-            {/* Carousel Dots & Info */}
-            <div className="flex items-center justify-between pt-0.5 text-[9.5px] text-slate-400 font-semibold">
-              <span className="flex items-center gap-1 text-[#fce7b0] font-black">
-                <Clock className="w-3 h-3 text-[#d4a749]" />
-                تعرفه: ۱ ساعت ۱ م.ت / ماهانه
-              </span>
-
-              <div className="flex items-center gap-1">
-                {[0, 1, 2, 3].map((dot) => (
-                  <button
-                    key={dot}
-                    onClick={() => {
-                      setActiveSlide(dot);
-                      const preset = PRESET_SPONSOR_MEDIA[dot % PRESET_SPONSOR_MEDIA.length];
-                      setCurrentAd({
-                        id: 'ad-' + dot,
-                        brandName: preset.title,
-                        slogan: preset.slogan,
-                        subText: preset.subText,
-                        mediaUrl: preset.url,
-                        isGif: preset.isGif,
-                        targetUrl: 'https://payvand-sakht.ir/sponsor',
-                        durationLabel: '۱ ساعت ویژه',
-                        durationHours: 1,
-                        pricePaid: 1000000,
-                      });
-                    }}
-                    className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                      activeSlide === dot ? 'w-4 bg-[#caa758]' : 'w-1.5 bg-white/40'
-                    }`}
-                    aria-label={`اسلاید ${dot + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </div>
-
-      {/* =========================================================================
-          THE 8 CATEGORIES GRID WITH 3D GOLD DEPTH
-          ========================================================================= */}
+      {/* Main Categories Grid */}
       <main className="w-full px-4 mt-3.5 z-10">
-        <div className="grid grid-cols-4 gap-2.5 sm:gap-3" dir="rtl">
-          {categories.map((cat) => (
-            <motion.button
-              key={cat.id}
-              whileTap={{ scale: 0.93, y: 1 }}
-              whileHover={{ y: -3 }}
-              onClick={cat.action}
-              className="bg-white rounded-[22px] p-2.5 sm:p-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_4px_0_#d5c8b2,0_8px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_0_#b88a31,0_12px_22px_rgba(180,130,40,0.18)] transition-all flex flex-col items-center justify-between text-center min-h-[124px] sm:min-h-[130px] cursor-pointer group select-none relative overflow-hidden"
-            >
-              {/* Golden 3D Accent corner line */}
-              <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3" dir="rtl">
+          {categories.map((cat) => {
+            const IconComponent = cat.isComponent ? cat.component : null;
+            return (
+              <motion.button
+                key={cat.id}
+                whileTap={{ scale: 0.93, y: 1 }}
+                whileHover={{ y: -3 }}
+                onClick={cat.action}
+                className="bg-white rounded-[22px] p-2.5 sm:p-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_4px_0_#d5c8b2,0_8px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_0_#b88a31,0_12px_22px_rgba(180,130,40,0.18)] transition-all flex flex-col items-center justify-between text-center min-h-[124px] sm:min-h-[134px] cursor-pointer group select-none relative overflow-hidden"
+              >
+                {/* Golden 3D Accent corner line */}
+                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
 
-              {/* 3D Realistic Golden Icon Photo */}
-              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl overflow-hidden flex items-center justify-center transform group-hover:scale-108 transition-transform">
-                <img
-                  src={cat.image}
-                  alt={cat.title}
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain filter drop-shadow-[0_3px_5px_rgba(160,118,48,0.25)]"
-                />
-              </div>
+                {/* 3D Realistic Golden Icon (Photo or Vector 3D Component) */}
+                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl overflow-hidden flex items-center justify-center transform group-hover:scale-108 transition-transform">
+                  {IconComponent ? (
+                    <IconComponent className="w-full h-full" />
+                  ) : (
+                    <img
+                      src={cat.image}
+                      alt={cat.title}
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain filter drop-shadow-[0_3px_5px_rgba(160,118,48,0.25)]"
+                    />
+                  )}
+                </div>
 
-              {/* 2-line Label: SOLID BLACK, BOLD, NEVER BLURRED */}
-              <div className="mt-1.5 w-full">
-                <span className="block text-[11px] sm:text-[11.5px] font-black text-slate-950 leading-tight tracking-tight">
-                  {cat.title}
-                </span>
-                <span className="block text-[10.5px] sm:text-[11px] font-black text-slate-950 leading-tight tracking-tight mt-0.5">
-                  {cat.subtitle}
-                </span>
-              </div>
-            </motion.button>
-          ))}
+                {/* 2-line Label: SOLID BLACK, BOLD, NEVER BLURRED */}
+                <div className="mt-1.5 w-full">
+                  <span className="block text-[11px] sm:text-[11.5px] font-black text-slate-950 leading-tight tracking-tight">
+                    {cat.title}
+                  </span>
+                  <span className="block text-[10px] sm:text-[10.5px] font-black text-slate-700 leading-tight tracking-tight mt-0.5">
+                    {cat.subtitle}
+                  </span>
+                </div>
+              </motion.button>
+            );
+          })}
         </div>
       </main>
 
-      {/* =========================================================================
-          ADVERTISING & SPONSORSHIP MODAL WITH SHAPARAK GATEWAY
-          ========================================================================= */}
+      {/* Modal */}
       <AdOrderModal
         isOpen={isAdModalOpen}
         onClose={() => setIsAdModalOpen(false)}

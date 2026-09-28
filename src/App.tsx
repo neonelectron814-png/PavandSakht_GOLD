@@ -13,6 +13,7 @@ import {
 } from './data/mockData';
 import { UserRole, User, Property, DealRoom, NotificationItem, LiveActivityEvent, LiveTickerItem } from './types';
 import { Header } from './components/common/Header';
+import { DesktopHeader } from './components/common/DesktopHeader';
 import { BottomNav } from './components/common/BottomNav';
 import { FAB } from './components/common/FAB';
 import { BottomSheetModal } from './components/common/BottomSheetModal';
@@ -28,6 +29,7 @@ import {
   updateTickerItems, 
   playSubtleChime 
 } from './utils/realtimeEngine';
+import { ChevronLeft, Home as HomeIcon } from 'lucide-react';
 
 // Pages
 import { PayvandHome } from './components/pages/PayvandHome';
@@ -46,13 +48,16 @@ import { AdminPanelPage } from './components/pages/AdminPanelPage';
 import { NotificationsPage } from './components/pages/NotificationsPage';
 import { ProfilePage } from './components/pages/ProfilePage';
 import { AudioAnalysisPage } from './components/pages/AudioAnalysisPage';
+import { InstallmentPage } from './components/pages/InstallmentPage';
+import { CustomerRequestsPage } from './components/pages/CustomerRequestsPage';
+import { Building3DStudioPage } from './components/pages/Building3DStudioPage';
 
 export default function App() {
   // Navigation State
   const [activeTab, setActiveTab] = useState<string>('home');
   const [activeRole, setActiveRole] = useState<UserRole>('buyer');
   
-  // Automatic screen size & device detection: Desktop Web (>= 1024px) vs Mobile Android (< 1024px)
+  // Screen size & device preview detection: Desktop Web (>= 1024px) vs Mobile Android (< 1024px)
   const [isDesktop, setIsDesktop] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth >= 1024;
@@ -60,15 +65,22 @@ export default function App() {
     return false;
   });
 
+  // Manual view preview toggle (if user wants to toggle between desktop web & mobile frame)
+  const [forcedViewMode, setForcedViewMode] = useState<'auto' | 'desktop' | 'mobile'>('auto');
+
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1024);
+      if (forcedViewMode === 'auto') {
+        setIsDesktop(window.innerWidth >= 1024);
+      }
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
+  }, [forcedViewMode]);
+
+  const effectiveIsDesktop = forcedViewMode === 'desktop' ? true : forcedViewMode === 'mobile' ? false : isDesktop;
+
   // Data States
   const [properties, setProperties] = useState<Property[]>(mockProperties);
   const [dealRooms, setDealRooms] = useState<DealRoom[]>(mockDealRooms);
@@ -92,26 +104,6 @@ export default function App() {
   const [isMoreMenuSheetOpen, setIsMoreMenuSheetOpen] = useState<boolean>(false);
   const [submitModalType, setSubmitModalType] = useState<'property' | 'material_quote' | 'barter' | 'partnership'>('property');
 
-  // Global Smooth Horizontal Mouse Wheel Support
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-      const scrollable = target.closest('.overflow-x-auto') as HTMLElement | null;
-      if (scrollable && scrollable.scrollWidth > scrollable.clientWidth) {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          scrollable.scrollLeft += e.deltaY;
-          e.preventDefault();
-        }
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
-
   // Real-Time Simulation Interval
   useEffect(() => {
     if (!isLiveActive) return;
@@ -128,22 +120,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isLiveActive, isSoundEnabled]);
 
-  const handleEmitCustomLiveEvent = (title: string, desc: string, type: LiveActivityEvent['type']) => {
-    const timeStr = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const customEv: LiveActivityEvent = {
-      id: `custom-${Date.now()}`,
-      title,
-      description: desc,
-      type,
-      timestamp: timeStr,
-      badge: 'رویداد لحظه‌ای',
-      badgeColor: 'amber',
-      actor: currentUser.name,
-    };
-    setLiveEvents((prev) => [customEv, ...prev]);
-    if (isSoundEnabled) playSubtleChime();
-  };
-
   const currentUser: User = mockUsers.find((u) => u.role === activeRole) || mockUsers[0];
   const unreadNotificationsCount = notifications.filter((n) => !n.read).length;
 
@@ -154,12 +130,14 @@ export default function App() {
   const handleSelectProperty = (property: Property) => {
     setSelectedProperty(property);
     setActiveTab('property_detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleEnterDealRoom = (propertyCode: string) => {
     const existing = dealRooms.find((dr) => dr.propertyCode === propertyCode);
     if (existing) {
       setActiveTab('deal_room');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -202,6 +180,7 @@ export default function App() {
     }
 
     setActiveTab('deal_room');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleAddProperty = (newPropPartial: Partial<Property>) => {
@@ -246,30 +225,73 @@ export default function App() {
     setNotifications(notifications.map((n) => ({ ...n, read: true })));
   };
 
-  // Render Mobile App Content
-  const renderMobileContent = () => (
-    <div className="w-full flex-1 flex flex-col relative bg-[#fcfbf9] text-[#1c1d22]">
-      {/* If not on home tab, render top Header */}
-      {activeTab !== 'home' && (
-        <Header
-          activeRole={activeRole}
-          onRoleChange={handleRoleChange}
-          currentUser={currentUser}
-          onOpenNotifications={() => setActiveTab('notifications')}
-          unreadCount={unreadNotificationsCount}
-          onNavigateTab={(tab) => setActiveTab(tab)}
-          onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onOpenLiveFeed={() => setIsLiveFeedModalOpen(true)}
-          isLiveActive={isLiveActive}
-          onOpenMoreMenu={() => setIsMoreMenuSheetOpen(true)}
-        />
-      )}
+  const handleEmitCustomLiveEvent = (title: string, desc: string, type: LiveActivityEvent['type']) => {
+    const timeStr = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const customEv: LiveActivityEvent = {
+      id: `custom-${Date.now()}`,
+      title,
+      description: desc,
+      type,
+      timestamp: timeStr,
+      badge: 'رویداد لحظه‌ای',
+      badgeColor: 'amber',
+      actor: currentUser.name,
+    };
+    setLiveEvents((prev) => [customEv, ...prev]);
+    if (isSoundEnabled) playSubtleChime();
+  };
 
-      {/* Main Tab Views */}
-      <div className="flex-1 w-full">
-        {activeTab === 'home' && (
+  const getPageTitle = (tab: string): string => {
+    switch (tab) {
+      case 'market': return 'بازار معاملات و املاک اعتبارسنجی‌شده';
+      case 'deal_room': return 'اتاق معامله محرمانه و مدیریت قراردادها';
+      case 'rate_cutter': return 'شکارچی قیمت و فرصت‌های زیر فی کارشناسی';
+      case 'barter': return 'سامانه تهاتر و معاوضه تخصصی ملک و متریال';
+      case 'installments': return 'فروش اقساطی ملک و مصالح ساختمانی';
+      case 'customer_requests': return 'درخواست‌های مشتریان و تطبیق هوشمند';
+      case 'building_3d': return 'استودیو سه‌بعدی WebGL و برآورد هوشمند سازه';
+      case 'partnership': return 'مشارکت در ساخت و سرمایه‌گذاری ملکی';
+      case 'materials': return 'بازار مستقیم مصالح و متریال ساختمانی';
+      case 'craftsmen': return 'بانک اطلاعات پیمانکاران، مهندسان و ماشین‌آلات';
+      case 'price_data': return 'دیتاسنتر رسمی قیمت مسکن و مصالح بورس';
+      case 'property_detail': return 'جزییات شناسنامه فنی و ملکی';
+      case 'role_dashboard': return 'داشبورد اختصاصی نقش کاربری';
+      case 'admin_panel': return 'پنل مدیریت و اعتبارسنجی اسناد';
+      case 'notifications': return 'مرکز اعلانات و پیام‌های سیستمی';
+      case 'profile': return 'پروفایل و تنظیمات کاربری';
+      case 'audio_analysis': return 'استودیو تحلیل صوتی هوش مصنوعی';
+      default: return 'پیوندساخت';
+    }
+  };
+
+  // Render Page Content based on Active Tab
+  const renderPageContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return effectiveIsDesktop ? (
+          <PayvandWebDesktop
+            currentUser={currentUser}
+            activeRole={activeRole}
+            properties={properties}
+            priceIndices={mockPriceIndices}
+            tickerItems={tickerItems}
+            selectedCity={selectedCity}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
+            onNavigateTab={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onSelectProperty={handleSelectProperty}
+            onEnterDealRoom={handleEnterDealRoom}
+            onOpenRegisterModal={() => {
+              setSubmitModalType('property');
+              setIsSubmitModalOpen(true);
+            }}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            hideHeader={true}
+          />
+        ) : (
           <PayvandHome
             onNavigateTab={(tab) => setActiveTab(tab)}
             onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
@@ -280,144 +302,209 @@ export default function App() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
-        )}
+        );
 
-        {activeTab === 'market' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <MarketplacePage
-              properties={properties}
-              onSelectProperty={handleSelectProperty}
-              onEnterDealRoom={handleEnterDealRoom}
-              searchQuery={searchQuery}
-              onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
-            />
+      case 'market':
+        return (
+          <MarketplacePage
+            properties={properties}
+            onSelectProperty={handleSelectProperty}
+            onEnterDealRoom={handleEnterDealRoom}
+            searchQuery={searchQuery}
+            onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
+          />
+        );
+
+      case 'deal_room':
+        return <DealRoomPage dealRooms={dealRooms} />;
+
+      case 'rate_cutter':
+        return (
+          <RateCutterPage
+            properties={properties}
+            onSelectProperty={handleSelectProperty}
+            onEnterDealRoom={handleEnterDealRoom}
+          />
+        );
+
+      case 'barter':
+        return (
+          <BarterPage
+            onOpenBarterOfferModal={() => {
+              setSubmitModalType('barter');
+              setIsSubmitModalOpen(true);
+            }}
+            onEnterDealRoom={handleEnterDealRoom}
+          />
+        );
+
+      case 'installments':
+        return <InstallmentPage onEnterDealRoom={handleEnterDealRoom} />;
+
+      case 'customer_requests':
+        return <CustomerRequestsPage onEnterDealRoom={handleEnterDealRoom} />;
+
+      case 'building_3d':
+        return (
+          <Building3DStudioPage
+            onEnterDealRoom={handleEnterDealRoom}
+            onNavigateTab={(tab) => setActiveTab(tab)}
+          />
+        );
+
+      case 'partnership':
+        return (
+          <PartnershipPage
+            onOpenPartnershipModal={() => {
+              setSubmitModalType('partnership');
+              setIsSubmitModalOpen(true);
+            }}
+          />
+        );
+
+      case 'materials':
+        return (
+          <MaterialsMarketPage
+            onOpenMaterialQuoteModal={() => {
+              setSubmitModalType('material_quote');
+              setIsSubmitModalOpen(true);
+            }}
+          />
+        );
+
+      case 'craftsmen':
+        return <CraftsmenPage />;
+
+      case 'price_data':
+        return <PriceDataCenterPage />;
+
+      case 'property_detail':
+        return selectedProperty ? (
+          <PropertyDetailPage
+            property={selectedProperty}
+            onBack={() => setActiveTab('market')}
+            onEnterDealRoom={handleEnterDealRoom}
+            onNavigateTab={(tab) => setActiveTab(tab)}
+          />
+        ) : (
+          <div className="text-center py-20 text-slate-500 font-bold">
+            ملکی انتخاب نشده است.
+            <button 
+              onClick={() => setActiveTab('market')}
+              className="block mx-auto mt-4 px-6 py-2 rounded-xl bg-amber-500 text-white font-bold text-xs"
+            >
+              مشاهده بازار املاک
+            </button>
           </div>
-        )}
+        );
 
-        {activeTab === 'deal_room' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <DealRoomPage dealRooms={dealRooms} />
+      case 'role_dashboard':
+        return (
+          <RoleDashboardPage
+            currentUser={currentUser}
+            activeRole={activeRole}
+            properties={properties}
+            onOpenRegisterProperty={() => {
+              setSubmitModalType('property');
+              setIsSubmitModalOpen(true);
+            }}
+            onOpenMaterialQuote={() => {
+              setSubmitModalType('material_quote');
+              setIsSubmitModalOpen(true);
+            }}
+            onNavigateTab={(tab) => setActiveTab(tab)}
+          />
+        );
+
+      case 'admin_panel':
+        return (
+          <AdminPanelPage
+            properties={properties}
+            onVerifyProperty={handleVerifyProperty}
+            onRejectProperty={handleRejectProperty}
+          />
+        );
+
+      case 'notifications':
+        return (
+          <NotificationsPage
+            notifications={notifications}
+            onMarkAllAsRead={handleMarkAllNotificationsRead}
+            onNavigateTab={(tab) => setActiveTab(tab)}
+          />
+        );
+
+      case 'profile':
+        return (
+          <ProfilePage
+            currentUser={currentUser}
+            activeRole={activeRole}
+            onRoleChange={handleRoleChange}
+            onNavigateTab={(tab) => setActiveTab(tab)}
+          />
+        );
+
+      case 'audio_analysis':
+        return <AudioAnalysisPage />;
+
+      default:
+        return (
+          <div className="text-center py-20 text-slate-500 font-bold">
+            صفحه مورد نظر یافت نشد.
+            <button 
+              onClick={() => setActiveTab('home')}
+              className="block mx-auto mt-4 px-6 py-2 rounded-xl bg-amber-500 text-white font-bold text-xs"
+            >
+              بازگشت به صفحه اصلی
+            </button>
           </div>
-        )}
+        );
+    }
+  };
 
-        {activeTab === 'rate_cutter' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <RateCutterPage
-              properties={properties}
-              onSelectProperty={handleSelectProperty}
-              onEnterDealRoom={handleEnterDealRoom}
-            />
-          </div>
-        )}
+  // Render Mobile View Wrapper
+  const renderMobileContent = () => (
+    <div className="w-full flex-1 flex flex-col relative bg-[#fcfbf9] text-[#1c1d22]">
+      {/* If not on home tab, render mobile Header */}
+      {activeTab !== 'home' && (
+        <Header
+          activeRole={activeRole}
+          onRoleChange={handleRoleChange}
+          currentUser={currentUser}
+          onOpenNotifications={() => setActiveTab('notifications')}
+          unreadCount={unreadNotificationsCount}
+          onNavigateTab={(tab) => {
+            setActiveTab(tab);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onOpenLiveFeed={() => setIsLiveFeedModalOpen(true)}
+          isLiveActive={isLiveActive}
+          onOpenMoreMenu={() => setIsMoreMenuSheetOpen(true)}
+        />
+      )}
 
-        {activeTab === 'barter' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <BarterPage
-              onOpenBarterOfferModal={() => {
-                setSubmitModalType('barter');
-                setIsSubmitModalOpen(true);
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'partnership' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <PartnershipPage
-              onOpenPartnershipModal={() => {
-                setSubmitModalType('partnership');
-                setIsSubmitModalOpen(true);
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'materials' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <MaterialsMarketPage
-              onOpenMaterialQuoteModal={() => {
-                setSubmitModalType('material_quote');
-                setIsSubmitModalOpen(true);
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'craftsmen' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <CraftsmenPage />
-          </div>
-        )}
-
-        {activeTab === 'price_data' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <PriceDataCenterPage />
-          </div>
-        )}
-
-        {activeTab === 'property_detail' && selectedProperty && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <PropertyDetailPage
-              property={selectedProperty}
-              onBack={() => setActiveTab('market')}
-              onEnterDealRoom={handleEnterDealRoom}
-            />
-          </div>
-        )}
-
-        {activeTab === 'role_dashboard' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <RoleDashboardPage
-              currentUser={currentUser}
-              activeRole={activeRole}
-              properties={properties}
-              onOpenRegisterProperty={() => {
-                setSubmitModalType('property');
-                setIsSubmitModalOpen(true);
-              }}
-              onOpenMaterialQuote={() => {
-                setSubmitModalType('material_quote');
-                setIsSubmitModalOpen(true);
-              }}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-            />
-          </div>
-        )}
-
-        {activeTab === 'admin_panel' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <AdminPanelPage
-              properties={properties}
-              onVerifyProperty={handleVerifyProperty}
-              onRejectProperty={handleRejectProperty}
-            />
-          </div>
-        )}
-
-        {activeTab === 'notifications' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <NotificationsPage
-              notifications={notifications}
-              onMarkAllAsRead={handleMarkAllNotificationsRead}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-            />
-          </div>
-        )}
-
-        {activeTab === 'profile' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <ProfilePage
-              currentUser={currentUser}
-              activeRole={activeRole}
-              onRoleChange={handleRoleChange}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-            />
-          </div>
-        )}
-
-        {activeTab === 'audio_analysis' && (
-          <div className="p-4 max-w-4xl mx-auto pb-28">
-            <AudioAnalysisPage />
+      {/* Main Tab Views */}
+      <div className="flex-1 w-full pb-28">
+        {activeTab === 'home' ? (
+          <PayvandHome
+            onNavigateTab={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenFilterSheet={() => setIsFilterSheetOpen(true)}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
+            onOpenNotifications={() => setActiveTab('notifications')}
+            unreadNotificationsCount={unreadNotificationsCount}
+            selectedCity={selectedCity}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        ) : (
+          <div className="p-4 max-w-4xl mx-auto">
+            {renderPageContent()}
           </div>
         )}
       </div>
@@ -450,6 +537,7 @@ export default function App() {
         onTabChange={(tab) => {
           setIsMoreMenuSheetOpen(false);
           setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenSubmitModal={() => {
           setSubmitModalType('property');
@@ -463,37 +551,110 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-[#faf8f4] text-[#1c1d22] font-sans selection:bg-amber-400 selection:text-slate-950 flex flex-col relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#faf8f4] text-[#1c1d22] font-sans selection:bg-amber-400 selection:text-slate-950 flex flex-col relative overflow-x-hidden" dir="rtl">
       
-      {/* Automatic Layout Migration: Desktop Web vs Mobile Android */}
-      {isDesktop ? (
-        /* =========================================================================
-           DEDICATED WEB DESKTOP DESIGN (مهاجرت کاملاً خودکار در حالت وب و صفحات بزرگ)
-           ========================================================================= */
-        <PayvandWebDesktop
-          currentUser={currentUser}
-          activeRole={activeRole}
-          properties={properties}
-          priceIndices={mockPriceIndices}
-          tickerItems={tickerItems}
-          selectedCity={selectedCity}
-          onOpenCityModal={() => setIsCityModalOpen(true)}
-          onNavigateTab={(tab) => setActiveTab(tab)}
-          onSelectProperty={handleSelectProperty}
-          onEnterDealRoom={handleEnterDealRoom}
-          onOpenRegisterModal={() => {
-            setSubmitModalType('property');
-            setIsSubmitModalOpen(true);
-          }}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+      {/* Desktop Web Layout Mode */}
+      {effectiveIsDesktop ? (
+        <div className="w-full flex-1 flex flex-col">
+          {/* Universal Sticky Desktop Header */}
+          <DesktopHeader
+            currentUser={currentUser}
+            activeRole={activeRole}
+            onRoleChange={handleRoleChange}
+            activeTab={activeTab}
+            onNavigateTab={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            unreadCount={unreadNotificationsCount}
+            onOpenNotifications={() => setActiveTab('notifications')}
+            selectedCity={selectedCity}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
+            onOpenRegisterModal={() => {
+              setSubmitModalType('property');
+              setIsSubmitModalOpen(true);
+            }}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            tickerItems={tickerItems}
+            isDevicePreview={forcedViewMode === 'mobile'}
+            onToggleDevicePreview={() => setForcedViewMode(forcedViewMode === 'mobile' ? 'desktop' : 'mobile')}
+          />
+
+          {/* Desktop Subpage View Container */}
+          {activeTab === 'home' ? (
+            renderPageContent()
+          ) : (
+            <div className="w-full max-w-7xl mx-auto px-6 py-6 flex-1 flex flex-col">
+              {/* Desktop Breadcrumb Bar */}
+              <div className="mb-6 bg-white border border-[#eae2d5] rounded-2xl px-6 py-3.5 flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-3 text-xs font-bold">
+                  <button
+                    onClick={() => setActiveTab('home')}
+                    className="flex items-center gap-1.5 text-slate-500 hover:text-amber-800 transition-colors cursor-pointer"
+                  >
+                    <HomeIcon className="w-4 h-4 text-amber-700" />
+                    <span>صفحه اصلی</span>
+                  </button>
+                  <span className="text-slate-300 font-normal">/</span>
+                  <span className="text-slate-900 font-black text-sm">
+                    {getPageTitle(activeTab)}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setActiveTab('home')}
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-800 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>بازگشت به خانه</span>
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Subpage Main Content */}
+              <div className="flex-1 w-full bg-white/70 border border-[#eae2d5] rounded-3xl p-6 shadow-sm">
+                {renderPageContent()}
+              </div>
+            </div>
+          )}
+
+          {/* Global Desktop Footer */}
+          <footer className="bg-white border-t border-[#ede6d8] py-8 px-6 text-slate-600 text-xs mt-auto">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base font-black text-slate-900">پیوندساخت</span>
+                <span className="text-slate-400">|</span>
+                <span className="text-[11px] text-amber-900 font-black">سوپر اپلیکیشن و اکوسیستم زنجیره ارزش ساختمان و مسکن</span>
+              </div>
+              <div className="flex items-center gap-4 text-slate-500 text-[11px]">
+                <button 
+                  onClick={() => setForcedViewMode('mobile')}
+                  className="hover:text-amber-800 underline cursor-pointer"
+                >
+                  مشاهده در قالب موبایل اندروید
+                </button>
+                <span>|</span>
+                <span>© کلیه حقوق مادی و معنوی محفوظ است.</span>
+              </div>
+            </div>
+          </footer>
+        </div>
       ) : (
-        /* =========================================================================
-           MOBILE ANDROID MODE: Native Mobile Screen (حالت اندروید با ریسپانسیو کامل)
-           با منوی ناوبری اندرویدی با حاشیه گرد (Border Radius)
-           ========================================================================= */
+        /* Mobile View Mode */
         <div className="flex-1 w-full max-w-lg mx-auto min-h-screen bg-[#faf8f4] shadow-xs flex flex-col relative">
+          {forcedViewMode === 'mobile' && (
+            <div className="bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-bold flex items-center justify-between">
+              <span>نمای شبیه‌ساز موبایل (Android)</span>
+              <button 
+                onClick={() => setForcedViewMode('desktop')}
+                className="underline text-[11px] font-black cursor-pointer"
+              >
+                بازگشت به وب دسکتاپ
+              </button>
+            </div>
+          )}
           {renderMobileContent()}
         </div>
       )}
@@ -512,6 +673,7 @@ export default function App() {
         onNavigateTab={(tab) => {
           setIsMoreMenuSheetOpen(false);
           setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenLiveFeed={() => {
           setIsMoreMenuSheetOpen(false);
@@ -589,6 +751,7 @@ export default function App() {
         onNavigateTab={(tab) => {
           setIsLiveFeedModalOpen(false);
           setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />
 

@@ -35,34 +35,32 @@ export const RoleDashboardPage: React.FC<RoleDashboardPageProps> = ({
   const userProperties = properties.filter((p) => p.ownerId === currentUser.id || activeRole === 'agent');
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 text-[#1c1d22]">
       
-      {/* Role Profile Summary Card with Glassmorphism */}
-      <div className="glass-card text-white p-6 sm:p-7 rounded-3xl border border-white/20 space-y-4 shadow-glass-3d relative overflow-hidden">
-        <div className="absolute top-0 -left-10 w-80 h-80 ambient-glow-amber rounded-full pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+      {/* Role Profile Summary Card */}
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-[#ded5c5] space-y-4 shadow-xs relative overflow-hidden">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eee7db] pb-4">
           <div className="flex items-center gap-3.5">
             <img
               src={currentUser.avatar}
               alt={currentUser.name}
-              className="w-14 h-14 rounded-2xl object-cover border-2 border-amber-400/80 shrink-0 shadow-md"
+              className="w-14 h-14 rounded-2xl object-cover border-2 border-amber-500 shrink-0 shadow-sm"
             />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-black text-white">{currentUser.name}</h1>
-                {currentUser.verified && <ShieldCheck className="w-4 h-4 text-emerald-400" />}
+                <h1 className="text-lg font-black text-slate-900">{currentUser.name}</h1>
+                {currentUser.verified && <ShieldCheck className="w-4 h-4 text-emerald-600" />}
               </div>
-              <p className="text-xs text-slate-300 font-light mt-0.5">{currentUser.companyName || currentUser.location}</p>
+              <p className="text-xs text-slate-500 font-bold mt-0.5">{currentUser.companyName || currentUser.location}</p>
             </div>
           </div>
 
-          <div className="glass-panel-dark p-3.5 rounded-2xl border border-white/15 text-xs flex items-center gap-3.5 shadow-sm">
+          <div className="bg-[#faf8f4] p-3.5 rounded-2xl border border-[#ded5c5] text-xs flex items-center gap-3.5 shadow-2xs">
             <div>
-              <span className="text-[10px] text-slate-400 block font-medium">اعتبار اکوسیستم:</span>
-              <span className="font-extrabold text-amber-400 text-sm">{currentUser.badgeTitle}</span>
+              <span className="text-[10px] text-slate-500 block font-bold">اعتبار اکوسیستم:</span>
+              <span className="font-black text-amber-900 text-sm">{currentUser.badgeTitle}</span>
             </div>
-            <div className="w-11 h-11 rounded-2xl glass-amber text-amber-300 font-black text-lg flex items-center justify-center border border-amber-400/40 shadow-inner">
+            <div className="w-11 h-11 rounded-2xl bg-amber-50 text-amber-900 font-black text-lg flex items-center justify-center border border-amber-300 shadow-inner">
               {toPersianDigits(currentUser.creditScore)}
             </div>
           </div>
@@ -72,7 +70,7 @@ export const RoleDashboardPage: React.FC<RoleDashboardPageProps> = ({
         <div className="flex flex-wrap items-center gap-2.5 pt-1">
           <button
             onClick={onOpenRegisterProperty}
-            className="btn-3d-amber text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer border border-amber-300/50"
+            className="bg-gradient-to-r from-[#b88c42] to-[#8d6520] hover:from-[#a67c35] hover:to-[#7a5518] text-white font-black text-xs px-5 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer shadow-sm transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>ثبت فایل جدید</span>
@@ -80,68 +78,81 @@ export const RoleDashboardPage: React.FC<RoleDashboardPageProps> = ({
 
           <button
             onClick={() => onNavigateTab('deal_room')}
-            className="glass-card hover:bg-white/20 text-white text-xs font-bold px-4.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            className="bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold px-4.5 py-2.5 rounded-xl border border-amber-300 flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
           >
-            <Lock className="w-4 h-4 text-amber-400" />
+            <Lock className="w-4 h-4 text-amber-700" />
             <span>اتاق‌های معامله در جریان</span>
           </button>
         </div>
       </div>
 
-      {/* Role Metrics Grid with 3D Tilt */}
+      {/* Role Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="glass-card p-4.5 rounded-3xl border border-white/15 text-xs space-y-1 shadow-glass-3d card-3d-tilt">
-          <span className="text-[10px] text-slate-400 font-medium">فایل‌های ثبت‌شده:</span>
-          <p className="text-lg font-black text-white">{toPersianDigits(userProperties.length)} فایل</p>
+        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
+          <span className="text-[10px] text-slate-500 font-bold">فایل‌های ثبت‌شده:</span>
+          <p className="text-lg font-black text-slate-900">{toPersianDigits(userProperties.length)} فایل</p>
         </div>
 
-        <div className="glass-card p-4.5 rounded-3xl border border-white/15 text-xs space-y-1 shadow-glass-3d card-3d-tilt">
-          <span className="text-[10px] text-slate-400 font-medium">تأییدشده و سالم:</span>
-          <p className="text-lg font-black text-emerald-400">
-            {toPersianDigits(userProperties.filter(p => p.verifiedStatus === 'verified').length)} فایل
+        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
+          <span className="text-[10px] text-slate-500 font-bold">تأییدشده و سالم:</span>
+          <p className="text-lg font-black text-emerald-700">
+            {toPersianDigits(userProperties.filter((p) => p.verifiedStatus === 'verified').length)} فایل
           </p>
         </div>
 
-        <div className="glass-card p-4.5 rounded-3xl border border-white/15 text-xs space-y-1 shadow-glass-3d card-3d-tilt">
-          <span className="text-[10px] text-slate-400 font-medium">در حال اعتبارسنجی:</span>
-          <p className="text-lg font-black text-amber-400">
-            {toPersianDigits(userProperties.filter(p => p.verifiedStatus === 'pending').length)} فایل
+        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
+          <span className="text-[10px] text-slate-500 font-bold">در انتظار کارشناسی:</span>
+          <p className="text-lg font-black text-amber-700">
+            {toPersianDigits(userProperties.filter((p) => p.verifiedStatus === 'pending').length)} فایل
           </p>
         </div>
 
-        <div className="glass-card p-4.5 rounded-3xl border border-white/15 text-xs space-y-1 shadow-glass-3d card-3d-tilt">
-          <span className="text-[10px] text-slate-400 font-medium">بازدید کلی:</span>
-          <p className="text-lg font-black text-white">{toPersianDigits(1240)} مرتبه</p>
+        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
+          <span className="text-[10px] text-slate-500 font-bold">معاملات موفق:</span>
+          <p className="text-lg font-black text-slate-900">{toPersianDigits(3)} قرارداد</p>
         </div>
       </div>
 
-      {/* My Active Listings List */}
-      <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/15 shadow-glass-3d space-y-3.5">
-        <h2 className="font-extrabold text-sm text-white border-b border-white/10 pb-3">
-          مدیریت فایل‌ها و محصولات ثبت‌شده شما
+      {/* Properties List */}
+      <div className="space-y-4">
+        <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
+          <Building2 className="w-4 h-4 text-amber-600" />
+          <span>مدیریت فایل‌های ملکی من</span>
         </h2>
 
         {userProperties.length === 0 ? (
-          <p className="text-xs text-slate-400 py-6 text-center font-light">هنوز هیچ فایلی توسط شما ثبت نشده است.</p>
+          <div className="bg-white p-8 rounded-3xl border border-[#ded5c5] text-center space-y-3">
+            <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
+            <p className="text-xs text-slate-500 font-bold">هنوز فایلی توسط شما ثبت نشده است.</p>
+            <button
+              onClick={onOpenRegisterProperty}
+              className="bg-amber-500 hover:bg-amber-600 text-white font-black text-xs px-5 py-2.5 rounded-xl cursor-pointer shadow-sm transition-all"
+            >
+              + ثبت اولین فایل
+            </button>
+          </div>
         ) : (
           <div className="space-y-3">
             {userProperties.map((p) => (
-              <div key={p.id} className="p-3.5 glass-panel-dark rounded-2xl border border-white/10 flex items-center justify-between gap-3 text-xs card-3d-tilt">
-                <div className="flex items-center gap-3">
-                  <img src={p.images[0]} alt={p.title} className="w-12 h-12 rounded-xl object-cover shrink-0 border border-white/10" />
-                  <div>
-                    <span className="font-mono text-[10px] text-slate-400">{p.code}</span>
-                    <h3 className="font-extrabold text-white line-clamp-1">{p.title}</h3>
-                    <span className="text-amber-400 font-black">{formatTomanShort(p.price)}</span>
+              <div key={p.id} className="bg-white p-4.5 rounded-2xl border border-[#ded5c5] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] bg-[#faf8f4] text-slate-800 font-mono font-bold px-2 py-0.5 rounded-md border border-[#ded5c5]">
+                      {p.code}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                      p.verifiedStatus === 'verified'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                        : 'bg-amber-50 text-amber-900 border border-amber-300'
+                    }`}>
+                      {p.verifiedStatus === 'verified' ? 'تأییدشده' : 'در حال ارزیابی'}
+                    </span>
                   </div>
+                  <h4 className="font-black text-xs text-slate-900">{p.title}</h4>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-1 rounded-xl text-[10px] font-bold border ${
-                    p.verifiedStatus === 'verified' ? 'glass-emerald text-emerald-300 border-emerald-400/40' : 'glass-amber text-amber-300 border-amber-400/40'
-                  }`}>
-                    {p.verifiedStatus === 'verified' ? 'اعتبارسنجی شد' : 'در حال بررسی'}
-                  </span>
+                <div className="text-left">
+                  <span className="text-xs font-black text-slate-900">{formatTomanShort(p.price)}</span>
                 </div>
               </div>
             ))}

@@ -216,7 +216,7 @@ export interface DealRoom {
 
 export interface BarterOffer {
   id: string;
-  type: 'property_to_property' | 'property_to_materials';
+  type: 'property_to_property' | 'property_to_materials' | 'property_to_vehicle' | 'custom_trade';
   title: string;
   sourceTitle: string;
   sourceValue: number;

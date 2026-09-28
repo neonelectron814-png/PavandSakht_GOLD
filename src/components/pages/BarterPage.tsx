@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { RefreshCw, Building2, Package, Calculator, CheckCircle2, ArrowLeft, Send, Sparkles } from 'lucide-react';
+import { RefreshCw, Building2, Package, Calculator, CheckCircle2, ArrowLeft, Send, Sparkles, Car, Layers } from 'lucide-react';
 import { BarterOffer } from '../../types';
 import { mockBarterOffers } from '../../data/mockData';
-import { formatToman, formatTomanShort, toPersianDigits } from '../../utils/formatters';
+import { formatTomanShort, toPersianDigits } from '../../utils/formatters';
 
 interface BarterPageProps {
   onOpenBarterOfferModal: () => void;
+  onEnterDealRoom?: (code: string) => void;
 }
 
-export const BarterPage: React.FC<BarterPageProps> = ({ onOpenBarterOfferModal }) => {
-  const [activeType, setActiveType] = useState<'all' | 'property_to_property' | 'property_to_materials'>('all');
+export const BarterPage: React.FC<BarterPageProps> = ({ onOpenBarterOfferModal, onEnterDealRoom }) => {
+  const [activeType, setActiveType] = useState<'all' | 'property_to_property' | 'property_to_materials' | 'property_to_vehicle' | 'custom_trade'>('all');
   
   // Barter Calculator States
   const [sourceVal, setSourceVal] = useState<number>(30000000000);
@@ -24,149 +25,184 @@ export const BarterPage: React.FC<BarterPageProps> = ({ onOpenBarterOfferModal }
   });
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 text-[#1c1d22]">
       
-      {/* Header Banner with Glassmorphism */}
-      <div className="glass-card text-white p-6 sm:p-7 rounded-3xl border border-blue-500/30 space-y-3 relative overflow-hidden shadow-glass-3d">
-        <div className="absolute top-0 -left-10 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-
+      {/* Header Banner */}
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-[#ded5c5] space-y-3 relative overflow-hidden shadow-xs">
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 glass-blue text-blue-200 border border-blue-400/40 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-sm">
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
+            <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-900 border border-amber-300 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-xs">
+              <RefreshCw className="w-3.5 h-3.5 text-amber-600 animate-spin" style={{ animationDuration: '6s' }} />
               <span>پلتفرم تطبیق هوشمند تهاتر</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white">سامانه تهاتر تخصصی ملک و مصالح</h1>
-            <p className="text-xs text-slate-300 font-light mt-1 max-w-xl">
-              تهاتر مستقیم «ملک با ملک» و «ملک با مصالح ساختمانی کارخانه». بدون واسطه با محاسبه‌گر دقیق ارزش و تطبیق هوشمند.
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900">سامانه تهاتر تخصصی ملک و مصالح</h1>
+            <p className="text-xs text-slate-600 font-medium mt-1 max-w-xl">
+              تهاتر مستقیم «ملک با ملک» و «ملک با مصالح ساختمانی کارخانه» بدون واسطه با محاسبه‌گر دقیق ارزش و تطبیق هوشمند.
             </p>
           </div>
 
           <button
             onClick={onOpenBarterOfferModal}
-            className="btn-3d-amber text-slate-950 text-xs font-black px-5 py-3 rounded-2xl shadow-lg transition-all shrink-0 cursor-pointer border border-amber-300/50"
+            className="bg-gradient-to-r from-[#b88c42] to-[#8d6520] hover:from-[#a67c35] hover:to-[#7a5518] text-white text-xs font-black px-5 py-3 rounded-2xl shadow-md transition-all shrink-0 cursor-pointer"
           >
             + ثبت پیشنهاد تهاتر جدید
           </button>
         </div>
       </div>
 
-      {/* Interactive Barter Calculator 3D Glass Card */}
-      <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/15 space-y-4 shadow-glass-3d">
-        <h2 className="text-sm font-extrabold text-white flex items-center gap-2 border-b border-white/10 pb-3">
-          <Calculator className="w-4 h-4 text-blue-400" />
+      {/* Interactive Barter Calculator Card */}
+      <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ded5c5] space-y-4 shadow-xs">
+        <h2 className="text-sm font-black text-slate-900 flex items-center gap-2 border-b border-[#eee7db] pb-3">
+          <Calculator className="w-4 h-4 text-amber-600" />
           <span>محاسبه‌گر مابه‌التفاوت و تطبیق تهاتر</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div>
-            <label className="block text-slate-300 font-bold mb-1.5">ارزش ملک / دارایی اول (تومان):</label>
+            <label className="block text-slate-700 font-bold mb-1.5">ارزش ملک / دارایی اول (تومان):</label>
             <input
               type="number"
               step={1000000000}
               value={sourceVal}
               onChange={(e) => setSourceVal(Number(e.target.value))}
-              className="w-full bg-slate-950/80 border border-white/15 rounded-xl px-3.5 py-2.5 font-mono font-bold text-white focus:outline-none focus:border-blue-400"
+              className="w-full bg-white border border-[#ded5c5] rounded-xl px-3.5 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
             />
-            <span className="text-[10px] text-blue-300 mt-1 block font-bold">{formatTomanShort(sourceVal)}</span>
+            <span className="text-[10px] text-amber-700 mt-1 block font-bold">{formatTomanShort(sourceVal)}</span>
           </div>
 
           <div>
-            <label className="block text-slate-300 font-bold mb-1.5">ارزش ملک / مصالح دوم (تومان):</label>
+            <label className="block text-slate-700 font-bold mb-1.5">ارزش ملک / مصالح دوم (تومان):</label>
             <input
               type="number"
               step={1000000000}
               value={targetVal}
               onChange={(e) => setTargetVal(Number(e.target.value))}
-              className="w-full bg-slate-950/80 border border-white/15 rounded-xl px-3.5 py-2.5 font-mono font-bold text-white focus:outline-none focus:border-blue-400"
+              className="w-full bg-white border border-[#ded5c5] rounded-xl px-3.5 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
             />
-            <span className="text-[10px] text-blue-300 mt-1 block font-bold">{formatTomanShort(targetVal)}</span>
+            <span className="text-[10px] text-amber-700 mt-1 block font-bold">{formatTomanShort(targetVal)}</span>
           </div>
         </div>
 
-        <div className="p-4 glass-blue border border-blue-400/40 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-blue-100 shadow-inner">
+        <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xs">
           <div>
-            <span className="text-[10px] text-blue-300 block font-medium">مابه‌التفاوت نقد قابل پرداخت:</span>
-            <span className="font-black text-base text-white">{formatTomanShort(diffVal)}</span>
+            <span className="text-[10px] text-slate-600 block font-bold">مابه‌التفاوت نقد قابل پرداخت:</span>
+            <span className="font-black text-base text-amber-900">{formatTomanShort(diffVal)}</span>
           </div>
           <div className="text-left">
-            <span className="text-[10px] text-blue-300 block font-medium">پرداخت‌کننده مابه‌التفاوت:</span>
-            <span className="font-bold text-blue-200">{payer}</span>
+            <span className="text-[10px] text-slate-600 block font-bold">پرداخت‌کننده مابه‌التفاوت:</span>
+            <span className="font-bold text-slate-900">{payer}</span>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs: Barter Trade Exchange Modules */}
       <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
         <button
           onClick={() => setActiveType('all')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all card-3d-tilt ${
-            activeType === 'all' ? 'glass-panel-dark text-white border border-white/25 shadow-glass-3d' : 'glass-card text-slate-300 hover:text-white border border-white/10'
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+            activeType === 'all' 
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm font-black' 
+              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
           }`}
         >
           همه پیشنهادها
         </button>
 
         <button
-          onClick={() => setActiveType('property_to_materials')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all card-3d-tilt ${
-            activeType === 'property_to_materials' ? 'glass-emerald text-white border border-emerald-400/50 shadow-glass-3d' : 'glass-card text-emerald-300 hover:text-emerald-200 border border-white/10'
+          onClick={() => setActiveType('property_to_property')}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            activeType === 'property_to_property' 
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm font-black' 
+              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
           }`}
         >
-          <Package className="w-3.5 h-3.5" />
-          <span>ملک با مصالح</span>
+          <Building2 className="w-3.5 h-3.5 text-amber-600" />
+          <span>ملک با ملک</span>
         </button>
 
         <button
-          onClick={() => setActiveType('property_to_property')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all card-3d-tilt ${
-            activeType === 'property_to_property' ? 'glass-blue text-white border border-blue-400/50 shadow-glass-3d' : 'glass-card text-blue-300 hover:text-blue-200 border border-white/10'
+          onClick={() => setActiveType('property_to_materials')}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            activeType === 'property_to_materials' 
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm font-black' 
+              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
           }`}
         >
-          <Building2 className="w-3.5 h-3.5" />
-          <span>ملک با ملک</span>
+          <Package className="w-3.5 h-3.5 text-amber-600" />
+          <span>ملک با متریال</span>
+        </button>
+
+        <button
+          onClick={() => setActiveType('property_to_vehicle')}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            activeType === 'property_to_vehicle' 
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm font-black' 
+              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
+          }`}
+        >
+          <Car className="w-3.5 h-3.5 text-amber-600" />
+          <span>ملک با خودرو / ماشین‌آلات</span>
+        </button>
+
+        <button
+          onClick={() => setActiveType('custom_trade')}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            activeType === 'custom_trade' 
+              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm font-black' 
+              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
+          }`}
+        >
+          <Layers className="w-3.5 h-3.5 text-amber-600" />
+          <span>سایر تهاترها</span>
         </button>
       </div>
 
       {/* Offer Cards */}
       <div className="space-y-4">
         {filteredOffers.map((offer) => (
-          <div key={offer.id} className="glass-card p-5 sm:p-6 rounded-3xl border border-white/15 shadow-glass-3d space-y-4 card-3d-tilt">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+          <div key={offer.id} className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ded5c5] shadow-xs space-y-4 hover:shadow-md transition-all">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#eee7db] pb-3">
               <div>
-                <span className="text-[10px] glass-blue text-blue-200 font-black px-3 py-1 rounded-full mb-1.5 inline-block border border-blue-400/40">
-                  {offer.type === 'property_to_materials' ? 'تهاتر ملک↔مصالح' : 'تهاتر ملک↔ملک'}
+                <span className="text-[10px] bg-amber-50 text-amber-900 font-black px-3 py-1 rounded-full mb-1.5 inline-block border border-amber-200">
+                  {offer.type === 'property_to_materials' && 'تهاتر ملک↔مصالح'}
+                  {offer.type === 'property_to_property' && 'تهاتر ملک↔ملک'}
+                  {offer.type === 'property_to_vehicle' && 'تهاتر ملک↔خودرو/ماشین‌آلات'}
+                  {offer.type === 'custom_trade' && 'تهاتر سفارشی'}
                 </span>
-                <h3 className="font-extrabold text-sm text-white">{offer.title}</h3>
+                <h3 className="font-black text-sm text-slate-900">{offer.title}</h3>
               </div>
 
-              <span className="text-xs font-black text-emerald-300 glass-emerald border border-emerald-400/40 px-3.5 py-1.5 rounded-xl w-fit shadow-sm">
+              <span className="text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-300 px-3.5 py-1.5 rounded-xl w-fit shadow-xs">
                 درصد تطبیق: %{toPersianDigits(offer.matchScorePercent)}
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 glass-panel-dark rounded-2xl space-y-1 border border-white/10">
-                <span className="text-[10px] text-slate-400 block font-medium">مبدأ (ارائه):</span>
-                <p className="font-extrabold text-white">{offer.sourceTitle}</p>
-                <p className="text-amber-400 font-black font-mono">ارزش: {formatTomanShort(offer.sourceValue)}</p>
+              <div className="p-3.5 bg-[#faf8f4] rounded-2xl space-y-1 border border-[#e8dfd2]">
+                <span className="text-[10px] text-slate-500 block font-bold">مبدأ (ارائه):</span>
+                <p className="font-black text-slate-900">{offer.sourceTitle}</p>
+                <p className="text-amber-700 font-black font-mono">ارزش: {formatTomanShort(offer.sourceValue)}</p>
               </div>
 
-              <div className="p-3.5 glass-panel-dark rounded-2xl space-y-1 border border-white/10">
-                <span className="text-[10px] text-slate-400 block font-medium">مقصد (درخواست):</span>
-                <p className="font-extrabold text-white">{offer.targetRequirement}</p>
-                <p className="text-emerald-400 font-black font-mono">برآورد: {formatTomanShort(offer.targetEstimatedValue)}</p>
+              <div className="p-3.5 bg-[#faf8f4] rounded-2xl space-y-1 border border-[#e8dfd2]">
+                <span className="text-[10px] text-slate-500 block font-bold">مقصد (درخواست):</span>
+                <p className="font-black text-slate-900">{offer.targetRequirement}</p>
+                <p className="text-emerald-700 font-black font-mono">برآورد: {formatTomanShort(offer.targetEstimatedValue)}</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <span className="text-xs text-slate-400">ثبت‌کننده: {offer.ownerName}</span>
+            <div className="flex items-center justify-between pt-1 flex-wrap gap-2">
+              <span className="text-xs text-slate-500 font-bold">ثبت‌کننده: {offer.ownerName}</span>
               <button
-                onClick={() => alert(`درخواست مذاکره تهاتر برای "${offer.title}" ثبت گردید.`)}
-                className="glass-amber hover:brightness-110 text-amber-300 font-black px-4.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition-all border border-amber-400/40 active:scale-95 cursor-pointer shadow-sm"
+                onClick={() => {
+                  if (onEnterDealRoom) {
+                    onEnterDealRoom(offer.id);
+                  }
+                }}
+                className="bg-amber-50 hover:bg-amber-100 text-amber-900 font-black px-4.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition-all border border-amber-300 cursor-pointer shadow-xs"
               >
-                <span>مذاکره و ورود به اتاق تهاتر</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>انتقال به اتاق معامله امن جهت عقد قرارداد</span>
+                <ArrowLeft className="w-3.5 h-3.5 text-amber-700" />
               </button>
             </div>
           </div>

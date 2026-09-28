@@ -22,12 +22,14 @@ interface PropertyDetailPageProps {
   property: Property;
   onBack: () => void;
   onEnterDealRoom: (code: string) => void;
+  onNavigateTab?: (tab: string) => void;
 }
 
 export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
   property,
   onBack,
   onEnterDealRoom,
+  onNavigateTab,
 }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [show3DInspector, setShow3DInspector] = useState(true);
@@ -196,6 +198,21 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
         <h3 className="font-extrabold text-sm text-white border-b border-white/10 pb-2 pt-2">توضیحات تکمیلی</h3>
         <p className="text-xs text-slate-300 leading-relaxed font-light">{property.description}</p>
       </div>
+
+      {/* Interactive 3D Building & Material Layer Model */}
+      <Property3DViewer
+        propertyTitle={property.title}
+        propertyCode={property.code}
+        verifiedStatus={property.verifiedStatus}
+        area={property.area}
+        rooms={property.rooms}
+        year={property.year}
+        onOpenStudio={() => {
+          if (onNavigateTab) {
+            onNavigateTab('building_3d');
+          }
+        }}
+      />
 
       {/* Bottom Action Footer with 3D Button */}
       <div className="glass-panel-dark text-white p-5 rounded-3xl border border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-glass-3d">
