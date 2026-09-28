@@ -1,4 +1,5 @@
 import React from 'react';
+import payvandBrandLogoImg from '../../assets/images/Pavand.png';
 
 // Reusable Gold Gradient definitions for SVG
 export const SvgGoldDefs: React.FC = () => (
@@ -37,34 +38,16 @@ export const SvgGoldDefs: React.FC = () => (
   </svg>
 );
 
-// Brand Logo Emblem: Stylized Golden Monolith / Architectural Gateway
+// Brand Logo Emblem: Stylized Golden Monolith / Architectural Gateway with Pavand.png and Subtle Golden Glow
 export const PayvandLogoV3: React.FC<{ className?: string }> = ({ className = "w-9 h-9" }) => (
-  <div className={`relative flex items-center justify-center ${className}`}>
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      {/* Left Column */}
-      <path
-        d="M32 18L48 10V90L32 82V18Z"
-        fill="url(#gold-radial)"
-        stroke="#5a3802"
-        strokeWidth="1.5"
-      />
-      {/* Right Column */}
-      <path
-        d="M52 10L68 18V82L52 90V10Z"
-        fill="url(#gold-shadow)"
-        stroke="#5a3802"
-        strokeWidth="1.5"
-      />
-      {/* Top Bridge / Gable */}
-      <polygon
-        points="32,18 50,8 68,18 50,26"
-        fill="url(#gold-metal-primary)"
-        stroke="#5a3802"
-        strokeWidth="1.2"
-      />
-      {/* Center Golden Light Core */}
-      <line x1="50" y1="12" x2="50" y2="86" stroke="#fff4cf" strokeWidth="2.5" />
-    </svg>
+  <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
+    <img
+      src={payvandBrandLogoImg}
+      alt="پیوندساخت"
+      loading="eager"
+      decoding="async"
+      className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_2px_6px_rgba(180,120,20,0.35)] transition-transform duration-300 group-hover:scale-105"
+    />
   </div>
 );
 

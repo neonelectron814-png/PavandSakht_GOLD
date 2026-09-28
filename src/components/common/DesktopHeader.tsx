@@ -27,7 +27,8 @@ import {
   Mic, 
   Home,
   Monitor,
-  Smartphone
+  Smartphone,
+  LogOut
 } from 'lucide-react';
 import { User, UserRole, LiveTickerItem } from '../../types';
 import { PayvandLogoV3 } from './Golden3DIcons';
@@ -48,6 +49,7 @@ interface DesktopHeaderProps {
   tickerItems?: LiveTickerItem[];
   isDevicePreview?: boolean;
   onToggleDevicePreview?: () => void;
+  onLogout?: () => void;
 }
 
 const roleConfigs = [
@@ -76,6 +78,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
   tickerItems = [],
   isDevicePreview,
   onToggleDevicePreview,
+  onLogout,
 }) => {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
@@ -113,46 +116,6 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#ece6d9] shadow-xs select-none">
       
-      {/* Top Banner Ticker (Desktop) */}
-      {tickerItems.length > 0 && (
-        <div className="bg-[#fbf9f4] text-slate-700 py-1.5 px-6 border-b border-[#ebdcc7] text-xs flex items-center justify-between overflow-hidden shadow-xs">
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded-full text-[10.5px] font-black">
-              <Radio className="w-3 h-3 text-amber-600 animate-pulse" />
-              <span>نبض زنده بازار</span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar mx-4 text-[11px] font-bold text-slate-800">
-            {tickerItems.slice(0, 4).map((item, idx) => (
-              <span key={item.id || idx} className="flex items-center gap-1.5 shrink-0">
-                <span className="text-amber-800 font-extrabold">{item.name}:</span>
-                <span className="text-slate-900 font-black">{item.price?.toLocaleString('fa-IR')} ت ({item.unit})</span>
-                <span className={`text-[10px] font-black ${item.changePercent >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-                  {item.changePercent >= 0 ? `+${item.changePercent}` : item.changePercent}٪
-                </span>
-                {idx < 3 && <span className="text-slate-300 mr-3">|</span>}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0 text-[11px]">
-            {onToggleDevicePreview && (
-              <button
-                type="button"
-                onClick={onToggleDevicePreview}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white hover:bg-amber-50 text-slate-800 border border-[#ded5c5] text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
-                title="تغییر نمای نمایشگر"
-              >
-                {isDevicePreview ? <Smartphone className="w-3.5 h-3.5 text-amber-600" /> : <Monitor className="w-3.5 h-3.5 text-amber-600" />}
-                <span>{isDevicePreview ? 'نمای موبایل' : 'نمای وب دسکتاپ'}</span>
-              </button>
-            )}
-            <span className="text-amber-900 font-black hidden xl:inline">اتصالِ هوشمندانه زنجیره ارزش مسکن</span>
-          </div>
-        </div>
-      )}
-
       {/* Main Desktop Header */}
       <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-6">
         
@@ -164,16 +127,10 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           <PayvandLogoV3 className="w-10 h-10 group-hover:scale-105 transition-transform" />
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-black text-slate-900 tracking-tight">
+              <span className="text-xl font-black text-amber-500 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 bg-clip-text text-transparent tracking-tight">
                 پیوندساخت
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
-                سامانه ملی
-              </span>
             </div>
-            <p className="text-[11px] text-amber-900 font-black">
-              اتصالِ هوشمندانه
-            </p>
           </div>
         </div>
 
@@ -273,6 +230,19 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
               </span>
             )}
           </button>
+
+          {/* Logout Button */}
+          {onLogout && (
+            <button
+              type="button"
+              onClick={onLogout}
+              className="w-10 h-10 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-900 border border-rose-200 flex items-center justify-center transition-colors cursor-pointer"
+              title="خروج از حساب کاربری و ورود مجدد"
+              aria-label="خروج"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
 
           {/* Deal Room Shortcut */}
           <button

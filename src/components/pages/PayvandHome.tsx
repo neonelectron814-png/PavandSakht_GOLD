@@ -11,7 +11,8 @@ import {
   PlusCircle,
   Megaphone,
   CheckCircle2,
-  Clock
+  Clock,
+  LogOut
 } from 'lucide-react';
 import { SvgGoldDefs, PayvandLogoV3, GoldenInstallment3D, GoldenAiMatch3D } from '../common/Golden3DIcons';
 import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
@@ -34,6 +35,7 @@ interface PayvandHomeProps {
   selectedCity: string;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  onLogout?: () => void;
 }
 
 export const PayvandHome: React.FC<PayvandHomeProps> = ({
@@ -45,6 +47,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
   selectedCity,
   searchQuery,
   setSearchQuery,
+  onLogout,
 }) => {
   const [internalSearch, setInternalSearch] = useState(searchQuery);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -178,83 +181,95 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       <SvgGoldDefs />
 
       {/* =========================================================================
-          TOP HEADER: 3D GOLD LOCATION PILL, BRAND LOGO & 3D GOLD NOTIFICATION BELL
+          TOP HEADER: BRAND LOGO ON RIGHT (RTL), TITLE, AND ACTIONS ON LEFT
           ========================================================================= */}
-      <header className="w-full pt-4 px-4 pb-2 relative flex items-center justify-between z-10">
+      <header className="w-full pt-3 px-4 pb-2 relative flex items-center justify-between z-10">
         
-        {/* Right side in RTL: 3D Gold Location Button */}
-        <motion.button
-          whileTap={{ scale: 0.94 }}
-          onClick={onOpenCityModal}
-          className="btn-3d-gold rounded-2xl px-3.5 py-1.5 flex flex-col items-start cursor-pointer transition-all shrink-0 max-w-[155px] z-20"
+        {/* Right side in RTL: Prominent Solo Brand Logo (No border, No extra text, Larger) */}
+        <motion.button 
+          whileTap={{ scale: 0.95 }}
+          onClick={() => onNavigateTab('home')}
+          className="flex items-center cursor-pointer p-0.5 select-none z-20 group"
+          title="پیوندساخت - صفحه اصلی"
         >
-          <div className="flex items-center justify-between w-full gap-1">
-            <div className="flex items-center gap-1 min-w-0">
-              <span className="text-xs font-black text-[#221503] truncate max-w-[100px]">
-                {selectedCity === 'انتخاب استان / شهر' ? 'تهران' : selectedCity}
-              </span>
-              <MapPin className="w-3.5 h-3.5 text-[#5e3e09] shrink-0" />
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 text-[#5e3e09] shrink-0" />
+          <div className="w-16 h-16 sm:w-18 sm:h-18 shrink-0 flex items-center justify-center">
+            <PayvandLogoV3 className="w-full h-full object-contain" />
           </div>
-          <span className="text-[9.5px] text-[#4b330e] font-extrabold mt-0.5 truncate">
-            انتخاب استان ، شهر
-          </span>
         </motion.button>
 
-        {/* Center: Brand Logo Emblem - Exactly Centered in Viewport */}
-        <div className="absolute inset-x-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
-          <motion.button 
-            whileTap={{ scale: 0.93 }}
-            className="flex items-center justify-center cursor-pointer p-1.5 pointer-events-auto" 
-            onClick={() => onNavigateTab('home')}
-            title="پیوندساخت"
+        {/* Left side in RTL: 3D Gold Logout Button & Notification Bell Button */}
+        <div className="flex items-center gap-2 z-20">
+          {onLogout && (
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              onClick={onLogout}
+              className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-sm"
+              aria-label="خروج از حساب"
+              title="خروج و رفتن به صفحه ورود/ثبت‌نام"
+            >
+              <LogOut className="w-5 h-5 stroke-[2.5] text-[#782020] hover:text-[#9e1c1c] transition-colors" />
+            </motion.button>
+          )}
+
+          <motion.button
+            whileTap={{ scale: 0.92 }}
+            onClick={onOpenNotifications}
+            className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-sm"
+            aria-label="اعلان‌ها"
+            title="اعلانات و پیام‌ها"
           >
-            <PayvandLogoV3 className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 filter drop-shadow-[0_3px_10px_rgba(180,130,40,0.3)]" />
+            <Bell className="w-5 h-5 stroke-[2.5] text-[#2c1b04]" />
+            {unreadNotificationsCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-rose-600 ring-2 ring-white animate-pulse" />
+            )}
           </motion.button>
         </div>
-
-        {/* Left side in RTL: 3D Gold Notification Bell Button */}
-        <motion.button
-          whileTap={{ scale: 0.92 }}
-          onClick={onOpenNotifications}
-          className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 z-20"
-          aria-label="اعلان‌ها"
-        >
-          <Bell className="w-5 h-5 stroke-[2.5] text-[#2c1b04]" />
-          {unreadNotificationsCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-rose-600 ring-2 ring-white animate-pulse" />
-          )}
-        </motion.button>
       </header>
 
       {/* =========================================================================
-          SEARCH BAR WITH 3D GOLD ACTION BUTTON
+          SEARCH & CITY ROW (Search on Right in RTL, City selector on Left in RTL)
           ========================================================================= */}
-      <div className="w-full px-4 mt-2 z-10">
+      <div className="w-full px-4 mt-2.5 z-10 flex items-center gap-2" dir="rtl">
+        {/* Main Search Bar (Right side in RTL) */}
         <form
           onSubmit={handleSearchSubmit}
-          className="w-full bg-white rounded-2xl border-2 border-[#dfc282] shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex items-center px-2 py-1.5 focus-within:border-[#caa758] transition-all"
+          className="flex-1 h-11 bg-white rounded-2xl border-2 border-[#dfc282] shadow-[0_3px_10px_rgba(0,0,0,0.03)] flex items-center px-1.5 focus-within:border-[#caa758] transition-all min-w-0"
         >
+          {/* Gold Search Button - Perfectly Centered & Symmetrical */}
+          <button
+            type="submit"
+            className="w-8 h-8 rounded-xl bg-gradient-to-b from-[#fde68a] via-[#f59e0b] to-[#d97706] border border-[#d4a749] shadow-xs flex items-center justify-center shrink-0 cursor-pointer active:scale-95 transition-all text-[#2c1b04]"
+            title="جستجو"
+            aria-label="جستجو"
+          >
+            <Search className="w-4 h-4 text-[#2c1b04] stroke-[2.8]" />
+          </button>
+
           <input
             type="text"
             value={internalSearch}
             onChange={(e) => setInternalSearch(e.target.value)}
-            placeholder="... جستجو در آگهی‌ها، محصولات، خدمات و متریال"
-            className="flex-1 bg-transparent px-3 text-xs font-bold text-slate-950 placeholder-slate-400 focus:outline-none text-right"
+            placeholder="جستجو در املاک، متریال و..."
+            className="flex-1 h-full bg-transparent px-2.5 text-xs font-bold text-slate-950 placeholder-slate-400 focus:outline-none text-right min-w-0"
             dir="rtl"
           />
-
-          {/* 3D Gold Search Button */}
-          <button
-            type="submit"
-            className="btn-3d-gold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
-            title="جستجو"
-          >
-            <Search className="w-3.5 h-3.5 text-[#2c1b04] stroke-[2.8]" />
-            <span className="text-[11px] font-black text-[#2c1b04]">جستجو</span>
-          </button>
         </form>
+
+        {/* 3D Gold City / Province Selector Pill (Left side in RTL) */}
+        <motion.button
+          whileTap={{ scale: 0.94 }}
+          onClick={onOpenCityModal}
+          className="btn-3d-gold h-11 rounded-2xl px-3 flex items-center justify-between gap-1.5 cursor-pointer transition-all shrink-0 max-w-[135px] sm:max-w-[155px] shadow-xs"
+          title="انتخاب استان و شهر"
+        >
+          <div className="flex items-center gap-1 min-w-0">
+            <MapPin className="w-3.5 h-3.5 text-[#4b330e] shrink-0" />
+            <span className="text-[11px] font-black text-[#221503] truncate">
+              {selectedCity === 'انتخاب استان / شهر' ? 'انتخاب شهر' : selectedCity}
+            </span>
+          </div>
+          <ChevronDown className="w-3.5 h-3.5 text-[#5e3e09] shrink-0" />
+        </motion.button>
       </div>
 
       {/* =========================================================================
@@ -331,26 +346,32 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
         </div>
       </div>
 
-      {/* Main Categories Grid - Enhanced Spacing & Typographic Contrast */}
-      <main className="w-full px-3.5 sm:px-4 mt-2 z-10 max-w-lg mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3" dir="rtl">
+      {/* =========================================================================
+          MAIN CATEGORIES HORIZONTAL SCROLLABLE TRACK (اسکرول افقی روان)
+          ========================================================================= */}
+      <main className="w-full px-3.5 sm:px-4 mt-2.5 z-10 max-w-lg mx-auto">
+        <div 
+          className="w-full flex items-center gap-3 overflow-x-auto no-scrollbar pb-3 pt-1 scroll-smooth px-1"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          dir="rtl"
+        >
           {categories.map((cat) => {
             const IconComponent = cat.isComponent ? cat.component : null;
             return (
               <motion.button
                 key={cat.id}
-                whileTap={{ scale: 0.94, y: 1 }}
+                whileTap={{ scale: 0.95 }}
                 whileHover={{ y: -2 }}
                 onClick={cat.action}
-                className="bg-white rounded-[22px] px-2 py-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_6px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_0_#b88a31,0_10px_20px_rgba(180,130,40,0.15)] transition-all flex flex-col items-center justify-center text-center h-[138px] sm:h-[142px] cursor-pointer group select-none relative overflow-hidden"
+                className="bg-white rounded-[22px] p-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_6px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_0_#b88a31,0_10px_20px_rgba(180,130,40,0.15)] transition-all flex flex-col items-center justify-between text-center w-[124px] h-[142px] shrink-0 cursor-pointer group select-none relative overflow-hidden"
               >
                 {/* Golden 3D Accent corner line */}
                 <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
 
                 {/* 3D Realistic Golden Icon */}
-                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center transform group-hover:scale-106 transition-transform shrink-0">
+                <div className="w-13 h-13 rounded-2xl flex items-center justify-center transform group-hover:scale-108 transition-transform shrink-0 mt-1">
                   {IconComponent ? (
-                    <IconComponent className="w-full h-full" />
+                    <IconComponent className="w-12 h-12" />
                   ) : (
                     <img
                       src={cat.image}
@@ -363,12 +384,12 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                   )}
                 </div>
 
-                {/* 2-line Label: Crisp Persian Typography with Clear Hierarchy */}
-                <div className="mt-1.5 w-full px-0.5 flex flex-col items-center justify-center">
-                  <span className="block text-[12px] sm:text-[12.5px] font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
+                {/* Title & Subtitle */}
+                <div className="w-full flex flex-col items-center justify-center mt-1">
+                  <span className="text-[11px] font-black text-slate-950 truncate w-full group-hover:text-amber-900 transition-colors">
                     {cat.title}
                   </span>
-                  <span className="block text-[10px] sm:text-[10.5px] font-bold text-[#644b1c] leading-tight tracking-tight mt-0.5 whitespace-nowrap">
+                  <span className="text-[9px] font-bold text-[#644b1c] truncate w-full mt-0.5">
                     {cat.subtitle}
                   </span>
                 </div>

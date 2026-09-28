@@ -543,6 +543,7 @@ export default function App() {
           onOpenLiveFeed={() => setIsLiveFeedModalOpen(true)}
           isLiveActive={isLiveActive}
           onOpenMoreMenu={() => setIsMoreMenuSheetOpen(true)}
+          onLogout={handleLogout}
         />
       )}
 
@@ -561,6 +562,7 @@ export default function App() {
             selectedCity={selectedCity}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            onLogout={handleLogout}
           />
         ) : (
           <div className="p-4 max-w-4xl mx-auto">
@@ -644,6 +646,7 @@ export default function App() {
             tickerItems={tickerItems}
             isDevicePreview={forcedViewMode === 'mobile'}
             onToggleDevicePreview={() => setForcedViewMode(forcedViewMode === 'mobile' ? 'desktop' : 'mobile')}
+            onLogout={handleLogout}
           />
 
           {/* Desktop Subpage View Container */}
