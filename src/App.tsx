@@ -51,8 +51,31 @@ import { AudioAnalysisPage } from './components/pages/AudioAnalysisPage';
 import { InstallmentPage } from './components/pages/InstallmentPage';
 import { CustomerRequestsPage } from './components/pages/CustomerRequestsPage';
 import { Building3DStudioPage } from './components/pages/Building3DStudioPage';
+import { AuthScreen } from './components/pages/AuthScreen';
 
 export default function App() {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('payvand_auth_token') === 'true';
+    }
+    return false;
+  });
+
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('payvand_user_data');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          return null;
+        }
+      }
+    }
+    return null;
+  });
+
   // Navigation State
   const [activeTab, setActiveTab] = useState<string>('home');
   const [activeRole, setActiveRole] = useState<UserRole>('buyer');
@@ -120,7 +143,43 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isLiveActive, isSoundEnabled]);
 
-  const currentUser: User = mockUsers.find((u) => u.role === activeRole) || mockUsers[0];
+  const handleLoginSuccess = (userData: Partial<User> & { nationalId?: string; phone: string; name?: string }) => {
+    const matched = mockUsers.find(u => u.phone === userData.phone);
+    const userToSet: User = matched || {
+      id: `u-${Date.now()}`,
+      name: userData.name || 'کاربر پیوندساخت',
+      phone: userData.phone,
+      role: userData.role || 'buyer',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+      verified: true,
+      creditScore: userData.creditScore || 95,
+      badgeTitle: userData.badgeTitle || 'عضو تأییدشده',
+      location: userData.location || 'تهران',
+      bio: 'کاربر احراز هویت شده در سامانه پیوندساخت',
+    };
+
+    setLoggedInUser(userToSet);
+    setIsAuthenticated(true);
+    if (userToSet.role) {
+      setActiveRole(userToSet.role);
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('payvand_auth_token', 'true');
+      localStorage.setItem('payvand_user_data', JSON.stringify(userToSet));
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setLoggedInUser(null);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('payvand_auth_token');
+      localStorage.removeItem('payvand_user_data');
+    }
+    setActiveTab('home');
+  };
+
+  const currentUser: User = loggedInUser || mockUsers.find((u) => u.role === activeRole) || mockUsers[0];
   const unreadNotificationsCount = notifications.filter((n) => !n.read).length;
 
   const handleRoleChange = (newRole: UserRole) => {
@@ -441,6 +500,7 @@ export default function App() {
             activeRole={activeRole}
             onRoleChange={handleRoleChange}
             onNavigateTab={(tab) => setActiveTab(tab)}
+            onLogout={handleLogout}
           />
         );
 
@@ -487,7 +547,7 @@ export default function App() {
       )}
 
       {/* Main Tab Views */}
-      <div className="flex-1 w-full pb-28">
+      <div className={`flex-1 w-full ${activeTab === 'home' ? 'pb-18' : 'pb-24'}`}>
         {activeTab === 'home' ? (
           <PayvandHome
             onNavigateTab={(tab) => {
@@ -549,6 +609,11 @@ export default function App() {
       />
     </div>
   );
+
+  // If not authenticated, render the AuthScreen first
+  if (!isAuthenticated) {
+    return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#faf8f4] text-[#1c1d22] font-sans selection:bg-amber-400 selection:text-slate-950 flex flex-col relative overflow-x-hidden" dir="rtl">

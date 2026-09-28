@@ -14,6 +14,7 @@ interface ProfilePageProps {
   activeRole: UserRole;
   onRoleChange: (role: UserRole) => void;
   onNavigateTab: (tab: string) => void;
+  onLogout?: () => void;
 }
 
 const roleTitles: Record<UserRole, string> = {
@@ -34,6 +35,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   activeRole,
   onRoleChange,
   onNavigateTab,
+  onLogout,
 }) => {
   return (
     <div className="space-y-5 pb-16 max-w-3xl mx-auto" dir="rtl">
@@ -145,6 +147,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           <span>استعلام قیمت‌های منطقه‌ای و دیتاسنتر مسکن</span>
           <ChevronLeft className="w-4.5 h-4.5 text-slate-500" />
         </button>
+
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            className="w-full p-4 flex items-center justify-between hover:bg-rose-50/50 transition-colors text-rose-700 font-black cursor-pointer text-right"
+          >
+            <span>خروج از حساب کاربری</span>
+            <ChevronLeft className="w-4.5 h-4.5 text-rose-400" />
+          </button>
+        )}
       </div>
 
     </div>

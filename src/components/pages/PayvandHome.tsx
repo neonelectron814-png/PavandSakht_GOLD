@@ -114,16 +114,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'تولید دست اول',
       action: () => onNavigateTab('materials'),
     },
-    // 5. پیوند عمران (Civil & Mining Heavy Machinery)
-    {
-      id: 'machinery',
-      title: 'پیوند عمران و معادن',
-      subtitle: 'ماشین‌آلات سنگین و معدن',
-      image: excavatorIconImg,
-      badge: 'تجهیزات راه و معدن',
-      action: () => onNavigateTab('craftsmen'),
-    },
-    // 6. فرصت‌های طلایی و نرخ‌شکن (Distressed Deals & Bargains)
+    // 5. فرصت‌های طلایی و نرخ‌شکن (Distressed Deals & Bargains)
     {
       id: 'auctions_deals',
       title: 'فرصت‌های طلایی',
@@ -131,6 +122,15 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       image: gavelIconImg,
       badge: 'زیر قیمت',
       action: () => onNavigateTab('rate_cutter'),
+    },
+    // 6. پیوند عمران (Civil & Mining Heavy Machinery)
+    {
+      id: 'machinery',
+      title: 'پیوند عمران و معادن',
+      subtitle: 'ماشین‌آلات سنگین و معدن',
+      image: excavatorIconImg,
+      badge: 'تجهیزات راه و معدن',
+      action: () => onNavigateTab('craftsmen'),
     },
     // 7. استعلام قیمت و متراژ (Price & Specification Inquiry)
     {
@@ -173,20 +173,20 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
   ];
 
   return (
-    <div className="w-full flex flex-col bg-[#f6f4ef] text-[#111827] select-none font-['Vazirmatn',sans-serif] relative overflow-hidden pb-24" dir="rtl">
+    <div className="w-full flex flex-col bg-[#f6f4ef] text-[#111827] select-none font-['Vazirmatn',sans-serif] relative overflow-hidden pb-4" dir="rtl">
       {/* Hidden SVG Gradient Definitions */}
       <SvgGoldDefs />
 
       {/* =========================================================================
           TOP HEADER: 3D GOLD LOCATION PILL, BRAND LOGO & 3D GOLD NOTIFICATION BELL
           ========================================================================= */}
-      <header className="w-full pt-4 px-4 pb-2 flex items-center justify-between gap-2 z-10">
+      <header className="w-full pt-4 px-4 pb-2 relative flex items-center justify-between z-10">
         
         {/* Right side in RTL: 3D Gold Location Button */}
         <motion.button
           whileTap={{ scale: 0.94 }}
           onClick={onOpenCityModal}
-          className="btn-3d-gold rounded-2xl px-3.5 py-1.5 flex flex-col items-start cursor-pointer transition-all shrink-0 max-w-[155px]"
+          className="btn-3d-gold rounded-2xl px-3.5 py-1.5 flex flex-col items-start cursor-pointer transition-all shrink-0 max-w-[155px] z-20"
         >
           <div className="flex items-center justify-between w-full gap-1">
             <div className="flex items-center gap-1 min-w-0">
@@ -202,24 +202,23 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
           </span>
         </motion.button>
 
-        {/* Center: Brand Logo Emblem & Title */}
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigateTab('home')}>
-          <div className="text-left">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-none">
-              پیوندساخت
-            </h1>
-            <p className="text-[10px] sm:text-[10.5px] text-amber-900 font-black tracking-tight mt-1">
-              اتصالِ هوشمندانه
-            </p>
-          </div>
-          <PayvandLogoV3 className="w-8 h-8 sm:w-9 sm:h-9 shrink-0" />
+        {/* Center: Brand Logo Emblem - Exactly Centered in Viewport */}
+        <div className="absolute inset-x-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
+          <motion.button 
+            whileTap={{ scale: 0.93 }}
+            className="flex items-center justify-center cursor-pointer p-1.5 pointer-events-auto" 
+            onClick={() => onNavigateTab('home')}
+            title="پیوندساخت"
+          >
+            <PayvandLogoV3 className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 filter drop-shadow-[0_3px_10px_rgba(180,130,40,0.3)]" />
+          </motion.button>
         </div>
 
         {/* Left side in RTL: 3D Gold Notification Bell Button */}
         <motion.button
           whileTap={{ scale: 0.92 }}
           onClick={onOpenNotifications}
-          className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0"
+          className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 z-20"
           aria-label="اعلان‌ها"
         >
           <Bell className="w-5 h-5 stroke-[2.5] text-[#2c1b04]" />
@@ -258,44 +257,118 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
         </form>
       </div>
 
-      {/* Main Categories Grid */}
-      <main className="w-full px-4 mt-3.5 z-10">
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3" dir="rtl">
+      {/* =========================================================================
+          VIP SPONSORED ADVERTISING BANNER (بنر ویژه تبلیغاتی / اسپانسری و رزرو بنر)
+          ========================================================================= */}
+      <div className="w-full px-3.5 sm:px-4 mt-2.5 z-10 max-w-lg mx-auto">
+        <div className="relative rounded-2xl overflow-hidden border-2 border-[#ebd39e] shadow-[0_4px_16px_rgba(180,130,40,0.15)] bg-gradient-to-l from-[#1e1507] via-[#2f220c] to-[#120d04] text-white">
+          {/* Top Banner Tag & Reservation Button */}
+          <div className="flex items-center justify-between px-3 py-1.5 bg-black/40 border-b border-amber-500/20 backdrop-blur-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+              </span>
+              <span className="text-[10px] font-black text-amber-300">اسپانسر ویژه صنعت ساختمان</span>
+              {currentAd.isGif && (
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[8.5px] px-1.5 py-0.5 rounded-md font-bold">
+                  GIF پویا
+                </span>
+              )}
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.93 }}
+              onClick={() => setIsAdModalOpen(true)}
+              className="btn-3d-gold text-[9.5px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1 text-[#221503] cursor-pointer shadow-xs"
+            >
+              <Megaphone className="w-3 h-3 text-[#221503]" />
+              <span>رزرو بنر تبلیغاتی</span>
+            </motion.button>
+          </div>
+
+          {/* Banner Media & Details Area */}
+          <div 
+            onClick={() => setIsAdModalOpen(true)}
+            className="p-3 flex items-center gap-3 cursor-pointer group hover:bg-white/5 transition-colors"
+          >
+            {/* Banner Thumbnail Image / GIF */}
+            <div className="relative w-20 h-16 sm:w-22 sm:h-18 rounded-xl overflow-hidden shrink-0 border border-amber-400/40 shadow-inner">
+              <img
+                src={currentAd.mediaUrl}
+                alt={currentAd.brandName}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-1 right-1">
+                <span className="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded-xs">
+                  VIP
+                </span>
+              </div>
+            </div>
+
+            {/* Banner Text Content */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xs sm:text-[13px] font-black text-amber-200 truncate group-hover:text-amber-100 transition-colors">
+                {currentAd.brandName}
+              </h3>
+              <p className="text-[10px] sm:text-[10.5px] font-bold text-slate-300 mt-0.5 line-clamp-1">
+                {currentAd.slogan}
+              </p>
+              <div className="flex items-center gap-2 mt-1.5 text-[9px] text-amber-400/90 font-medium">
+                <span className="flex items-center gap-1">
+                  <Clock className="w-2.5 h-2.5" />
+                  {currentAd.durationLabel}
+                </span>
+                <span>•</span>
+                <span className="text-slate-400 underline flex items-center gap-0.5">
+                  کلیک برای مشاهده و تعرفه‌ها
+                  <ChevronLeft className="w-2.5 h-2.5" />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Categories Grid - Enhanced Spacing & Typographic Contrast */}
+      <main className="w-full px-3.5 sm:px-4 mt-2 z-10 max-w-lg mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3" dir="rtl">
           {categories.map((cat) => {
             const IconComponent = cat.isComponent ? cat.component : null;
             return (
               <motion.button
                 key={cat.id}
-                whileTap={{ scale: 0.93, y: 1 }}
-                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.94, y: 1 }}
+                whileHover={{ y: -2 }}
                 onClick={cat.action}
-                className="bg-white rounded-[22px] p-2.5 sm:p-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_4px_0_#d5c8b2,0_8px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_0_#b88a31,0_12px_22px_rgba(180,130,40,0.18)] transition-all flex flex-col items-center justify-between text-center min-h-[124px] sm:min-h-[134px] cursor-pointer group select-none relative overflow-hidden"
+                className="bg-white rounded-[22px] px-2 py-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_6px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_0_#b88a31,0_10px_20px_rgba(180,130,40,0.15)] transition-all flex flex-col items-center justify-center text-center h-[138px] sm:h-[142px] cursor-pointer group select-none relative overflow-hidden"
               >
                 {/* Golden 3D Accent corner line */}
                 <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
 
-                {/* 3D Realistic Golden Icon (Photo or Vector 3D Component) */}
-                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl overflow-hidden flex items-center justify-center transform group-hover:scale-108 transition-transform">
+                {/* 3D Realistic Golden Icon */}
+                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center transform group-hover:scale-106 transition-transform shrink-0">
                   {IconComponent ? (
                     <IconComponent className="w-full h-full" />
                   ) : (
                     <img
                       src={cat.image}
                       alt={cat.title}
-                      loading="lazy"
+                      loading="eager"
                       decoding="async"
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-contain filter drop-shadow-[0_3px_5px_rgba(160,118,48,0.25)]"
+                      className="w-full h-full object-contain filter drop-shadow-[0_4px_6px_rgba(160,118,48,0.22)]"
                     />
                   )}
                 </div>
 
-                {/* 2-line Label: SOLID BLACK, BOLD, NEVER BLURRED */}
-                <div className="mt-1.5 w-full">
-                  <span className="block text-[11px] sm:text-[11.5px] font-black text-slate-950 leading-tight tracking-tight">
+                {/* 2-line Label: Crisp Persian Typography with Clear Hierarchy */}
+                <div className="mt-1.5 w-full px-0.5 flex flex-col items-center justify-center">
+                  <span className="block text-[12px] sm:text-[12.5px] font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
                     {cat.title}
                   </span>
-                  <span className="block text-[10px] sm:text-[10.5px] font-black text-slate-700 leading-tight tracking-tight mt-0.5">
+                  <span className="block text-[10px] sm:text-[10.5px] font-bold text-[#644b1c] leading-tight tracking-tight mt-0.5 whitespace-nowrap">
                     {cat.subtitle}
                   </span>
                 </div>
