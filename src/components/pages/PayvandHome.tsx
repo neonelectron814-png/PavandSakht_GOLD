@@ -289,23 +289,23 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       {/* =========================================================================
           DYNAMIC LIVE MARKET PULSE BAR (پالس زنده و پویای بازار)
           ========================================================================= */}
-      <div className="w-full px-4 mt-2 z-10 max-w-lg mx-auto">
+      <div className="w-full px-3 sm:px-4 mt-2 z-10 max-w-2xl mx-auto">
         <motion.div 
           whileTap={{ scale: 0.98 }}
           onClick={() => onOpenLiveFeed && onOpenLiveFeed()}
-          className="w-full bg-gradient-to-r from-amber-50 via-amber-100/90 to-amber-50 rounded-2xl border-2 border-[#dfc282] px-3 py-2 flex items-center justify-between shadow-[0_2px_8px_rgba(180,130,40,0.08)] cursor-pointer hover:border-[#b88a31] transition-all group select-none"
+          className="w-full bg-gradient-to-r from-amber-50 via-amber-100/90 to-amber-50 rounded-2xl border-2 border-[#dfc282] px-4 py-2.5 flex items-center justify-between shadow-[0_2px_8px_rgba(180,130,40,0.08)] cursor-pointer hover:border-[#b88a31] transition-all group select-none"
         >
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600" />
             </span>
-            <span className="text-[11px] font-black text-[#422904] truncate">
+            <span className="text-xs sm:text-[13px] font-black text-[#422904] truncate">
               پالس زنده بازار: <span className="text-emerald-800 font-extrabold">۲۴ معامله و استعلام در جریان</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-[10.5px] font-black text-amber-800 group-hover:text-amber-950 shrink-0">
+          <div className="flex items-center gap-1 text-xs font-black text-amber-800 group-hover:text-amber-950 shrink-0">
             <span>مشاهده تابلو</span>
             <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
           </div>
@@ -313,20 +313,20 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          VIP SPONSORED ADVERTISING BANNER (بنر ویژه تبلیغاتی / اسپانسری و رزرو بنر)
+          VIP SPONSORED ADVERTISING BANNER (بنر عریض ویژه تبلیغاتی / اسپانسری و رزرو بنر)
           ========================================================================= */}
-      <div className="w-full px-3.5 sm:px-4 mt-2.5 z-10 max-w-lg mx-auto">
-        <div className="relative rounded-2xl overflow-hidden border-2 border-[#ebd39e] shadow-[0_4px_16px_rgba(180,130,40,0.15)] bg-gradient-to-l from-[#1e1507] via-[#2f220c] to-[#120d04] text-white">
+      <div className="w-full px-2.5 sm:px-4 mt-2.5 z-10 max-w-2xl mx-auto">
+        <div className="w-full relative rounded-[28px] overflow-hidden border-2 border-[#dfc282] shadow-[0_8px_24px_rgba(180,130,40,0.2)] bg-gradient-to-l from-[#181004] via-[#281b08] to-[#0f0902] text-white">
           {/* Top Banner Tag & Reservation Button */}
-          <div className="flex items-center justify-between px-3 py-1.5 bg-black/40 border-b border-amber-500/20 backdrop-blur-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
+          <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 bg-black/45 border-b border-amber-500/25 backdrop-blur-xs">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" />
               </span>
-              <span className="text-[10px] font-black text-amber-300">اسپانسر ویژه صنعت ساختمان</span>
+              <span className="text-xs sm:text-[13px] font-black text-amber-300">اسپانسر ویژه صنعت ساختمان</span>
               {currentAd.isGif && (
-                <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[8.5px] px-1.5 py-0.5 rounded-md font-bold">
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9.5px] px-2 py-0.5 rounded-md font-bold">
                   GIF پویا
                 </span>
               )}
@@ -335,9 +335,9 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
             <motion.button
               whileTap={{ scale: 0.93 }}
               onClick={() => setIsAdModalOpen(true)}
-              className="btn-3d-gold text-[9.5px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1 text-[#221503] cursor-pointer shadow-xs"
+              className="btn-3d-gold text-[11px] sm:text-xs font-black px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 text-[#221503] cursor-pointer shadow-xs active:scale-95"
             >
-              <Megaphone className="w-3 h-3 text-[#221503]" />
+              <Megaphone className="w-3.5 h-3.5 text-[#221503]" />
               <span>رزرو بنر تبلیغاتی</span>
             </motion.button>
           </div>
@@ -345,40 +345,40 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
           {/* Banner Media & Details Area */}
           <div 
             onClick={() => setIsAdModalOpen(true)}
-            className="p-3 flex items-center gap-3 cursor-pointer group hover:bg-white/5 transition-colors"
+            className="p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-5 cursor-pointer group hover:bg-white/5 transition-colors"
           >
             {/* Banner Thumbnail Image / GIF */}
-            <div className="relative w-20 h-16 sm:w-22 sm:h-18 rounded-xl overflow-hidden shrink-0 border border-amber-400/40 shadow-inner">
+            <div className="relative w-full sm:w-44 md:w-52 h-32 sm:h-28 md:h-32 rounded-2xl overflow-hidden shrink-0 border-2 border-amber-400/50 shadow-md">
               <img
                 src={currentAd.mediaUrl}
                 alt={currentAd.brandName}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-1 right-1">
-                <span className="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded-xs">
-                  VIP
+              <div className="absolute bottom-1.5 right-1.5">
+                <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs border border-amber-300">
+                  ⭐ VIP
                 </span>
               </div>
             </div>
 
             {/* Banner Text Content */}
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xs sm:text-[13px] font-black text-amber-200 truncate group-hover:text-amber-100 transition-colors">
+            <div className="flex-1 min-w-0 space-y-1.5 text-right w-full">
+              <h3 className="text-base sm:text-lg font-black text-amber-200 truncate group-hover:text-amber-100 transition-colors leading-snug">
                 {currentAd.brandName}
               </h3>
-              <p className="text-[10px] sm:text-[10.5px] font-bold text-slate-300 mt-0.5 line-clamp-1">
+              <p className="text-xs sm:text-[13px] font-bold text-slate-200 line-clamp-2 leading-relaxed">
                 {currentAd.slogan}
               </p>
-              <div className="flex items-center gap-2 mt-1.5 text-[9px] text-amber-400/90 font-medium">
-                <span className="flex items-center gap-1">
-                  <Clock className="w-2.5 h-2.5" />
+              <div className="flex items-center gap-3 pt-1 text-[11px] text-amber-400 font-bold">
+                <span className="flex items-center gap-1 bg-black/40 px-2.5 py-1 rounded-lg border border-amber-400/20">
+                  <Clock className="w-3 h-3" />
                   {currentAd.durationLabel}
                 </span>
                 <span>•</span>
-                <span className="text-slate-400 underline flex items-center gap-0.5">
-                  کلیک برای مشاهده و تعرفه‌ها
-                  <ChevronLeft className="w-2.5 h-2.5" />
+                <span className="text-slate-300 underline flex items-center gap-0.5">
+                  رزرو جایگاه
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
@@ -387,7 +387,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       </div>
 
       {/* Main Categories Grid - Exactly 2 Columns Side-by-Side */}
-      <main className="w-full px-3.5 sm:px-4 mt-2 z-10 max-w-lg mx-auto">
+      <main className="w-full px-2.5 sm:px-4 mt-2 z-10 max-w-2xl mx-auto">
         <div className="grid grid-cols-2 gap-3" dir="rtl">
           {categories.map((cat) => {
             const IconComponent = cat.isComponent ? cat.component : null;

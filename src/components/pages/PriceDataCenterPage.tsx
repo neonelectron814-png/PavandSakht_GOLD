@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, LineChart as LineChartIcon, Calculator, ArrowUpRight, Activity, BarChart3, Clock, Check } from 'lucide-react';
+import { TrendingUp, LineChart as LineChartIcon, Calculator, ArrowUpRight, Activity, BarChart3, Clock, Calendar } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { PriceIndex } from '../../types';
 import { mockPriceIndices } from '../../data/mockData';
 import { formatToman, formatTomanShort, toPersianDigits } from '../../utils/formatters';
+
+export type TimeFrameType = '1D' | '1W' | '1M' | '1Y';
 
 interface ChartPoint {
   month: string;
@@ -17,24 +19,25 @@ interface ChartPoint {
 }
 
 // =========================================================================
-// STANDARD FINANCIAL CANDLESTICK CHART (TradingView Standard SVG)
+// STANDARD FINANCIAL CANDLESTICK CHART (TradingView Standard SVG with Spacious Margin)
 // =========================================================================
 interface CandlestickSvgChartProps {
   data: ChartPoint[];
   lastPrice: number;
+  timeFrame: TimeFrameType;
 }
 
-const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPrice }) => {
+const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPrice, timeFrame }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (!data || data.length === 0) return null;
 
-  const svgWidth = 860;
-  const svgHeight = 290;
-  const padTop = 20;
-  const padBottom = 35;
-  const padLeft = 15;
-  const padRight = 95;
+  const svgWidth = 880;
+  const svgHeight = 310;
+  const padTop = 25;
+  const padBottom = 48;
+  const padLeft = 20;
+  const padRight = 130; // Generous space to completely prevent price & text overlap
 
   const plotW = svgWidth - padLeft - padRight;
   const plotH = svgHeight - padTop - padBottom;
@@ -45,9 +48,9 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
   const maxVal = Math.max(...allHighs);
   const valRange = maxVal - minVal || 1;
 
-  // Add 5% headroom and footroom
-  const domainMin = minVal - valRange * 0.05;
-  const domainMax = maxVal + valRange * 0.05;
+  // Add 6% headroom and footroom for comfortable breathing space
+  const domainMin = minVal - valRange * 0.06;
+  const domainMax = maxVal + valRange * 0.06;
   const domainRange = domainMax - domainMin;
 
   const getY = (val: number) => {
@@ -57,10 +60,10 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
 
   const candleCount = data.length;
   const step = plotW / candleCount;
-  const candleW = Math.max(7, Math.min(15, step * 0.68));
+  const candleW = Math.max(8, Math.min(18, step * 0.65));
 
   // 5 horizontal price gridlines
-  const gridLevels = [0.05, 0.28, 0.52, 0.76, 0.98].map((ratio) => {
+  const gridLevels = [0.06, 0.28, 0.52, 0.76, 0.96].map((ratio) => {
     const price = domainMin + domainRange * ratio;
     const y = getY(price);
     return { price, y };
@@ -72,11 +75,13 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
 
   return (
     <div className="w-full h-full flex flex-col justify-between relative select-none">
-      {/* Top HUD Info Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 bg-[#faf8f4] border border-[#e8dfcf] rounded-xl text-xs font-mono font-bold mb-2">
-        <div className="flex items-center gap-3">
-          <span className="text-slate-900 font-black font-sans">{activeCandle.month}</span>
-          <span className="text-slate-600">
+      {/* Top HUD Info Bar with clear spacing */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-[#faf8f4] border border-[#e8dfcf] rounded-2xl text-xs font-mono font-bold mb-3 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <span className="text-slate-950 font-black font-sans px-2.5 py-1 bg-amber-100/80 rounded-lg border border-amber-300">
+            {activeCandle.month}
+          </span>
+          <span className="text-slate-700">
             باز: <strong className="text-slate-950">{formatTomanShort(activeCandle.open)}</strong>
           </span>
           <span className="text-emerald-700">
@@ -86,19 +91,19 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
             پایین: <strong className="text-rose-800">{formatTomanShort(activeCandle.low)}</strong>
           </span>
           <span className={activeCandle.isGreen ? 'text-emerald-700' : 'text-rose-700'}>
-            بسته: <strong className="font-black">{formatTomanShort(activeCandle.close)}</strong>
+            بسته: <strong className="font-black text-sm">{formatTomanShort(activeCandle.close)}</strong>
           </span>
         </div>
-        <div className="flex items-center gap-1.5 font-sans">
-          <span className="text-[11px] text-slate-500 font-bold">آخرین استعلام:</span>
-          <span className="font-black text-amber-950 bg-amber-100/90 px-2 py-0.5 rounded-lg border border-amber-300">
+        <div className="flex items-center gap-2 font-sans">
+          <span className="text-xs text-slate-600 font-bold">قیمت لحظه‌ای:</span>
+          <span className="font-black text-amber-950 bg-amber-200/80 px-3 py-1 rounded-xl border-2 border-[#dfc282] shadow-2xs text-[13px]">
             {formatToman(lastPrice)} تومان
           </span>
         </div>
       </div>
 
       {/* SVG Canvas Area */}
-      <div className="relative flex-1 w-full min-h-[220px]">
+      <div className="relative flex-1 w-full min-h-[230px]">
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           className="w-full h-full overflow-visible"
@@ -118,9 +123,9 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
                 strokeDasharray="4 4"
               />
               <text
-                x={svgWidth - padRight + 8}
+                x={svgWidth - padRight + 12}
                 y={lvl.y + 4}
-                className="fill-slate-600 text-[11px] font-mono font-bold"
+                className="fill-slate-700 text-[11.5px] font-mono font-bold"
               >
                 {formatTomanShort(lvl.price)}
               </text>
@@ -135,16 +140,16 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
             y2={lastY}
             stroke="#d97706"
             strokeWidth={1.5}
-            strokeDasharray="4 3"
+            strokeDasharray="5 3"
           />
-          {/* Price Tag Badge on Right Axis */}
-          <g transform={`translate(${svgWidth - padRight + 2}, ${lastY - 9})`}>
-            <rect width={82} height={18} rx={4} fill="#b45309" />
+          {/* Price Tag Badge on Right Axis (Fully separated with 12px gap) */}
+          <g transform={`translate(${svgWidth - padRight + 6}, ${lastY - 11})`}>
+            <rect width={105} height={22} rx={6} fill="#92400e" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))" />
             <text
-              x={41}
-              y={13}
+              x={52}
+              y={15}
               fill="#ffffff"
-              fontSize={10}
+              fontSize={11}
               fontWeight="bold"
               textAnchor="middle"
               fontFamily="monospace"
@@ -186,24 +191,24 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
                   />
                 )}
 
-                {/* Candlestick Upper & Lower Wick (سایه بالا و پایین) */}
+                {/* Candlestick Upper & Lower Wick */}
                 <line
                   x1={cx}
                   y1={yHigh}
                   x2={cx}
                   y2={yLow}
                   stroke={c.isGreen ? '#10b981' : '#f43f5e'}
-                  strokeWidth={1.75}
+                  strokeWidth={2}
                   strokeLinecap="round"
                 />
 
-                {/* Candlestick Real Body (بدنه کندل) */}
+                {/* Candlestick Real Body */}
                 <rect
                   x={cx - candleW / 2}
                   y={bodyY}
                   width={candleW}
                   height={bodyH}
-                  rx={1.5}
+                  rx={2}
                   fill={c.isGreen ? '#10b981' : '#f43f5e'}
                   stroke={c.isGreen ? '#059669' : '#e11d48'}
                   strokeWidth={1}
@@ -222,17 +227,18 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
             );
           })}
 
-          {/* Time/Date Labels on Bottom Axis */}
+          {/* Time/Date Labels on Bottom Axis with generous spacing */}
           {data.map((c, i) => {
-            // Label every 5 candles and the last candle
-            if (i % 5 !== 0 && i !== data.length - 1) return null;
+            const total = data.length;
+            const stride = total <= 8 ? 1 : total <= 16 ? 2 : 4;
+            if (i % stride !== 0 && i !== total - 1) return null;
             const cx = padLeft + (i + 0.5) * step;
             return (
               <text
                 key={i}
                 x={cx}
-                y={svgHeight - 12}
-                className="fill-slate-500 text-[10.5px] font-bold"
+                y={svgHeight - 16}
+                className="fill-slate-600 text-[11px] font-bold"
                 textAnchor="middle"
               >
                 {c.month}
@@ -243,10 +249,10 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
       </div>
 
       {/* Axis Caption */}
-      <div className="flex justify-between items-center text-[11px] font-bold text-slate-500 border-t border-[#ede6d8] pt-2 px-2 mt-1">
-        <span>ابتدای بازه پایش معاملات</span>
-        <span className="text-amber-900 font-black">تحلیل تکنیکال شاخص رسمی ارزش مسکن</span>
-        <span>هفته جاری (معاملات قطعی)</span>
+      <div className="flex justify-between items-center text-xs font-bold text-slate-600 border-t border-[#ede6d8] pt-2.5 px-3 mt-2">
+        <span>ابتدای دوره پایش ({timeFrame === '1D' ? '۲۴ ساعت گذشته' : timeFrame === '1W' ? 'هفته جاری' : timeFrame === '1M' ? '۱۲ ماه اخیر' : 'روند چندساله'})</span>
+        <span className="text-amber-950 font-black">تحلیل تکنیکال شاخص رسمی ارزش مسکن</span>
+        <span>پایان دوره (معاملات قطعی)</span>
       </div>
     </div>
   );
@@ -258,56 +264,131 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
 export const PriceDataCenterPage: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState<PriceIndex>(mockPriceIndices[0]);
   const [chartType, setChartType] = useState<'candlestick' | 'line'>('candlestick');
+  const [timeFrame, setTimeFrame] = useState<TimeFrameType>('1W');
 
   // Live real-time chart data state
   const [chartData, setChartData] = useState<ChartPoint[]>([]);
   const [lastTickPrice, setLastTickPrice] = useState<number>(0);
   const [tickDirection, setTickDirection] = useState<'up' | 'down' | 'same'>('same');
 
-  // Initialize standard realistic financial candlestick data
+  // Generate realistic data based on selected index and timeframe
   useEffect(() => {
     const basePrice = selectedIndex.avgPricePerMeter;
-    const count = 28; // 28 weekly periods for balanced screen density
     const points: ChartPoint[] = [];
 
-    // Start slightly below base price to create healthy growth trend
-    let cur = Math.round(basePrice * 0.94);
+    if (timeFrame === '1D') {
+      // Daily: 14 Hourly intervals (08:00 to 21:00)
+      const hours = ['۰۸:۰۰', '۰۹:۰۰', '۱۰:۰۰', '۱۱:۰۰', '۱۲:۰۰', '۱۳:۰۰', '۱۴:۰۰', '۱۵:۰۰', '۱۶:۰۰', '۱۷:۰۰', '۱۸:۰۰', '۱۹:۰۰', '۲۰:۰۰', '۲۱:۰۰'];
+      let cur = Math.round(basePrice * 0.985);
 
-    for (let i = 0; i < count; i++) {
-      // Natural market variation: healthy alternating bull/bear steps
-      const cycle = Math.sin(i * 0.55) * 0.012;
-      const upwardDrift = 0.0028;
-      const noise = (Math.random() - 0.46) * 0.016;
+      hours.forEach((h, i) => {
+        const delta = (Math.sin(i * 0.7) * 0.004 + (Math.random() - 0.45) * 0.005);
+        const open = cur;
+        const close = Math.round(open * (1 + delta));
+        const maxOC = Math.max(open, close);
+        const minOC = Math.min(open, close);
+        const high = Math.round(maxOC + Math.random() * (open * 0.003));
+        const low = Math.round(minOC - Math.random() * (open * 0.003));
+        const isGreen = close >= open;
 
-      const changePct = upwardDrift + cycle + noise;
-      const open = cur;
-      const close = Math.round(open * (1 + changePct));
-
-      // Realistic upper and lower wicks
-      const maxOC = Math.max(open, close);
-      const minOC = Math.min(open, close);
-      const high = Math.round(maxOC + Math.random() * (open * 0.008) + open * 0.002);
-      const low = Math.round(minOC - Math.random() * (open * 0.008) - open * 0.002);
-      const volume = Math.round(180 + Math.random() * 220);
-      const isGreen = close >= open;
-
-      points.push({
-        month: `هفته ${toPersianDigits(i + 1)}`,
-        price: close,
-        open,
-        high,
-        low,
-        close,
-        volume,
-        isGreen,
+        points.push({
+          month: h,
+          price: close,
+          open,
+          high,
+          low,
+          close,
+          volume: Math.round(50 + Math.random() * 80),
+          isGreen,
+        });
+        cur = close;
       });
+    } else if (timeFrame === '1W') {
+      // Weekly: 7 days of the week
+      const days = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+      let cur = Math.round(basePrice * 0.97);
 
-      cur = close;
+      days.forEach((d, i) => {
+        const delta = (Math.sin(i * 0.6) * 0.008 + (Math.random() - 0.42) * 0.009);
+        const open = cur;
+        const close = Math.round(open * (1 + delta));
+        const maxOC = Math.max(open, close);
+        const minOC = Math.min(open, close);
+        const high = Math.round(maxOC + Math.random() * (open * 0.005) + open * 0.001);
+        const low = Math.round(minOC - Math.random() * (open * 0.005) - open * 0.001);
+        const isGreen = close >= open;
+
+        points.push({
+          month: d,
+          price: close,
+          open,
+          high,
+          low,
+          close,
+          volume: Math.round(120 + Math.random() * 150),
+          isGreen,
+        });
+        cur = close;
+      });
+    } else if (timeFrame === '1M') {
+      // Monthly: 12 Persian Months
+      const months = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+      let cur = Math.round(basePrice * 0.88);
+
+      months.forEach((m, i) => {
+        const growth = 0.012 + Math.sin(i * 0.5) * 0.008 + (Math.random() - 0.4) * 0.01;
+        const open = cur;
+        const close = Math.round(open * (1 + growth));
+        const maxOC = Math.max(open, close);
+        const minOC = Math.min(open, close);
+        const high = Math.round(maxOC + Math.random() * (open * 0.01) + open * 0.003);
+        const low = Math.round(minOC - Math.random() * (open * 0.01) - open * 0.003);
+        const isGreen = close >= open;
+
+        points.push({
+          month: m,
+          price: close,
+          open,
+          high,
+          low,
+          close,
+          volume: Math.round(350 + Math.random() * 250),
+          isGreen,
+        });
+        cur = close;
+      });
+    } else {
+      // Yearly: 6 Consecutive Years
+      const years = ['۱۳۹۹', '۱۴۰۰', '۱۴۰۱', '۱۴۰۲', '۱۴۰۳', '۱۴۰۴'];
+      let cur = Math.round(basePrice * 0.35);
+
+      years.forEach((yr, i) => {
+        const annualRate = 0.38 + (Math.random() - 0.5) * 0.08;
+        const open = cur;
+        const close = Math.round(open * (1 + annualRate));
+        const maxOC = Math.max(open, close);
+        const minOC = Math.min(open, close);
+        const high = Math.round(maxOC + open * 0.06);
+        const low = Math.round(minOC - open * 0.04);
+        const isGreen = close >= open;
+
+        points.push({
+          month: yr,
+          price: close,
+          open,
+          high,
+          low,
+          close,
+          volume: Math.round(1200 + Math.random() * 800),
+          isGreen,
+        });
+        cur = close;
+      });
     }
 
     setChartData(points);
     setLastTickPrice(points[points.length - 1].close || basePrice);
-  }, [selectedIndex]);
+  }, [selectedIndex, timeFrame]);
 
   // Live Real-Time Ticking Effect (every 3 seconds)
   useEffect(() => {
@@ -357,6 +438,13 @@ export const PriceDataCenterPage: React.FC = () => {
     setEstimatedPrice(total);
   };
 
+  const timeframeTabs: { id: TimeFrameType; label: string; subLabel: string }[] = [
+    { id: '1D', label: 'روزانه', subLabel: '۲۴ ساعت' },
+    { id: '1W', label: 'هفتگی', subLabel: '۷ روز' },
+    { id: '1M', label: 'ماهانه', subLabel: '۱۲ ماه' },
+    { id: '1Y', label: 'سالانه', subLabel: 'چندساله' },
+  ];
+
   return (
     <div className="space-y-6 pb-12 text-[#1c1d22]">
       {/* Header Banner Card (Full Framed Gold Box) */}
@@ -376,14 +464,14 @@ export const PriceDataCenterPage: React.FC = () => {
           </div>
 
           {/* Live Real-Time Badge */}
-          <div className="bg-[#faf8f4] px-3.5 py-2 rounded-xl border-2 border-[#dfc282] flex items-center gap-2.5 shrink-0 shadow-2xs">
+          <div className="bg-[#faf8f4] px-4 py-2.5 rounded-2xl border-2 border-[#dfc282] flex items-center gap-3 shrink-0 shadow-2xs">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
             </span>
             <div className="text-right">
-              <span className="text-[10px] text-slate-500 block font-bold">فید زنده معاملات (Real-Time)</span>
-              <span className="text-xs font-black text-amber-950 font-mono">
+              <span className="text-[10.5px] text-slate-500 block font-bold">فید زنده معاملات (Real-Time)</span>
+              <span className="text-xs sm:text-sm font-black text-amber-950 font-mono">
                 {formatTomanShort(lastTickPrice)} / متر
               </span>
             </div>
@@ -417,52 +505,76 @@ export const PriceDataCenterPage: React.FC = () => {
       </div>
 
       {/* Main Chart Card - Full Framed Gold Box */}
-      <div className="bg-white p-4 sm:p-5 rounded-[28px] border-2 border-[#dfc282] space-y-4 shadow-[0_4px_16px_rgba(180,130,40,0.1)] relative overflow-hidden">
-        {/* Terminal Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#eee7db] pb-3">
+      <div className="bg-white p-5 sm:p-6 rounded-[32px] border-2 border-[#dfc282] space-y-4 shadow-[0_6px_20px_rgba(180,130,40,0.12)] relative overflow-hidden">
+        
+        {/* Terminal Top Bar: Title & Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#eee7db] pb-4">
           <div>
-            <h2 className="font-black text-base sm:text-lg text-slate-950 flex items-center gap-2">
+            <h2 className="font-black text-lg sm:text-xl text-slate-950 flex items-center gap-2">
               <Activity className="w-5 h-5 text-amber-600 animate-pulse" />
               <span>
-                ترمینال زنده کندل‌استیک قیمت - {selectedIndex.city} ({selectedIndex.district})
+                ترمینال زنده تحلیل قیمت - {selectedIndex.city} ({selectedIndex.district})
               </span>
             </h2>
-            <p className="text-xs text-slate-600 font-bold mt-0.5">
-              {selectedIndex.propertyType} • تایم‌فریم هفتگی (تحلیل تکنیکال بازار)
+            <p className="text-xs sm:text-[13px] text-slate-600 font-bold mt-1">
+              نوع ملک: {selectedIndex.propertyType} • بازه زمانی انتخابی: {timeFrame === '1D' ? 'روزانه (۲۴ ساعت)' : timeFrame === '1W' ? 'هفتگی (۷ روز)' : timeFrame === '1M' ? 'ماهانه (۱۲ ماه)' : 'سالانه (روند چندساله)'}
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Chart Type Switcher (Compact Buttons, 15px Font Size) */}
-            <div className="bg-[#faf8f4] p-1 rounded-xl border-2 border-[#dfc282] flex items-center gap-1 shadow-2xs">
+          {/* Timeframe & Chart Type Controls */}
+          <div className="flex flex-wrap items-center gap-3">
+            
+            {/* TIMEFRAME SELECTOR (روزانه، هفتگی، ماهانه، سالانه) */}
+            <div className="bg-[#f7f4ed] p-1 rounded-2xl border-2 border-[#dfc282] flex items-center gap-1 shadow-2xs">
+              {timeframeTabs.map((tab) => {
+                const isActive = timeFrame === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setTimeFrame(tab.id)}
+                    className={`h-8.5 px-3 rounded-xl text-[15px] font-black transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                      isActive
+                        ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                        : 'text-slate-700 hover:text-amber-950 hover:bg-white/80'
+                    }`}
+                    title={`نمایش بازه ${tab.label}`}
+                  >
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Chart Type Switcher (Candlestick vs Line) */}
+            <div className="bg-[#f7f4ed] p-1 rounded-2xl border-2 border-[#dfc282] flex items-center gap-1 shadow-2xs">
               <button
                 onClick={() => setChartType('candlestick')}
-                className={`h-8 px-3 rounded-lg text-[15px] font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                className={`h-8.5 px-3 rounded-xl text-[15px] font-black transition-all flex items-center gap-1.5 cursor-pointer ${
                   chartType === 'candlestick'
                     ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
                     : 'text-slate-700 hover:text-slate-950'
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
-                <span>کندل‌استیک زنده</span>
+                <span>کندل‌استیک</span>
               </button>
 
               <button
                 onClick={() => setChartType('line')}
-                className={`h-8 px-3 rounded-lg text-[15px] font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                className={`h-8.5 px-3 rounded-xl text-[15px] font-black transition-all flex items-center gap-1.5 cursor-pointer ${
                   chartType === 'line'
                     ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
                     : 'text-slate-700 hover:text-slate-950'
                 }`}
               >
                 <LineChartIcon className="w-4 h-4" />
-                <span>نمودار خطی</span>
+                <span>خطی</span>
               </button>
             </div>
 
-            {/* 30-Day Growth Badge */}
+            {/* Growth Badge */}
             <span
-              className={`bg-emerald-50 text-emerald-900 font-black text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1 border border-emerald-300 shadow-2xs transition-all ${
+              className={`bg-emerald-50 text-emerald-950 font-black text-xs sm:text-[13px] px-3 py-2 rounded-xl flex items-center gap-1 border-2 border-emerald-300 shadow-2xs transition-all ${
                 tickDirection === 'up'
                   ? 'ring-2 ring-emerald-400 scale-105'
                   : tickDirection === 'down'
@@ -471,41 +583,46 @@ export const PriceDataCenterPage: React.FC = () => {
               }`}
             >
               <ArrowUpRight className="w-4 h-4 text-emerald-600 stroke-[3]" />
-              <span>+{toPersianDigits(selectedIndex.change30dPercent)}٪</span>
+              <span>+{toPersianDigits(selectedIndex.change30dPercent)}٪ رشد</span>
             </span>
+
           </div>
         </div>
 
-        {/* Chart View Area */}
-        <div className="h-88 w-full pt-1 relative bg-[#fcfbf9] rounded-2xl border border-[#ede5d6] p-3 shadow-inner">
+        {/* Chart View Area with Generous Space */}
+        <div className="h-96 w-full pt-2 relative bg-[#fcfbf9] rounded-2xl border-2 border-[#ede5d6] p-4 shadow-inner">
           {chartType === 'line' ? (
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
+              <AreaChart data={chartData} margin={{ top: 20, right: 35, left: 15, bottom: 25 }}>
                 <defs>
                   <linearGradient id="priceGoldGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#d97706" stopOpacity={0.35} />
                     <stop offset="95%" stopColor="#d97706" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e8dfd0" />
-                <XAxis dataKey="month" stroke="#78716c" fontSize={11} tickLine={false} />
+                <CartesianGrid strokeDasharray="4 4" stroke="#e8dfd0" />
+                <XAxis dataKey="month" stroke="#78716c" fontSize={11.5} tickLine={false} dy={8} />
                 <YAxis
                   stroke="#78716c"
-                  fontSize={11}
+                  fontSize={11.5}
                   tickLine={false}
                   tickFormatter={(val) => `${formatTomanShort(val)}`}
-                  domain={['dataMin - 3000000', 'dataMax + 3000000']}
+                  domain={['dataMin - 2000000', 'dataMax + 2000000']}
                   orientation="right"
+                  dx={8}
                 />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload as ChartPoint;
                       return (
-                        <div className="bg-white border-2 border-[#dfc282] p-3 rounded-xl shadow-xl text-xs" dir="rtl">
-                          <p className="font-black text-slate-950 mb-1">{data.month}</p>
-                          <p className="text-amber-900 font-black font-mono">
+                        <div className="bg-white border-2 border-[#dfc282] p-3.5 rounded-2xl shadow-xl text-xs space-y-1" dir="rtl">
+                          <p className="font-black text-slate-950 text-sm">{data.month}</p>
+                          <p className="text-amber-900 font-black font-mono text-xs">
                             قیمت هر متر: {formatToman(data.price)} تومان
+                          </p>
+                          <p className="text-slate-600 font-bold text-[11px]">
+                            حجم معاملات: {toPersianDigits(data.volume)} قرارداد
                           </p>
                         </div>
                       );
@@ -517,84 +634,115 @@ export const PriceDataCenterPage: React.FC = () => {
                   type="monotone"
                   dataKey="price"
                   stroke="#b45309"
-                  strokeWidth={2.8}
+                  strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#priceGoldGradient)"
                 />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <CandlestickSvgChart data={chartData} lastPrice={lastTickPrice} />
+            <CandlestickSvgChart
+              data={chartData}
+              lastPrice={lastTickPrice || selectedIndex.avgPricePerMeter}
+              timeFrame={timeFrame}
+            />
           )}
         </div>
+
+        {/* Live Indicator Footer */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs font-bold text-slate-600 bg-[#faf8f4] p-3 rounded-2xl border border-[#ede5d6]">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+            <span className="text-slate-950 font-black">وضعیت سرور مظنه‌گیری: آنلاین و متصل به شبکه هوشمند پیوندساخت</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>دامنه نوسان مجاز: ±۳٪</span>
+            <span>•</span>
+            <span className="text-amber-950 font-black">حجم نمونه معاملات: {toPersianDigits(selectedIndex.transactionsCount30d)} فایل قطعی</span>
+          </div>
+        </div>
+
       </div>
 
-      {/* Interactive Value Estimator Form (Framed Card with 15px 3D Gold Button) */}
-      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-4 shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
-        <h3 className="font-black text-sm sm:text-base text-slate-950 flex items-center gap-2 border-b border-[#eee7db] pb-3">
-          <Calculator className="w-4.5 h-4.5 text-amber-700" />
-          <span>محاسبه‌گر تخمین قیمت کارشناسی ملک بر اساس دیتاسنتر</span>
-        </h3>
-
-        <form onSubmit={handleEstimate} className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+      {/* Smart Price Estimator Widget (3D Gold Framing) */}
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-5">
+        <div className="flex items-center gap-2.5 border-b border-[#eee7db] pb-3">
+          <div className="w-10 h-10 rounded-xl btn-3d-gold flex items-center justify-center text-[#2c1b04] shadow-2xs">
+            <Calculator className="w-5 h-5 stroke-[2.5]" />
+          </div>
           <div>
-            <label className="block text-slate-950 font-black text-xs sm:text-[13px] mb-1.5">
-              متراژ زیربنا (مترمربع):
-            </label>
+            <h3 className="font-black text-slate-950 text-base sm:text-lg">ماشین‌حساب هوشمند تخمین قیمت ملک</h3>
+            <p className="text-xs text-slate-600 font-bold mt-0.5">
+              محاسبه ارزش کارشناسی بر اساس متراژ، سن بنا، طبقه و آخرین مظنه منطقه {selectedIndex.district}
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleEstimate} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-black text-slate-900 block">متراژ مفید (مترمربع)</label>
             <input
               type="number"
               value={area}
               onChange={(e) => setArea(Number(e.target.value))}
-              className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2 font-black text-slate-950 text-sm shadow-2xs focus:outline-none transition-all"
+              min={20}
+              max={2000}
+              className="w-full bg-[#faf8f4] border-2 border-[#dfc282] rounded-xl px-3 py-2 text-sm font-black text-slate-950 focus:border-[#caa758] focus:outline-none"
             />
           </div>
 
-          <div>
-            <label className="block text-slate-950 font-black text-xs sm:text-[13px] mb-1.5">
-              سال ساخت:
-            </label>
+          <div className="space-y-1.5">
+            <label className="text-xs font-black text-slate-900 block">سال ساخت بنا</label>
             <input
               type="number"
               value={year}
               onChange={(e) => setYear(Number(e.target.value))}
-              className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2 font-black text-slate-950 text-sm shadow-2xs focus:outline-none transition-all"
+              min={1370}
+              max={1403}
+              className="w-full bg-[#faf8f4] border-2 border-[#dfc282] rounded-xl px-3 py-2 text-sm font-black text-slate-950 focus:border-[#caa758] focus:outline-none"
             />
           </div>
 
-          <div>
-            <label className="block text-slate-950 font-black text-xs sm:text-[13px] mb-1.5">
-              طبقه واحد:
-            </label>
+          <div className="space-y-1.5">
+            <label className="text-xs font-black text-slate-900 block">طبقه واحد</label>
             <input
               type="number"
               value={floor}
               onChange={(e) => setFloor(Number(e.target.value))}
-              className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2 font-black text-slate-950 text-sm shadow-2xs focus:outline-none transition-all"
+              min={1}
+              max={40}
+              className="w-full bg-[#faf8f4] border-2 border-[#dfc282] rounded-xl px-3 py-2 text-sm font-black text-slate-950 focus:border-[#caa758] focus:outline-none"
             />
           </div>
 
-          <div className="sm:col-span-3 flex justify-end pt-1">
+          <div className="sm:col-span-3 flex justify-end pt-2">
             <button
               type="submit"
-              className="h-10 px-5 btn-3d-gold text-[#2c1b04] text-[15px] font-black rounded-xl shadow-2xs active:scale-95 transition-transform cursor-pointer flex items-center gap-2"
+              className="h-10 px-6 rounded-xl btn-3d-gold text-[#2c1b04] text-[15px] font-black shadow-2xs active:scale-95 transition-transform cursor-pointer"
             >
-              <Calculator className="w-4 h-4 stroke-[2.5]" />
-              <span>محاسبه ارزش کارشناسی روز</span>
+              محاسبه و ارزیابی هوشمند قیمت
             </button>
           </div>
         </form>
 
         {estimatedPrice !== null && (
-          <div className="p-4 bg-amber-50/90 border-2 border-[#caa758] rounded-2xl flex items-center justify-between text-xs shadow-xs animate-in fade-in">
-            <span className="text-slate-800 font-bold text-xs sm:text-[13px]">
-              ارزش برآوردی کل ملک در {selectedIndex.district}:
-            </span>
-            <span className="text-base sm:text-lg font-black text-amber-950 font-mono">
-              {formatToman(estimatedPrice)} تومان
-            </span>
+          <div className="p-4 bg-[#faf8f4] border-2 border-[#dfc282] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
+            <div>
+              <span className="text-xs font-bold text-slate-600 block">ارزش برآوردی کل ملک:</span>
+              <span className="text-xl sm:text-2xl font-black text-amber-950 font-mono">
+                {formatToman(estimatedPrice)} تومان
+              </span>
+            </div>
+            <div className="text-left">
+              <span className="text-[11px] text-slate-500 font-bold block">مبنای محاسبه هر متر:</span>
+              <span className="text-sm font-bold text-slate-800 font-mono">
+                {formatTomanShort(Math.round(estimatedPrice / area))} / متر
+              </span>
+            </div>
           </div>
         )}
       </div>
+
     </div>
   );
 };
