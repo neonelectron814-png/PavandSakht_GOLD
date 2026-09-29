@@ -17,20 +17,24 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
     <div className="space-y-4 pb-16 max-w-3xl mx-auto" dir="rtl">
       
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-3xl border border-[#e2dcd0] shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
-        <div>
-          <h1 className="text-base sm:text-lg font-black flex items-center gap-2 text-slate-950">
-            <Bell className="w-5 h-5 text-amber-600 shrink-0" />
-            <span>پیام‌ها و اعلان‌های سیستم</span>
-          </h1>
-          <p className="text-xs text-slate-600 font-medium mt-1">
-            اطلاعیه‌های اتاق معامله، اعتبارسنجی اسناد، کارشناسی و هشدارهای جدید
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4.5 sm:p-5 rounded-[26px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] relative overflow-hidden">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl btn-3d-gold flex items-center justify-center text-[#2c1b04] shrink-0 shadow-2xs">
+            <Bell className="w-4.5 h-4.5 stroke-[2.5]" />
+          </div>
+          <div>
+            <h1 className="text-lg sm:text-xl font-black text-slate-950">
+              پیام‌ها و اعلان‌های سیستم
+            </h1>
+            <p className="text-xs sm:text-[13px] text-slate-700 font-bold mt-0.5">
+              اطلاعیه‌های اتاق معامله، اعتبارسنجی اسناد، کارشناسی و هشدارهای جدید
+            </p>
+          </div>
         </div>
 
         <button
           onClick={onMarkAllAsRead}
-          className="text-xs font-black text-amber-900 bg-amber-50 hover:bg-amber-100 transition-colors px-3 py-1.5 rounded-xl border border-amber-300 self-start sm:self-auto cursor-pointer"
+          className="btn-3d-gold text-[11px] font-black text-[#2c1b04] px-2.5 py-1.5 rounded-lg shadow-2xs self-start sm:self-auto cursor-pointer active:scale-95 transition-transform shrink-0"
         >
           علامت‌گذاری همه به عنوان خوانده‌شده
         </button>
@@ -42,26 +46,26 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
           <div
             key={n.id}
             onClick={() => n.linkTab && onNavigateTab(n.linkTab)}
-            className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${
+            className={`p-4 rounded-[22px] border-2 transition-all cursor-pointer ${
               n.read
-                ? 'bg-white border-[#e6e0d4] text-slate-800 hover:border-amber-300 shadow-xs'
-                : 'bg-[#fffaf0] border-[#d8be8a] text-slate-950 font-medium shadow-[0_2px_8px_rgba(180,130,40,0.08)] ring-1 ring-[#e2ca9a]'
+                ? 'bg-white border-[#e6dfd3] hover:border-[#caa758] text-slate-900 shadow-[0_3px_0_#d5c8b2]'
+                : 'bg-[#fffdfa] border-[#dfc282] text-slate-950 shadow-[0_3px_0_#caa758,0_6px_14px_rgba(180,130,40,0.08)]'
             }`}
           >
             <div className="flex items-center justify-between gap-2 mb-1.5">
-              <span className={`text-xs sm:text-sm flex items-center gap-2 ${n.read ? 'font-bold text-slate-800' : 'font-black text-slate-950'}`}>
+              <span className={`text-[14.5px] sm:text-base flex items-center gap-2 ${n.read ? 'font-black text-slate-800' : 'font-black text-slate-950'}`}>
                 {!n.read ? (
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-600 ring-2 ring-amber-200 shrink-0 animate-pulse" />
                 ) : (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" />
                 )}
                 <span>{n.title}</span>
               </span>
-              <span className="text-[11px] font-bold text-slate-500 shrink-0">{n.date}</span>
+              <span className="text-xs font-black text-amber-900 shrink-0">{n.date}</span>
             </div>
             
             {/* Body Text: High Contrast, Solid Dark Slate */}
-            <p className={`text-xs leading-relaxed ${n.read ? 'text-slate-600 font-normal' : 'text-slate-900 font-semibold'}`}>
+            <p className={`text-xs sm:text-[13px] leading-relaxed ${n.read ? 'text-slate-600 font-bold' : 'text-slate-900 font-black'}`}>
               {n.message}
             </p>
           </div>

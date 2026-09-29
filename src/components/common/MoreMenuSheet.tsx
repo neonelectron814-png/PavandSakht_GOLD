@@ -231,64 +231,57 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed bottom-20 left-3 right-3 max-w-lg mx-auto z-50 bg-white/98 border border-[#ede8de] rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] flex flex-col text-slate-900 overflow-hidden backdrop-blur-xl"
+            className="fixed bottom-20 left-3 right-3 max-w-lg mx-auto z-50 bg-[#fbf9f4] border-2 border-[#dfc282] rounded-[32px] shadow-[0_20px_60px_rgba(160,118,48,0.25)] flex flex-col text-slate-900 overflow-hidden backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Top Amber Accent Line */}
-            <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#caa758] to-transparent" />
-
-            {/* Drag Handle */}
-            <div className="w-full flex justify-center pt-2.5 pb-1 cursor-pointer" onClick={onClose}>
-              <div className="w-12 h-1 bg-slate-300 rounded-full" />
-            </div>
-
             {/* Header */}
-            <div className="px-5 py-3 flex items-center justify-between border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
-                  <Sparkles className="w-4 h-4 text-[#caa758]" />
+            <div className="px-5 py-3.5 flex items-center justify-between border-b border-[#e8dfcf] bg-white/70">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl btn-3d-gold flex items-center justify-center text-[#2c1b04] shadow-2xs">
+                  <Sparkles className="w-4.5 h-4.5 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm">امکانات و خدمات پیوند ساخت</h3>
-                  <p className="text-[11px] text-slate-500">دسترسی سریع به سامانه‌ها و ماژول‌ها</p>
+                  <h3 className="font-black text-slate-950 text-sm sm:text-base">امکانات و خدمات پیوند ساخت</h3>
+                  <p className="text-xs text-slate-600 font-bold mt-0.5">دسترسی سریع به سامانه‌ها و ماژول‌ها</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center cursor-pointer shadow-2xs active:scale-95 transition-transform"
+                aria-label="بستن"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
 
             {/* Category Filter Tabs */}
-            <div className="px-5 pt-3 pb-1 flex gap-2">
+            <div className="px-4 pt-3 pb-1 flex gap-2">
               <button
                 onClick={() => setFilterCategory('all')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-black cursor-pointer transition-all ${
                   filterCategory === 'all'
-                    ? 'bg-amber-500 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                    : 'bg-white text-slate-700 border border-[#ded5c5] hover:bg-amber-50/70'
                 }`}
               >
                 همه بخش‌ها
               </button>
               <button
                 onClick={() => setFilterCategory('specialized')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-black cursor-pointer transition-all ${
                   filterCategory === 'specialized'
-                    ? 'bg-amber-500 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                    : 'bg-white text-slate-700 border border-[#ded5c5] hover:bg-amber-50/70'
                 }`}
               >
                 بخش‌های تخصصی
               </button>
               <button
                 onClick={() => setFilterCategory('tools')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-black cursor-pointer transition-all ${
                   filterCategory === 'tools'
-                    ? 'bg-amber-500 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                    : 'bg-white text-slate-700 border border-[#ded5c5] hover:bg-amber-50/70'
                 }`}
               >
                 ابزارها و داده‌ها
@@ -296,7 +289,7 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
             </div>
 
             {/* Grid of Items */}
-            <div className="p-4 grid grid-cols-2 gap-2.5 max-h-[50vh] overflow-y-auto">
+            <div className="p-3.5 grid grid-cols-2 gap-2.5 max-h-[50vh] overflow-y-auto no-scrollbar">
               {displayedIcons.map((item) => {
                 const Icon = item.icon;
                 const isItemActive = activeTab === item.id;
@@ -305,20 +298,18 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
                   <button
                     key={item.id}
                     onClick={() => handleItemClick(item.id)}
-                    className={`p-3 rounded-2xl border text-right transition-all flex items-start gap-2.5 cursor-pointer ${
+                    className={`p-2.5 rounded-[20px] border-2 text-right transition-all flex items-start gap-2.5 cursor-pointer shadow-[0_3px_0_#d5c8b2] ${
                       isItemActive
-                        ? 'bg-amber-50 border-amber-400 text-amber-900 shadow-sm'
-                        : 'bg-white border-slate-200/80 hover:border-amber-300 hover:bg-amber-50/40 text-slate-800'
+                        ? 'bg-amber-50/90 border-[#caa758] text-amber-950 shadow-[0_4px_0_#b88a31]'
+                        : 'bg-white border-[#e6dfd3] hover:border-[#caa758] hover:bg-amber-50/30 text-slate-900'
                     }`}
                   >
-                    <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center shrink-0 mt-0.5">
-                      <Icon className="w-5 h-5 text-[#b88e36]" />
+                    <div className="w-9 h-9 rounded-xl btn-3d-gold flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <Icon className="w-4.5 h-4.5 text-[#2c1b04] stroke-[2.2]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-xs font-bold text-slate-900 truncate">{item.title}</span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 truncate mt-0.5">{item.subtitle}</p>
+                      <span className="text-xs sm:text-[13px] font-black text-slate-950 truncate block">{item.title}</span>
+                      <p className="text-[10.5px] font-bold text-[#644b1c] truncate mt-0.5">{item.subtitle}</p>
                     </div>
                   </button>
                 );
@@ -326,10 +317,10 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
             </div>
 
             {/* Footer Close */}
-            <div className="p-3 bg-[#fdfcfa] border-t border-slate-100 flex justify-end">
+            <div className="p-3 bg-[#f5ede0] border-t border-[#e2d8c3] flex justify-end">
               <button
                 onClick={onClose}
-                className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors cursor-pointer text-center"
+                className="w-full py-2.5 btn-3d-gold text-[#2c1b04] text-xs font-black rounded-xl shadow-xs cursor-pointer text-center active:scale-98 transition-transform"
               >
                 بستن منو
               </button>

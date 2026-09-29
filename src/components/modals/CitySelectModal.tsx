@@ -498,26 +498,26 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
-          className="bg-white rounded-t-[32px] sm:rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-[#ded5c5]"
+          className="bg-[#fbf9f4] rounded-t-[36px] sm:rounded-[32px] w-full max-w-2xl max-h-[90vh] flex flex-col shadow-[0_20px_60px_rgba(160,118,48,0.25)] overflow-hidden border-2 border-[#dfc282]"
           dir="rtl"
         >
           {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-[#ede6d8] flex items-center justify-between bg-[#fffdfa]">
+          <div className="p-4 sm:p-5 border-b border-[#e8dfcf] flex items-center justify-between bg-white/70 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-900 shadow-xs">
-                <MapPin className="w-5 h-5 text-amber-800" />
+              <div className="w-9 h-9 rounded-xl btn-3d-gold flex items-center justify-center text-[#2c1b04] shadow-2xs shrink-0">
+                <MapPin className="w-4.5 h-4.5 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-base font-black text-slate-950">انتخاب استان و شهر (۳۱ استان ایران)</h3>
-                <p className="text-xs font-semibold text-slate-600 mt-0.5">پوشش سراسری فایل‌های ملکی، مصالح و پروژه‌های عمرانی</p>
+                <h3 className="text-sm sm:text-base font-black text-slate-950">انتخاب استان و شهر (۳۱ استان ایران)</h3>
+                <p className="text-xs font-bold text-slate-600 mt-0.5">پوشش سراسری فایل‌های ملکی، مصالح و پروژه‌های عمرانی</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center cursor-pointer shadow-2xs active:scale-95 transition-transform"
               aria-label="بستن"
             >
-              <X className="w-4.5 h-4.5 stroke-[2.5]" />
+              <X className="w-4 h-4 stroke-[3]" />
             </button>
           </div>
 
@@ -529,13 +529,13 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="جستجوی نام هر یک از ۳۱ استان، شهر یا منطقه..."
-                className="w-full bg-white border border-[#ded5c5] rounded-2xl py-3 pl-10 pr-10 text-xs sm:text-sm font-bold text-slate-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600"
+                className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl py-2.5 pl-10 pr-10 text-xs sm:text-sm font-black text-slate-950 placeholder-slate-400 focus:outline-none shadow-2xs transition-all"
               />
-              <Search className="w-4.5 h-4.5 text-slate-500 absolute right-3.5 top-3.5" />
+              <Search className="w-4.5 h-4.5 text-[#a87d32] absolute right-3.5 top-3" />
               {search && (
                 <button
                   onClick={() => setSearch('')}
-                  className="absolute left-3.5 top-3.5 text-slate-400 hover:text-slate-700"
+                  className="absolute left-3.5 top-3 text-slate-400 hover:text-slate-700"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -544,7 +544,7 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
 
             {/* Quick Cities Pill Filter */}
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 text-xs">
-              <span className="text-[11px] font-black text-slate-600 shrink-0 ml-1">دسترسی سریع:</span>
+              <span className="text-[11px] font-black text-slate-700 shrink-0 ml-1">دسترسی سریع:</span>
               <button
                 onClick={() => {
                   onSelectCity('همه شهرهای ایران');
@@ -552,8 +552,8 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
                 }}
                 className={`px-3 py-1.5 rounded-xl font-black shrink-0 transition-colors cursor-pointer ${
                   selectedCity === 'همه شهرهای ایران'
-                    ? 'bg-amber-600 text-white'
-                    : 'bg-white hover:bg-amber-50 text-slate-800 border border-[#ded5c5]'
+                    ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                    : 'bg-white hover:bg-amber-50 text-slate-900 border border-[#dfc282]'
                 }`}
               >
                 کل کشور
@@ -565,10 +565,10 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
                     onSelectCity(qCity);
                     onClose();
                   }}
-                  className={`px-3 py-1.5 rounded-xl font-bold shrink-0 transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl font-black shrink-0 transition-colors cursor-pointer ${
                     selectedCity === qCity
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-white hover:bg-slate-100 text-slate-800 border border-[#ded5c5]'
+                      ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                      : 'bg-white hover:bg-amber-50 text-slate-900 border border-[#dfc282]'
                   }`}
                 >
                   {qCity}

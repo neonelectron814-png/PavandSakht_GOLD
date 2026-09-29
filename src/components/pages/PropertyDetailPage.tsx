@@ -12,7 +12,8 @@ import {
   FileText,
   UserCheck,
   Sparkles,
-  Box
+  Box,
+  ChevronRight
 } from 'lucide-react';
 import { Property } from '../../types';
 import { formatToman, formatTomanShort, getVerificationBadgeColor, getVerificationBadgeText, maskPhoneNumber, toPersianDigits } from '../../utils/formatters';
@@ -35,35 +36,35 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
   const [show3DInspector, setShow3DInspector] = useState(true);
 
   return (
-    <div className="space-y-6 pb-12 max-w-4xl mx-auto">
+    <div className="space-y-6 pb-16 max-w-5xl mx-auto text-[#1c1d22]" dir="rtl">
       
       {/* Top Back Navigation Bar */}
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="glass-card hover:bg-white/20 border border-white/20 text-white font-bold px-4 py-2.5 rounded-2xl text-xs flex items-center gap-2 transition-all shadow-glass-3d active:scale-95 cursor-pointer"
+          className="h-9 px-4 rounded-xl btn-3d-gold text-[#2c1b04] text-[15px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer"
         >
-          <ArrowRight className="w-4 h-4" />
-          <span>بازگشت به فهرست</span>
+          <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+          <span>بازگشت به فهرست املاک</span>
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setShow3DInspector(!show3DInspector)}
-            className="glass-amber text-amber-300 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-amber-400/40"
+            className="h-9 px-3.5 rounded-xl bg-white hover:bg-amber-50 text-slate-900 border-2 border-[#dfc282] text-[15px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer"
           >
-            <Box className="w-3.5 h-3.5" />
+            <Box className="w-4 h-4 text-amber-800" />
             <span>{show3DInspector ? 'پنهان‌سازی ۳ بعدی' : 'نمایش بازرس ۳ بعدی'}</span>
           </button>
 
-          <span className="font-mono text-xs font-bold glass-panel-dark text-white px-3.5 py-2 rounded-2xl border border-white/15">
-            کد فایل: {property.code}
+          <span className="font-mono text-xs font-black bg-[#faf8f4] text-slate-950 px-3.5 py-1.5 rounded-xl border-2 border-[#dfc282] shadow-2xs">
+            کد پرونده: {property.code}
           </span>
         </div>
       </div>
 
-      {/* Main Gallery with Glass Border */}
-      <div className="glass-card rounded-3xl border border-white/20 overflow-hidden shadow-glass-3d space-y-3 p-3.5">
+      {/* Main Gallery Card with 3D Gold Frame */}
+      <div className="bg-white rounded-[28px] border-2 border-[#dfc282] overflow-hidden shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-3 p-4">
         {/* Active Selected Main Image */}
         <div className="relative h-72 sm:h-96 bg-slate-950 rounded-2xl overflow-hidden group">
           <img
@@ -73,10 +74,14 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
           />
 
           {/* Verification Badge Seal */}
-          <div className="absolute top-4 right-4 glass-emerald text-emerald-300 border border-emerald-400/50 text-xs px-3.5 py-1.5 rounded-2xl font-black flex items-center gap-1.5 shadow-lg">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="absolute top-4 right-4 bg-emerald-700 text-white text-xs px-3.5 py-1.5 rounded-xl font-black flex items-center gap-1.5 shadow-lg border border-emerald-600">
+            <ShieldCheck className="w-4 h-4 text-white" />
             <span>تأیید اصالت ثبتی و حقوقی</span>
           </div>
+
+          <span className="absolute bottom-4 left-4 bg-black/70 text-white text-xs px-3 py-1 rounded-xl font-mono backdrop-blur-xs">
+            تصویر {toPersianDigits(selectedImageIndex + 1)} از {toPersianDigits(property.images.length)}
+          </span>
         </div>
 
         {/* Image Thumbnails Slider */}
@@ -86,8 +91,8 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
               <button
                 key={idx}
                 onClick={() => setSelectedImageIndex(idx)}
-                className={`relative w-22 h-16 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${
-                  selectedImageIndex === idx ? 'border-amber-400 scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'
+                className={`relative w-22 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                  selectedImageIndex === idx ? 'border-[#caa758] scale-105 shadow-md ring-2 ring-amber-300/40' : 'border-[#e6dfd3] opacity-70 hover:opacity-100'
                 }`}
               >
                 <img src={img} alt="تصویر ملک" className="w-full h-full object-cover" />
@@ -106,133 +111,123 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
           area={property.area}
           rooms={property.rooms}
           year={property.year}
+          onOpenStudio={() => {
+            if (onNavigateTab) {
+              onNavigateTab('building_3d');
+            }
+          }}
         />
       )}
 
-      {/* Title & Basic Specs */}
-      <div className="glass-card p-6 sm:p-7 rounded-3xl border border-white/15 space-y-4 shadow-glass-3d">
+      {/* Title & Basic Specs Card */}
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-4 shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
         <div>
-          <div className="flex items-center gap-2 text-xs text-slate-400 mb-1.5">
-            <MapPin className="w-4 h-4 text-amber-400" />
+          <div className="flex items-center gap-2 text-xs text-slate-600 font-bold mb-1.5">
+            <MapPin className="w-4 h-4 text-amber-800" />
             <span>{property.city} | {property.district}</span>
-            <span className="text-slate-500">•</span>
-            <span className="glass-panel-dark px-2.5 py-0.5 rounded-lg font-medium border border-white/10 text-slate-300">{property.documentType}</span>
+            <span className="text-slate-400">•</span>
+            <span className="bg-[#faf8f4] px-2.5 py-0.5 rounded-lg font-black border border-[#e4ddd0] text-slate-900">{property.documentType}</span>
           </div>
 
-          <h1 className="text-lg sm:text-xl font-black text-white leading-snug">{property.title}</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-950 leading-snug">{property.title}</h1>
         </div>
 
-        {/* Price Box with Glass Amber / Emerald Glow */}
-        <div className={`p-4.5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm border ${
-          property.dealType === 'rent' ? 'glass-emerald border-emerald-400/40 text-emerald-100' : 'glass-amber border-amber-400/40 text-amber-100'
+        {/* Price Box with Gold Glow */}
+        <div className={`p-4.5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs border-2 ${
+          property.dealType === 'rent' ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950' : 'bg-amber-50/80 border-[#caa758] text-amber-950'
         }`}>
           {property.dealType === 'rent' && property.rentalDetails ? (
             <>
               <div>
-                <span className="text-xs text-emerald-300 block font-medium">مبلغ ودیعه (رهن کارشناسی):</span>
-                <span className="text-xl sm:text-2xl font-black text-white">{formatToman(property.rentalDetails.depositPrice)}</span>
+                <span className="text-xs text-emerald-800 block font-bold">مبلغ ودیعه (رهن کارشناسی):</span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-950 font-mono">{formatToman(property.rentalDetails.depositPrice)} تومان</span>
               </div>
               <div className="sm:text-left">
-                <span className="text-xs text-emerald-300 block font-medium">اجاره بهای ماهیانه:</span>
-                <span className="text-lg sm:text-xl font-black text-amber-300">{formatToman(property.rentalDetails.monthlyRent)}</span>
+                <span className="text-xs text-amber-800 block font-bold">اجاره‌بهای ماهیانه:</span>
+                <span className="text-lg sm:text-xl font-black text-amber-950 font-mono">{formatToman(property.rentalDetails.monthlyRent)} تومان</span>
               </div>
             </>
           ) : (
             <>
               <div>
-                <span className="text-xs text-amber-300 block font-medium">قیمت کل کارشناسی شده:</span>
-                <span className="text-xl sm:text-2xl font-black text-white">{formatToman(property.price)}</span>
+                <span className="text-xs text-amber-800 block font-bold">قیمت کل کارشناسی‌شده:</span>
+                <span className="text-xl sm:text-2xl font-black text-amber-950 font-mono">{formatToman(property.price)} تومان</span>
               </div>
               <div className="sm:text-left">
-                <span className="text-xs text-amber-300 block font-medium">قیمت هر متر مربع:</span>
-                <span className="text-sm font-bold text-amber-200">{formatToman(property.pricePerMeter)}</span>
+                <span className="text-xs text-slate-600 block font-bold">قیمت هر متر مربع:</span>
+                <span className="text-base font-black text-slate-900 font-mono">{formatToman(property.pricePerMeter)} تومان</span>
               </div>
             </>
           )}
         </div>
 
         {/* Key Attributes 3D Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 glass-panel-dark p-4 rounded-2xl text-xs text-slate-300 font-medium border border-white/10">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#faf8f4] p-4 rounded-2xl text-xs text-slate-800 font-medium border-2 border-[#e6dfd3]">
           <div>
-            <span className="text-[10px] text-slate-400 block">متراژ زیربنا:</span>
-            <span className="text-sm font-black text-white">{toPersianDigits(property.area)} متر مربع</span>
+            <span className="text-xs text-slate-600 font-bold block mb-1">متراژ زیربنا:</span>
+            <span className="text-[15px] font-black text-slate-950">{toPersianDigits(property.area)} متر مربع</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block">تعداد اتاق:</span>
-            <span className="text-sm font-black text-white">{toPersianDigits(property.rooms)} خواب</span>
+            <span className="text-xs text-slate-600 font-bold block mb-1">تعداد اتاق:</span>
+            <span className="text-[15px] font-black text-slate-950">{toPersianDigits(property.rooms)} خواب</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block">سال ساخت:</span>
-            <span className="text-sm font-black text-white">{toPersianDigits(property.year)}</span>
+            <span className="text-xs text-slate-600 font-bold block mb-1">سال ساخت:</span>
+            <span className="text-[15px] font-black text-slate-950">{toPersianDigits(property.year)}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block">طبقه:</span>
-            <span className="text-sm font-black text-white">طبقه {toPersianDigits(property.floor || 1)} از {toPersianDigits(property.totalFloors || 1)}</span>
+            <span className="text-xs text-slate-600 font-bold block mb-1">طبقه:</span>
+            <span className="text-[15px] font-black text-slate-950">طبقه {toPersianDigits(property.floor || 1)} از {toPersianDigits(property.totalFloors || 1)}</span>
           </div>
         </div>
       </div>
 
       {/* Verification Notes by Legal Expert */}
       {property.verificationNotes && (
-        <div className="glass-emerald border border-emerald-400/40 p-5 rounded-3xl space-y-2 text-emerald-100 text-xs shadow-glass-3d">
-          <div className="flex items-center gap-2 font-black text-emerald-300 border-b border-emerald-400/30 pb-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+        <div className="bg-emerald-50/90 border-2 border-emerald-300 p-5 rounded-[28px] space-y-2 text-emerald-950 text-xs shadow-[0_4px_16px_rgba(16,185,129,0.08)]">
+          <div className="flex items-center gap-2 font-black text-emerald-900 border-b border-emerald-300/60 pb-2 text-sm">
+            <ShieldCheck className="w-5 h-5 text-emerald-700" />
             <span>گزارش رسمی اعتبارسنجی اسناد (ثبت شده توسط: {property.verifiedBy || 'کارشناس رسمی پیوند ساخت'})</span>
           </div>
-          <p className="leading-relaxed text-emerald-100/90">{property.verificationNotes}</p>
+          <p className="leading-relaxed text-emerald-900 font-bold text-xs sm:text-[13px]">{property.verificationNotes}</p>
         </div>
       )}
 
       {/* Features List & Description */}
-      <div className="glass-card p-6 rounded-3xl border border-white/15 space-y-4 shadow-glass-3d">
-        <h3 className="font-extrabold text-sm text-white border-b border-white/10 pb-2">امکانات و ویژگی‌ها</h3>
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-4 shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
+        <h3 className="font-black text-base text-slate-950 border-b border-[#ede6d8] pb-2">امکانات و ویژگی‌ها</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {property.features.map((feat, idx) => (
-            <div key={idx} className="flex items-center gap-2 text-xs text-slate-200 glass-panel-dark p-2.5 rounded-xl border border-white/10">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div key={idx} className="flex items-center gap-2 text-[13px] font-bold text-slate-900 bg-[#faf8f4] p-2.5 rounded-xl border border-[#e4ddd0]">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" />
               <span>{feat}</span>
             </div>
           ))}
         </div>
 
-        <h3 className="font-extrabold text-sm text-white border-b border-white/10 pb-2 pt-2">توضیحات تکمیلی</h3>
-        <p className="text-xs text-slate-300 leading-relaxed font-light">{property.description}</p>
+        <h3 className="font-black text-base text-slate-950 border-b border-[#ede6d8] pb-2 pt-2">توضیحات تکمیلی</h3>
+        <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-bold">{property.description}</p>
       </div>
 
-      {/* Interactive 3D Building & Material Layer Model */}
-      <Property3DViewer
-        propertyTitle={property.title}
-        propertyCode={property.code}
-        verifiedStatus={property.verifiedStatus}
-        area={property.area}
-        rooms={property.rooms}
-        year={property.year}
-        onOpenStudio={() => {
-          if (onNavigateTab) {
-            onNavigateTab('building_3d');
-          }
-        }}
-      />
-
-      {/* Bottom Action Footer with 3D Button */}
-      <div className="glass-panel-dark text-white p-5 rounded-3xl border border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-glass-3d">
+      {/* Bottom Action Footer with 3D Gold Button */}
+      <div className="bg-white text-slate-950 p-5 rounded-[28px] border-2 border-[#dfc282] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs">
-            <UserCheck className="w-4 h-4 text-amber-400" />
+          <div className="flex items-center gap-2 text-xs font-bold">
+            <UserCheck className="w-4 h-4 text-amber-800" />
             <span>مالک: {property.ownerName}</span>
-            <span className="text-slate-500">•</span>
-            <span className="font-mono text-slate-300">{maskPhoneNumber(property.ownerPhone)}</span>
+            <span className="text-slate-400">•</span>
+            <span className="font-mono font-bold text-slate-700">{maskPhoneNumber(property.ownerPhone)}</span>
           </div>
-          <p className="text-[11px] text-slate-400 font-light">
-            جهت حفظ محرمانگی و امنیت مالی، ارتباط مستقیم و معامله از طریق «اتاق معامله» انجام می‌شود.
+          <p className="text-xs text-slate-600 font-bold">
+            جهت حفظ محرمانگی و امنیت مالی، ارتباط مستقیم و معامله از طریق «اتاق معامله امن» انجام می‌شود.
           </p>
         </div>
 
         <button
           onClick={() => onEnterDealRoom(property.code)}
-          className="w-full sm:w-auto btn-3d-amber text-slate-950 font-black text-xs px-6 py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-amber-300/50"
+          className="w-full sm:w-auto h-10 px-5 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer shrink-0 active:scale-95 transition-transform"
         >
-          <Lock className="w-4 h-4" />
+          <Lock className="w-4 h-4 stroke-[2.5]" />
           <span>ورود به اتاق معامله محرمانه</span>
         </button>
       </div>

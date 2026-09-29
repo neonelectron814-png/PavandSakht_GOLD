@@ -76,63 +76,63 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
         {type === 'property' && (
           <>
             <div>
-              <label className="block text-slate-700 font-bold mb-1.5">عنوان فایل ملک:</label>
+              <label className="block text-slate-950 font-black text-xs mb-1">عنوان فایل ملک:</label>
               <input
                 type="text"
                 required
                 placeholder="مثلاً: آپارتمان ۱۸۰ متری نوساز کلید‌نخورده"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-400/20"
+                className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 text-slate-900 text-xs font-bold placeholder-slate-400 focus:outline-none shadow-2xs transition-all"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block text-slate-700 font-bold mb-1.5">شهر:</label>
+                <label className="block text-slate-950 font-black text-xs mb-1">شهر:</label>
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 text-slate-900 text-xs font-bold focus:outline-none shadow-2xs transition-all"
                 />
               </div>
               <div>
-                <label className="block text-slate-700 font-bold mb-1.5">منطقه / محله:</label>
+                <label className="block text-slate-950 font-black text-xs mb-1">منطقه / محله:</label>
                 <input
                   type="text"
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 text-slate-900 text-xs font-bold focus:outline-none shadow-2xs transition-all"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2.5">
               <div>
-                <label className="block text-slate-700 font-bold mb-1.5">متراژ (متر):</label>
+                <label className="block text-slate-950 font-black text-xs mb-1">متراژ (متر):</label>
                 <input
                   type="number"
                   value={area}
                   onChange={(e) => setArea(e.target.value)}
-                  className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3.5 py-2.5 text-slate-900 font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-3 py-2.5 text-slate-900 font-mono text-xs font-bold focus:outline-none shadow-2xs transition-all"
                 />
               </div>
               <div>
-                <label className="block text-slate-700 font-bold mb-1.5">اتاق خواب:</label>
+                <label className="block text-slate-950 font-black text-xs mb-1">اتاق خواب:</label>
                 <input
                   type="number"
                   value={rooms}
                   onChange={(e) => setRooms(e.target.value)}
-                  className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3.5 py-2.5 text-slate-900 font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-3 py-2.5 text-slate-900 font-mono text-xs font-bold focus:outline-none shadow-2xs transition-all"
                 />
               </div>
               <div>
-                <label className="block text-slate-700 font-bold mb-1.5">نوع معامله:</label>
+                <label className="block text-slate-950 font-black text-xs mb-1">نوع معامله:</label>
                 <select
                   value={dealType}
                   onChange={(e) => setDealType(e.target.value as DealType)}
-                  className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3 py-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-2.5 py-2.5 text-slate-900 font-black text-xs focus:outline-none shadow-2xs transition-all"
                 >
                   <option value="sale">فروش نقدی</option>
                   <option value="barter">تهاتر</option>
@@ -142,12 +142,12 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-700 font-bold mb-1.5">قیمت پیشنهادی کل (تومان):</label>
+              <label className="block text-slate-950 font-black text-xs mb-1">قیمت پیشنهادی کل (تومان):</label>
               <input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl px-3.5 py-2.5 text-slate-900 font-mono font-bold focus:outline-none focus:border-amber-500"
+                className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 text-slate-900 font-mono text-xs font-black focus:outline-none shadow-2xs transition-all"
               />
             </div>
           </>
@@ -156,12 +156,12 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
         {type !== 'property' && (
           <div className="space-y-3">
             <div>
-              <label className="block text-slate-700 font-bold mb-1.5">توضیحات درخواست / مشخصات کامل:</label>
+              <label className="block text-slate-950 font-black text-xs mb-1">توضیحات درخواست / مشخصات کامل:</label>
               <textarea
                 rows={4}
                 required
                 placeholder="لطفاً جزییات دقیق (مقدار، تحویل، استعلام‌های مورد نیاز) را وارد نمایید..."
-                className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl p-3.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500"
+                className="w-full bg-white border-2 border-[#e6dfd3] focus:border-[#caa758] rounded-xl p-3.5 text-slate-900 placeholder-slate-400 focus:outline-none text-xs font-bold shadow-2xs transition-all"
               />
             </div>
           </div>
@@ -170,9 +170,9 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3.5 rounded-2xl text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all"
+            className="w-full py-3 btn-3d-gold text-[#2c1b04] font-black text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 transition-transform"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-4 h-4 stroke-[2.8]" />
             <span>ثبت نهایی و ارسال جهت بررسی کارشناسان</span>
           </button>
         </div>

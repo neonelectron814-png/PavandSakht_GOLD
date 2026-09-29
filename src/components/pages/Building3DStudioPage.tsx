@@ -190,26 +190,26 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
   return (
     <div className="space-y-6 pb-20 text-[#111827]" dir="rtl">
       
-      {/* Header Banner */}
-      <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ded5c5] space-y-3 relative overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+      {/* Header Banner Card (Full Framed 3D Gold Box) */}
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-3 relative overflow-hidden shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-950 border border-amber-300 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-xs">
-              <Cpu className="w-3.5 h-3.5 text-amber-700" />
+            <div className="inline-flex items-center gap-1.5 btn-3d-gold text-[#2c1b04] px-3.5 py-1 rounded-xl text-xs font-black mb-2 shadow-2xs">
+              <Cpu className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>استودیو شبیه‌سازی هوش مصنوعی و مدل‌سازی ۳ بعدی ساختمان</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-black text-slate-950">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-950">
               مدل‌سازی تعاملی سه‌بعدی بر اساس متریال، نقشه و محاسبات مهندسی
             </h1>
-            <p className="text-xs text-slate-700 font-semibold mt-1 max-w-2xl leading-relaxed">
+            <p className="text-[15px] text-slate-700 font-bold mt-1 max-w-2xl leading-relaxed">
               شبیه‌سازی کامل از پی و فونداسیون تا طبقات و نازک‌کاری، برآورد ریالی کل پروژه، محاسبه وزن میلگرد و بتن و انتقال با یک کلیک به اتاق معامله امن پیوندساخت.
             </p>
           </div>
 
-          <div className="bg-[#fffcf7] p-3.5 rounded-2xl border border-amber-200 text-xs space-y-1 shrink-0 text-center">
-            <span className="text-[10px] text-slate-600 font-bold block">موتور رندر سه‌بعدی:</span>
-            <span className="font-black text-amber-950 text-xs flex items-center justify-center gap-1">
-              <Box className="w-4 h-4 text-emerald-600" />
+          <div className="bg-[#fffcf7] p-3.5 rounded-2xl border-2 border-[#dfc282] text-xs space-y-1 shrink-0 text-center shadow-2xs">
+            <span className="text-xs text-slate-600 font-bold block">موتور رندر سه‌بعدی:</span>
+            <span className="font-black text-amber-950 text-[15px] flex items-center justify-center gap-1">
+              <Box className="w-4 h-4 text-emerald-700" />
               WebGL با شبیه‌سازی نور و بافت
             </span>
           </div>
@@ -223,9 +223,9 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
       />
 
       {/* Preset Building Archetypes */}
-      <div className="space-y-2">
-        <span className="text-xs font-black text-slate-800 flex items-center gap-1.5">
-          <Sparkles className="w-4 h-4 text-amber-600" />
+      <div className="space-y-3">
+        <span className="text-[15px] font-black text-slate-950 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-amber-700" />
           الگوهای آماده ساختمانی جهت شبیه‌سازی سریع:
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -233,15 +233,15 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
             <button
               key={preset.id}
               onClick={() => handleApplyPreset(preset)}
-              className="p-3.5 rounded-2xl bg-white border border-[#ded5c5] hover:border-amber-500 hover:shadow-md transition-all text-right cursor-pointer flex flex-col justify-between"
+              className="p-4 rounded-[24px] bg-white border-2 border-[#dfc282] hover:border-[#b88a31] shadow-[0_4px_16px_rgba(180,130,40,0.08)] hover:shadow-md transition-all text-right cursor-pointer flex flex-col justify-between group active:scale-98"
             >
               <div>
-                <h4 className="font-black text-xs text-slate-950">{preset.name}</h4>
-                <p className="text-[10.5px] text-slate-600 font-medium mt-1 line-clamp-2 leading-relaxed">
+                <h4 className="font-black text-[15px] text-slate-950 group-hover:text-amber-900 transition-colors">{preset.name}</h4>
+                <p className="text-xs text-slate-600 font-bold mt-1 line-clamp-2 leading-relaxed">
                   {preset.subtitle}
                 </p>
               </div>
-              <span className="text-[9.5px] text-amber-800 font-black mt-2 block">
+              <span className="text-xs text-amber-900 font-black mt-3 block">
                 بارگذاری مدل ۳ بعدی 👈
               </span>
             </button>
@@ -256,40 +256,40 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
         <div className="lg:col-span-2 space-y-6">
           
           {/* Custom AI Prompt Input */}
-          <div className="bg-white p-5 rounded-3xl border border-[#ded5c5] shadow-xs space-y-3">
+          <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-3.5">
             <div className="flex items-center justify-between border-b border-[#ede6d8] pb-2.5">
-              <h3 className="font-black text-xs sm:text-sm text-slate-950 flex items-center gap-1.5">
-                <Cpu className="w-4 h-4 text-amber-600" />
+              <h3 className="font-black text-base text-slate-950 flex items-center gap-2">
+                <Cpu className="w-5 h-5 text-amber-700" />
                 <span>فرمان صوتی یا متنی به هوش مصنوعی پیوندساخت</span>
               </h3>
-              <span className="text-[10px] bg-amber-100 text-amber-950 font-black px-2.5 py-0.5 rounded-lg border border-amber-300">
+              <span className="text-xs btn-3d-gold text-[#2c1b04] font-black px-3 py-1 rounded-xl shadow-2xs">
                 AI Engine
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <textarea
                 rows={2}
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
                 placeholder="توصیف پروژه مورد نظر: مثلاً یک ساختمان مسکونی ۶ طبقه با نمای سنگ تراورتن، پنجره‌های قدی، روف‌گاردن مجهز و اسکلت بتنی با میلگرد اصفهان..."
-                className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-2xl p-3 text-xs font-semibold text-slate-950 placeholder-slate-400 focus:outline-none focus:border-amber-600"
+                className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-2xl p-3.5 text-[15px] font-bold text-slate-950 placeholder-slate-400 focus:outline-none shadow-2xs"
               />
 
               <button
                 type="button"
                 onClick={handleRunAiSimulation}
                 disabled={isSimulating}
-                className="w-full bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-white font-black text-xs py-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                className="w-full h-10 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 active:scale-95"
               >
                 {isSimulating ? (
                   <>
-                    <RotateCw className="w-4 h-4 animate-spin text-white" />
+                    <RotateCw className="w-4 h-4 animate-spin text-[#2c1b04]" />
                     <span>در حال شبیه‌سازی هوشمند و بازتولید ساختار ۳ بعدی...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <Sparkles className="w-4.5 h-4.5 text-amber-900" />
                     <span>اعمال و شبیه‌سازی ۳ بعدی هوشمند با هوش مصنوعی</span>
                   </>
                 )}
@@ -298,9 +298,9 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
           </div>
 
           {/* Interactive Sliders & Options Panel */}
-          <div className="bg-white p-5 rounded-3xl border border-[#ded5c5] shadow-xs space-y-4">
-            <h3 className="font-black text-xs sm:text-sm text-slate-950 border-b border-[#ede6d8] pb-2.5 flex items-center gap-1.5">
-              <SlidersHorizontal className="w-4 h-4 text-amber-600" />
+          <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4">
+            <h3 className="font-black text-base text-slate-950 border-b border-[#ede6d8] pb-2.5 flex items-center gap-2">
+              <SlidersHorizontal className="w-5 h-5 text-amber-700" />
               <span>تنظیمات ابعاد، طبقات، متریال نما و نوع سازه</span>
             </h3>
 
@@ -308,9 +308,9 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
               
               {/* Floors Count Slider */}
               <div className="space-y-1.5">
-                <div className="flex justify-between font-bold text-slate-800">
+                <div className="flex justify-between font-black text-[15px] text-slate-950">
                   <span>تعداد طبقات سازه:</span>
-                  <span className="font-black text-amber-900">{toPersianDigits(config.floorsCount)} طبقه</span>
+                  <span className="font-black text-amber-950">{toPersianDigits(config.floorsCount)} طبقه</span>
                 </div>
                 <input
                   type="range"
@@ -320,16 +320,16 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
                   onChange={(e) => handleConfigChange({ floorsCount: Number(e.target.value) })}
                   className="w-full accent-amber-600 cursor-pointer"
                 />
-                <span className="text-[10px] text-slate-500 font-medium block">
+                <span className="text-xs text-slate-600 font-bold block">
                   ارتفاع تقریبی: {toPersianDigits(config.floorsCount * 3.2)} متر
                 </span>
               </div>
 
               {/* Floor Area Slider */}
               <div className="space-y-1.5">
-                <div className="flex justify-between font-bold text-slate-800">
+                <div className="flex justify-between font-black text-[15px] text-slate-950">
                   <span>مساحت هر طبقه (متر مربع):</span>
-                  <span className="font-black text-amber-900">{toPersianDigits(config.floorArea)} متر</span>
+                  <span className="font-black text-amber-950">{toPersianDigits(config.floorArea)} متر</span>
                 </div>
                 <input
                   type="range"
@@ -340,18 +340,18 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
                   onChange={(e) => handleConfigChange({ floorArea: Number(e.target.value) })}
                   className="w-full accent-amber-600 cursor-pointer"
                 />
-                <span className="text-[10px] text-slate-500 font-medium block">
+                <span className="text-xs text-slate-600 font-bold block">
                   مجموع زیربنا: {toPersianDigits(totalSubstructureArea)} متر مربع
                 </span>
               </div>
 
               {/* Facade Material Selection */}
               <div className="space-y-1.5">
-                <label className="font-bold text-slate-800 block">متریال و سبک نما:</label>
+                <label className="font-black text-[15px] text-slate-950 block">متریال و سبک نما:</label>
                 <select
                   value={config.facadeMaterial}
                   onChange={(e) => handleConfigChange({ facadeMaterial: e.target.value as any })}
-                  className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-bold text-slate-950 focus:outline-none focus:border-amber-600 cursor-pointer"
+                  className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-950 focus:outline-none cursor-pointer shadow-2xs"
                 >
                   <option value="travertine">سنگ تراورتن عباس‌آباد سوپر (کرم روشن)</option>
                   <option value="curtain_wall">نمای شیشه‌ای کرتین‌وال دوجداره Low-E</option>
@@ -363,11 +363,11 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
 
               {/* Structural Frame Type */}
               <div className="space-y-1.5">
-                <label className="font-bold text-slate-800 block">نوع اسکلت و سازه:</label>
+                <label className="font-black text-[15px] text-slate-950 block">نوع اسکلت و سازه:</label>
                 <select
                   value={config.structureType}
                   onChange={(e) => handleConfigChange({ structureType: e.target.value as any })}
-                  className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-bold text-slate-950 focus:outline-none focus:border-amber-600 cursor-pointer"
+                  className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-950 focus:outline-none cursor-pointer shadow-2xs"
                 >
                   <option value="concrete_ductile">اسکلت بتن‌آرمه داکتیل با میلگرد A3 (آیین‌نامه ۲۸۰۰)</option>
                   <option value="steel_deck">اسکلت فلزی پیچ و مهره‌ای با سقف عرشه فولادی</option>
@@ -378,7 +378,7 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
             </div>
 
             {/* Checkbox Toggles */}
-            <div className="flex flex-wrap gap-4 pt-2 border-t border-[#ede6d8] text-xs font-bold text-slate-800">
+            <div className="flex flex-wrap gap-4 pt-2 border-t border-[#ede6d8] text-xs font-black text-slate-950">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -416,14 +416,14 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
         {/* Right Column (1 col): AI Engineering Analysis & BoM */}
         <div className="space-y-6">
           
-          <div className="bg-white p-5 rounded-3xl border border-[#ded5c5] shadow-xs space-y-4">
+          <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4">
             {/* Sub-Tabs: BoM vs Cost vs Safety */}
             <div className="flex border-b border-[#ede6d8] pb-2 gap-2 text-xs">
               <button
                 type="button"
                 onClick={() => setActiveTabSub('materials_bom')}
-                className={`pb-1 font-black cursor-pointer transition-all ${
-                  activeTabSub === 'materials_bom' ? 'text-amber-800 border-b-2 border-amber-600' : 'text-slate-500 hover:text-slate-800'
+                className={`pb-1 font-black text-[13px] cursor-pointer transition-all ${
+                  activeTabSub === 'materials_bom' ? 'text-amber-900 border-b-2 border-amber-600' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 متره مصالح
@@ -431,8 +431,8 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTabSub('cost')}
-                className={`pb-1 font-black cursor-pointer transition-all ${
-                  activeTabSub === 'cost' ? 'text-amber-800 border-b-2 border-amber-600' : 'text-slate-500 hover:text-slate-800'
+                className={`pb-1 font-black text-[13px] cursor-pointer transition-all ${
+                  activeTabSub === 'cost' ? 'text-amber-900 border-b-2 border-amber-600' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 برآورد مالی
@@ -440,8 +440,8 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTabSub('structural')}
-                className={`pb-1 font-black cursor-pointer transition-all ${
-                  activeTabSub === 'structural' ? 'text-amber-800 border-b-2 border-amber-600' : 'text-slate-500 hover:text-slate-800'
+                className={`pb-1 font-black text-[13px] cursor-pointer transition-all ${
+                  activeTabSub === 'structural' ? 'text-amber-900 border-b-2 border-amber-600' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 ایمنی سازه
@@ -451,27 +451,27 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
             {/* Tab 1: Materials BoM */}
             {activeTabSub === 'materials_bom' && (
               <div className="space-y-3 text-xs">
-                <div className="flex justify-between items-center p-2.5 bg-[#fbf9f4] rounded-xl border border-[#ede6d8]">
+                <div className="flex justify-between items-center p-3 bg-[#faf8f4] rounded-xl border-2 border-[#e6dfd3]">
                   <span className="font-bold text-slate-700">میلگرد و فولاد مصرفی:</span>
-                  <span className="font-black text-amber-950 font-mono">{toPersianDigits(totalRebarTons)} تن</span>
+                  <span className="font-black text-amber-950 font-mono text-[15px]">{toPersianDigits(totalRebarTons)} تن</span>
                 </div>
 
-                <div className="flex justify-between items-center p-2.5 bg-[#fbf9f4] rounded-xl border border-[#ede6d8]">
+                <div className="flex justify-between items-center p-3 bg-[#faf8f4] rounded-xl border-2 border-[#e6dfd3]">
                   <span className="font-bold text-slate-700">بتن آماده استاندارد C30:</span>
-                  <span className="font-black text-blue-950 font-mono">{toPersianDigits(totalConcreteM3)} متر مکعب</span>
+                  <span className="font-black text-blue-950 font-mono text-[15px]">{toPersianDigits(totalConcreteM3)} متر مکعب</span>
                 </div>
 
-                <div className="flex justify-between items-center p-2.5 bg-[#fbf9f4] rounded-xl border border-[#ede6d8]">
+                <div className="flex justify-between items-center p-3 bg-[#faf8f4] rounded-xl border-2 border-[#e6dfd3]">
                   <span className="font-bold text-slate-700">متراژ سنگ / شیشه نما:</span>
-                  <span className="font-black text-emerald-950 font-mono">{toPersianDigits(facadeAreaSqM)} متر مربع</span>
+                  <span className="font-black text-emerald-950 font-mono text-[15px]">{toPersianDigits(facadeAreaSqM)} متر مربع</span>
                 </div>
 
-                <div className="flex justify-between items-center p-2.5 bg-[#fbf9f4] rounded-xl border border-[#ede6d8]">
+                <div className="flex justify-between items-center p-3 bg-[#faf8f4] rounded-xl border-2 border-[#e6dfd3]">
                   <span className="font-bold text-slate-700">سرامیک پرسلان کف و بدنه:</span>
-                  <span className="font-black text-slate-900 font-mono">{toPersianDigits(Math.round(totalSubstructureArea * 1.35))} متر مربع</span>
+                  <span className="font-black text-slate-950 font-mono text-[15px]">{toPersianDigits(Math.round(totalSubstructureArea * 1.35))} متر مربع</span>
                 </div>
 
-                <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-[10.5px] text-amber-900 font-semibold leading-relaxed">
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-950 font-bold leading-relaxed">
                   ✓ اتصال آنی این لیست به پایگاه داده ۵۰+ کارخانه و معدن پیوندساخت جهت تأمین بدون واسطه.
                 </div>
               </div>
@@ -480,25 +480,25 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
             {/* Tab 2: Cost Estimation */}
             {activeTabSub === 'cost' && (
               <div className="space-y-3 text-xs">
-                <div className="p-3 bg-[#fbf9f4] rounded-2xl border border-[#ede6d8] space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block">برآورد کل پروژه (مبنای روز بورس):</span>
-                  <span className="text-sm font-black text-emerald-900">{formatTomanShort(totalEstimatedProjectCost)}</span>
-                  <span className="text-[10px] text-slate-600 block">({formatToman(totalEstimatedProjectCost)})</span>
+                <div className="p-3.5 bg-[#faf8f4] rounded-2xl border-2 border-[#dfc282] space-y-1">
+                  <span className="text-xs text-slate-600 font-bold block">برآورد کل پروژه (مبنای روز بورس):</span>
+                  <span className="text-base font-black text-emerald-950 font-mono">{formatTomanShort(totalEstimatedProjectCost)} تومان</span>
+                  <span className="text-xs text-slate-600 block">({formatToman(totalEstimatedProjectCost)})</span>
                 </div>
 
-                <div className="flex justify-between py-1.5 border-b border-[#ede6d8]">
-                  <span className="font-bold text-slate-600">هزینه هر متر مربع زیربنا:</span>
-                  <span className="font-black text-slate-950">{formatTomanShort(finalCostPerMeter)}</span>
+                <div className="flex justify-between py-2 border-b border-[#ede6d8]">
+                  <span className="font-bold text-slate-700">هزینه هر متر مربع زیربنا:</span>
+                  <span className="font-black text-slate-950 font-mono text-[15px]">{formatTomanShort(finalCostPerMeter)}</span>
                 </div>
 
-                <div className="flex justify-between py-1.5 border-b border-[#ede6d8]">
-                  <span className="font-bold text-slate-600">سهم اسکلت و فونداسیون (۴۰٪):</span>
-                  <span className="font-black text-blue-900">{formatTomanShort(totalEstimatedProjectCost * 0.4)}</span>
+                <div className="flex justify-between py-2 border-b border-[#ede6d8]">
+                  <span className="font-bold text-slate-700">سهم اسکلت و فونداسیون (۴۰٪):</span>
+                  <span className="font-black text-blue-950 font-mono text-[15px]">{formatTomanShort(totalEstimatedProjectCost * 0.4)}</span>
                 </div>
 
-                <div className="flex justify-between py-1.5">
-                  <span className="font-bold text-slate-600">سهم نازک‌کاری و نما (۶۰٪):</span>
-                  <span className="font-black text-amber-900">{formatTomanShort(totalEstimatedProjectCost * 0.6)}</span>
+                <div className="flex justify-between py-2">
+                  <span className="font-bold text-slate-700">سهم نازک‌کاری و نما (۶۰٪):</span>
+                  <span className="font-black text-amber-950 font-mono text-[15px]">{formatTomanShort(totalEstimatedProjectCost * 0.6)}</span>
                 </div>
               </div>
             )}
@@ -506,24 +506,24 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
             {/* Tab 3: Structural Safety */}
             {activeTabSub === 'structural' && (
               <div className="space-y-2.5 text-xs">
-                <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-300 space-y-1">
-                  <span className="font-black text-emerald-950 flex items-center gap-1">
+                <div className="p-3.5 bg-emerald-50 rounded-2xl border-2 border-emerald-300 space-y-1">
+                  <span className="font-black text-emerald-950 flex items-center gap-1 text-xs sm:text-[13px]">
                     <ShieldCheck className="w-4 h-4 text-emerald-700" />
                     انطباق با آیین‌نامه ۲۸۰۰ زلزله ایران
                   </span>
-                  <p className="text-[10.5px] text-emerald-900 font-medium leading-relaxed">
+                  <p className="text-xs text-emerald-900 font-bold leading-relaxed">
                     ضریب رفتار سازه‌ای محاسبه‌شده برابر با R=7.5 با شکل‌پذیری ویژه در پهنه با خطر نسبی خیلی زیاد.
                   </p>
                 </div>
 
-                <div className="p-2.5 bg-[#fbf9f4] rounded-xl border border-[#ede6d8] space-y-1 text-[11px]">
+                <div className="p-3 bg-[#faf8f4] rounded-xl border-2 border-[#e6dfd3] space-y-1 text-xs">
                   <span className="font-bold text-slate-700 block">کنترل لنگر واژگونی و دریفت طبقات:</span>
                   <span className="font-black text-slate-950">مجاز (زیر حد بحرانی ۰.۰۲۵)</span>
                 </div>
 
-                <div className="p-2.5 bg-[#fbf9f4] rounded-xl border border-[#ede6d8] space-y-1 text-[11px]">
+                <div className="p-3 bg-[#faf8f4] rounded-xl border-2 border-[#e6dfd3] space-y-1 text-xs">
                   <span className="font-bold text-slate-700 block">رده‌بندی مصرف انرژی (مبحث ۱۹):</span>
-                  <span className="font-black text-emerald-700">گرید A (پنجره‌های دوجداره Low-E)</span>
+                  <span className="font-black text-emerald-800">گرید A (پنجره‌های دوجداره Low-E)</span>
                 </div>
               </div>
             )}
@@ -533,18 +533,18 @@ export const Building3DStudioPage: React.FC<Building3DStudioPageProps> = ({
               <button
                 type="button"
                 onClick={() => onEnterDealRoom(`3D-${Date.now().toString().slice(-4)}`)}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-black text-xs py-3 rounded-2xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                className="w-full h-10 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-95 cursor-pointer"
               >
-                <Lock className="w-4 h-4" />
+                <Lock className="w-4 h-4 stroke-[2.5]" />
                 <span>انتقال مدل و مصالح به اتاق معامله امن</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => onNavigateTab('customer_requests')}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-xs py-2.5 rounded-2xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className="w-full h-9 bg-white hover:bg-amber-50/60 text-slate-900 border-2 border-[#dfc282] font-black text-[15px] rounded-xl flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-95 cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <Sparkles className="w-4 h-4 text-amber-700" />
                 <span>استعلام آنی قیمت کارخانجات برای این متریال</span>
               </button>
             </div>

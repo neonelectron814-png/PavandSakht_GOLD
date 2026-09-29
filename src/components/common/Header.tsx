@@ -32,7 +32,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { UserRole, User as UserType } from '../../types';
-import { PayvandLogo3D } from './Golden3DIcons';
+import { PayvandLogoV3 } from './Golden3DIcons';
 
 interface HeaderProps {
   activeRole: UserRole;
@@ -151,186 +151,109 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
 }) => {
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
-  const navScrollRef = useRef<HTMLDivElement>(null);
-
   const activeRoleConfig = roleConfigs.find(r => r.id === activeRole) || roleConfigs[0];
   const ActiveRoleIcon = activeRoleConfig.icon;
 
-  const handleScroll = (direction: 'left' | 'right') => {
-    if (navScrollRef.current) {
-      const scrollAmount = direction === 'left' ? -220 : 220;
-      navScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-[#ede8de] shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all" dir="rtl">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2">
-        
-        {/* =========================================================================
-            HEADER BRAND ROW: Golden Centered Title "پیوندساخت"
-            ========================================================================= */}
-        <div className="flex items-center justify-between gap-2 py-1 border-b border-[#f3eee5] mb-2">
-          
-          {/* Logo / Home button */}
-          <motion.button 
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigateTab('home')}
-            className="flex items-center gap-2 cursor-pointer shrink-0"
-            title="بازگشت به خانه"
-          >
-            <PayvandLogo3D className="w-8 h-8" />
-          </motion.button>
-
-          {/* Golden Centered "پیوندساخت" */}
-          <div className="flex-1 text-center flex items-center justify-center">
-            <span className="font-black text-lg sm:text-xl text-amber-500 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 bg-clip-text text-transparent tracking-tight">
-              پیوندساخت
-            </span>
+    <>
+      <header className="sticky top-0 z-30 bg-[#f6f4ef]/95 backdrop-blur-xl border-b border-[#e2d8c3] shadow-xs transition-all pt-3 px-4 pb-2.5" dir="rtl">
+      {/* Top Row: Prominent Logo on Right, Role & Actions on Left */}
+      <div className="w-full flex items-center justify-between gap-2 min-h-[58px]">
+        {/* Right side in RTL: Prominent Solo Brand Logo (Matching Home Page Exactly) */}
+        <motion.button 
+          whileTap={{ scale: 0.95 }}
+          onClick={() => onNavigateTab('home')}
+          className="flex items-center cursor-pointer p-0.5 select-none z-20 shrink-0 group"
+          title="پیوندساخت - صفحه اصلی"
+        >
+          <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 flex items-center justify-center">
+            <PayvandLogoV3 className="w-16 h-16 sm:w-[72px] sm:h-[72px] object-contain" />
           </div>
+        </motion.button>
 
-          {/* Action Icons: Notifications, Role, etc. */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            {onOpenLiveFeed && (
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={onOpenLiveFeed}
-                className="p-1.5 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all border border-amber-200 flex items-center gap-1 cursor-pointer"
-                title="پالس زنده بازار"
-              >
-                <Radio className={`w-3.5 h-3.5 text-amber-600 ${isLiveActive ? 'animate-pulse' : ''}`} />
-              </motion.button>
-            )}
-
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={onOpenNotifications}
-              className="relative p-1.5 text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all border border-slate-200 cursor-pointer"
-              aria-label="اعلان‌ها"
-            >
-              <Bell className="w-3.5 h-3.5" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-white" />
-              )}
-            </motion.button>
-
-            {onLogout && (
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={onLogout}
-                className="p-1.5 text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 rounded-xl transition-all border border-rose-200 cursor-pointer"
-                title="خروج"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </motion.button>
-            )}
-
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              onClick={() => setIsRoleDropdownOpen(true)}
-              className="bg-amber-50 hover:bg-amber-100 text-amber-900 text-[11px] px-2 py-1.5 rounded-xl flex items-center gap-1 transition-all border border-amber-200 cursor-pointer"
-              title="تغییر نقش کاربری"
-            >
-              <ActiveRoleIcon className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-              <span className="font-bold text-[10px] truncate max-w-[70px]">
-                {activeRoleConfig.shortTitle}
-              </span>
-              <ChevronDown className={`w-3 h-3 text-amber-700 transition-transform shrink-0 ${isRoleDropdownOpen ? 'rotate-180' : ''}`} />
-            </motion.button>
-          </div>
-
-        </div>
-
-        {/* =========================================================================
-            SEARCH ROW
-            ========================================================================= */}
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 group">
-            <Search className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-amber-600 transition-colors" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="جستجوی کد فایل (PYS-9021)، شهر، رهن، یا متریال..."
-              className="w-full bg-[#faf9f6] border border-[#d8d0c0] text-slate-950 placeholder-slate-500 font-medium text-xs rounded-2xl pl-8 pr-10 py-2 sm:py-2.5 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-0.5 rounded-full bg-slate-200"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-
-          {/* Filter Button */}
+        {/* Left side in RTL: 3D Gold Action Buttons & Role Switcher */}
+        <div className="flex items-center gap-1.5 z-20 shrink-0">
+          {/* Role Switcher Pill */}
           <motion.button
             whileTap={{ scale: 0.92 }}
-            onClick={onOpenFilterSheet}
-            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl flex items-center gap-1.5 font-bold transition-all shrink-0 shadow-sm cursor-pointer"
+            onClick={() => setIsRoleDropdownOpen(true)}
+            className="h-8.5 bg-white border-2 border-[#dfc282] text-amber-950 text-xs sm:text-[12.5px] px-2.5 rounded-xl flex items-center gap-1 shadow-2xs cursor-pointer font-black"
+            title="تغییر نقش کاربری"
           >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>فیلترها</span>
+            <ActiveRoleIcon className="w-3.5 h-3.5 text-[#a87d32] shrink-0" />
+            <span className="truncate max-w-[70px]">{activeRoleConfig.shortTitle}</span>
+            <ChevronDown className={`w-3 h-3 text-slate-500 transition-transform ${isRoleDropdownOpen ? 'rotate-180' : ''}`} />
+          </motion.button>
+
+          {/* Logout Button */}
+          {onLogout && (
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              onClick={onLogout}
+              className="w-8.5 h-8.5 rounded-xl btn-3d-gold flex items-center justify-center cursor-pointer shrink-0 shadow-2xs"
+              title="خروج از حساب"
+            >
+              <LogOut className="w-4 h-4 stroke-[2.5] text-[#782020] hover:text-[#9e1c1c] transition-colors" />
+            </motion.button>
+          )}
+
+          {/* Notifications Bell */}
+          <motion.button
+            whileTap={{ scale: 0.92 }}
+            onClick={onOpenNotifications}
+            className="w-8.5 h-8.5 rounded-xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-2xs"
+            aria-label="اعلان‌ها"
+            title="اعلانات و پیام‌ها"
+          >
+            <Bell className="w-4 h-4 stroke-[2.5] text-[#2c1b04]" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-rose-600 rounded-full ring-2 ring-white animate-pulse" />
+            )}
           </motion.button>
         </div>
-
-        {/* =========================================================================
-            BOTTOM ROW: Category Chips Carousel
-            ========================================================================= */}
-        <div className="relative mt-2 flex items-center group/nav">
-          <button
-            onClick={() => handleScroll('right')}
-            className="hidden md:flex absolute right-0 z-10 w-6 h-9 items-center justify-center bg-white/90 text-slate-600 hover:text-amber-700 rounded-r-xl border border-slate-200 shadow-sm backdrop-blur-md opacity-0 group-hover/nav:opacity-100 transition-opacity"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-
-          <div 
-            ref={navScrollRef}
-            className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth pb-1 pt-0.5 px-0.5"
-          >
-            {quickServices.map((service) => {
-              const Icon = service.icon;
-              return (
-                <button
-                  key={service.id}
-                  onClick={() => onNavigateTab(service.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50/90 border border-[#ded5c5] hover:border-amber-400 transition-all shrink-0 cursor-pointer shadow-xs select-none text-slate-900 font-extrabold hover:text-amber-950"
-                >
-                  <Icon className="w-3.5 h-3.5 text-[#a87d32]" />
-                  <span className="text-[11px] font-black whitespace-nowrap">
-                    {service.title}
-                  </span>
-                  {service.badge && (
-                    <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-black ${service.badgeBg}`}>
-                      {service.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-
-            {onOpenMoreMenu && (
-              <button
-                onClick={onOpenMoreMenu}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 transition-all shrink-0 cursor-pointer shadow-xs select-none font-bold text-[11px]"
-              >
-                <Sparkles className="w-3 h-3 text-amber-600" />
-                <span>همه خدمات</span>
-              </button>
-            )}
-          </div>
-
-          <button
-            onClick={() => handleScroll('left')}
-            className="hidden md:flex absolute left-0 z-10 w-6 h-9 items-center justify-center bg-white/90 text-slate-600 hover:text-amber-700 rounded-l-xl border border-slate-200 shadow-sm backdrop-blur-md opacity-0 group-hover/nav:opacity-100 transition-opacity"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
       </div>
+
+      {/* Search & Filter Row in 3D Gold Styling */}
+      <div className="w-full mt-2 flex items-center gap-2">
+        <form
+          onSubmit={(e) => { e.preventDefault(); onNavigateTab('market'); }}
+          className="flex-1 h-9.5 bg-white rounded-xl border-2 border-[#dfc282] shadow-2xs flex items-center px-1.5 focus-within:border-[#caa758] transition-all min-w-0"
+        >
+          <button
+            type="submit"
+            className="btn-3d-gold w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-transform"
+            title="جستجو"
+          >
+            <Search className="w-3.5 h-3.5 text-[#2c1b04] stroke-[2.8]" />
+          </button>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="جستجوی کد فایل (PYS-9021)، متریال..."
+            className="flex-1 h-full bg-transparent px-2 text-sm font-bold text-slate-950 placeholder-slate-400 focus:outline-none text-right min-w-0"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="text-slate-400 hover:text-slate-700 p-0.5"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </form>
+
+        <motion.button
+          whileTap={{ scale: 0.92 }}
+          onClick={onOpenFilterSheet}
+          className="h-9.5 px-3 btn-3d-gold text-xs font-black rounded-xl flex items-center gap-1 shrink-0 cursor-pointer shadow-2xs text-[#221503]"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5 text-[#221503]" />
+          <span>فیلترها</span>
+        </motion.button>
+      </div>
+    </header>
 
       {/* =========================================================================
           ROLE SELECTION MODAL (Rendered into body via Portal so it never clips or overflows)
@@ -349,28 +272,28 @@ export const Header: React.FC<HeaderProps> = ({
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.93, y: 15 }}
                   onClick={(e) => e.stopPropagation()}
-                  className="bg-white rounded-[28px] w-full max-w-[360px] sm:max-w-md max-h-[82vh] flex flex-col shadow-2xl border-2 border-[#dfc282] overflow-hidden"
+                  className="bg-[#fbf9f4] rounded-[32px] w-full max-w-[360px] sm:max-w-md max-h-[82vh] flex flex-col shadow-[0_20px_60px_rgba(160,118,48,0.25)] border-2 border-[#dfc282] overflow-hidden"
                 >
-                  <div className="p-3.5 sm:p-4 border-b border-[#ede6d8] flex items-center justify-between bg-[#fffdfa] shrink-0">
+                  <div className="p-3.5 sm:p-4 border-b border-[#e8dfcf] flex items-center justify-between bg-white/70 shrink-0">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-900 shadow-xs">
-                        <UserCheck className="w-4 h-4 text-amber-800" />
+                      <div className="w-9 h-9 rounded-xl btn-3d-gold flex items-center justify-center text-[#2c1b04] shadow-2xs">
+                        <UserCheck className="w-4.5 h-4.5 stroke-[2.5]" />
                       </div>
                       <div>
                         <h3 className="font-black text-slate-950 text-xs sm:text-sm">انتخاب نقش کاربری فعال</h3>
-                        <p className="text-[10px] text-slate-600 font-bold">سامانه هوشمند پیوندساخت</p>
+                        <p className="text-[11px] text-slate-600 font-bold mt-0.5">سامانه هوشمند پیوندساخت</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setIsRoleDropdownOpen(false)}
-                      className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+                      className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center cursor-pointer shadow-2xs active:scale-95 transition-transform"
                       aria-label="بستن"
                     >
-                      <X className="w-4 h-4 stroke-[2.5]" />
+                      <X className="w-4 h-4 stroke-[3]" />
                     </button>
                   </div>
 
-                  <div className="p-3 space-y-2 overflow-y-auto no-scrollbar flex-1">
+                  <div className="p-3.5 space-y-2.5 overflow-y-auto no-scrollbar flex-1">
                     {roleConfigs.map((role) => {
                       const Icon = role.icon;
                       const isCurrent = role.id === activeRole;
@@ -381,34 +304,38 @@ export const Header: React.FC<HeaderProps> = ({
                             onRoleChange(role.id);
                             setIsRoleDropdownOpen(false);
                           }}
-                          className={`w-full p-2.5 sm:p-3 rounded-2xl border text-right transition-all flex items-start gap-2.5 cursor-pointer ${
+                          className={`w-full p-3 rounded-[20px] border-2 text-right transition-all flex items-start gap-3 cursor-pointer ${
                             isCurrent
-                              ? 'bg-amber-100/90 border-amber-500 text-amber-950 shadow-xs ring-1 ring-amber-400'
-                              : 'bg-white border-[#ded5c5] hover:bg-slate-50 text-slate-900'
+                              ? 'bg-amber-50/90 border-[#caa758] text-amber-950 shadow-[0_4px_0_#b88a31] scale-[1.01]'
+                              : 'bg-white border-[#e6dfd3] hover:border-[#caa758] hover:bg-amber-50/30 text-slate-900 shadow-[0_3px_0_#d5c8b2]'
                           }`}
                         >
-                          <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 flex items-center justify-center shrink-0 mt-0.5">
-                            <Icon className="w-4 h-4" />
+                          <div className="w-9 h-9 rounded-xl btn-3d-gold flex items-center justify-center shrink-0 mt-0.5 shadow-2xs text-[#2c1b04]">
+                            <Icon className="w-4.5 h-4.5 stroke-[2.2]" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-black text-slate-950">{role.title}</span>
-                              {isCurrent && <Check className="w-4 h-4 text-amber-700 stroke-[3]" />}
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-xs sm:text-[13px] font-black text-slate-950">{role.title}</span>
+                              {isCurrent && (
+                                <div className="w-5 h-5 rounded-full btn-3d-gold flex items-center justify-center shadow-xs shrink-0">
+                                  <Check className="w-3.5 h-3.5 text-[#2c1b04] stroke-[3]" />
+                                </div>
+                              )}
                             </div>
-                            <p className="text-[10.5px] font-semibold text-slate-700 mt-0.5 leading-snug">{role.desc}</p>
+                            <p className="text-[11px] font-bold text-[#644b1c] mt-0.5 leading-snug">{role.desc}</p>
                           </div>
                         </button>
                       );
                     })}
                   </div>
 
-                  <div className="p-3 border-t border-[#ede6d8] bg-[#fbf9f4] flex items-center justify-between shrink-0">
-                    <span className="text-[10.5px] font-bold text-slate-600">
+                  <div className="p-3.5 border-t border-[#e2d8c3] bg-[#f5ede0] flex items-center justify-between shrink-0 gap-3">
+                    <span className="text-[11px] font-black text-slate-700">
                       محیط آزمایشی پیوندساخت
                     </span>
                     <button
                       onClick={() => setIsRoleDropdownOpen(false)}
-                      className="px-4 py-1.5 btn-3d-gold text-xs font-black rounded-xl shadow-xs cursor-pointer"
+                      className="px-5 py-2 btn-3d-gold text-xs font-black rounded-xl shadow-xs cursor-pointer text-[#2c1b04] active:scale-95 transition-transform"
                     >
                       بستن
                     </button>
@@ -419,6 +346,6 @@ export const Header: React.FC<HeaderProps> = ({
           </AnimatePresence>,
           document.body
         )}
-    </header>
+    </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Building2, 
   MapPin, 
@@ -28,7 +28,9 @@ import {
   Home,
   Monitor,
   Smartphone,
-  LogOut
+  LogOut,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { User, UserRole, LiveTickerItem } from '../../types';
 import { PayvandLogoV3 } from './Golden3DIcons';
@@ -82,6 +84,37 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
 }) => {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+  const navScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollNav = (direction: 'left' | 'right') => {
+    if (navScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -260 : 260;
+      navScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleNavWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (navScrollRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      navScrollRef.current.scrollBy({
+        left: -e.deltaY * 1.3,
+        behavior: 'auto'
+      });
+    }
+  };
+
+  // Auto-scroll the active tab into view whenever activeTab changes
+  useEffect(() => {
+    if (navScrollRef.current) {
+      const activeEl = navScrollRef.current.querySelector<HTMLButtonElement>(`[data-tab-id="${activeTab}"]`);
+      if (activeEl) {
+        activeEl.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'nearest',
+          block: 'nearest'
+        });
+      }
+    }
+  }, [activeTab]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,15 +152,18 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
       {/* Main Desktop Header */}
       <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-6">
         
-        {/* Brand Logo */}
+        {/* Brand Logo (Prominent Size Matching Mobile First Page) */}
         <div 
-          className="flex items-center gap-3 shrink-0 cursor-pointer group" 
+          className="flex items-center gap-3.5 shrink-0 cursor-pointer group" 
           onClick={() => onNavigateTab('home')}
+          title="پیوندساخت - صفحه اصلی"
         >
-          <PayvandLogoV3 className="w-10 h-10 group-hover:scale-105 transition-transform" />
+          <div className="w-16 h-16 lg:w-[68px] lg:h-[68px] shrink-0 flex items-center justify-center">
+            <PayvandLogoV3 className="w-16 h-16 lg:w-[68px] lg:h-[68px] object-contain group-hover:scale-105 transition-transform" />
+          </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-black text-amber-500 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 bg-clip-text text-transparent tracking-tight">
+              <span className="text-2xl lg:text-[26px] font-black text-amber-500 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 bg-clip-text text-transparent tracking-tight">
                 پیوندساخت
               </span>
             </div>
@@ -142,11 +178,11 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           <button
             type="button"
             onClick={onOpenCityModal}
-            className="px-3 py-1.5 rounded-xl bg-white border border-[#e8e2d7] hover:bg-amber-50/60 text-xs font-bold text-slate-700 flex items-center gap-1.5 shrink-0 transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-xl btn-3d-gold text-[#2c1b04] text-[15px] font-black flex items-center gap-1.5 shrink-0 shadow-2xs transition-colors cursor-pointer"
           >
-            <MapPin className="w-3.5 h-3.5 text-amber-600" />
+            <MapPin className="w-3.5 h-3.5 text-amber-800" />
             <span className="max-w-[100px] truncate">{selectedCity === 'انتخاب استان / شهر' ? 'تهران' : selectedCity}</span>
-            <ChevronDown className="w-3 h-3 text-slate-400" />
+            <ChevronDown className="w-3 h-3 text-slate-500" />
           </button>
 
           <input
@@ -159,26 +195,26 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
 
           <button
             type="submit"
-            className="w-9 h-9 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white flex items-center justify-center transition-transform hover:scale-105 shrink-0 cursor-pointer shadow-sm"
+            className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center transition-transform active:scale-95 shrink-0 cursor-pointer shadow-2xs"
             title="جستجو"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-4 h-4 stroke-[2.8]" />
           </button>
         </form>
 
         {/* Right Actions: Role Selector, Notifications, Deal Room, New Ad */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           
           {/* Role Switcher Menu */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-              className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${currentRoleConfig.color}`}
+              className="h-8.5 px-3 rounded-xl bg-white border-2 border-[#dfc282] text-amber-950 text-[15px] font-black flex items-center gap-1.5 shadow-2xs cursor-pointer"
             >
-              <CurrentRoleIcon className="w-3.5 h-3.5" />
+              <CurrentRoleIcon className="w-3.5 h-3.5 text-[#a87d32]" />
               <span className="max-w-[120px] truncate">{currentRoleConfig.title}</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${isRoleDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3 h-3 text-slate-500 transition-transform ${isRoleDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isRoleDropdownOpen && (
@@ -220,12 +256,12 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           <button
             type="button"
             onClick={onOpenNotifications}
-            className="relative w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-800 border border-slate-200 hover:border-amber-300 flex items-center justify-center transition-colors cursor-pointer"
+            className="relative w-8.5 h-8.5 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shadow-2xs cursor-pointer active:scale-95"
             title="اعلانات و پیام‌ها"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-4 h-4 stroke-[2.5]" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full text-[10px] font-black flex items-center justify-center ring-2 ring-white animate-bounce">
+              <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-rose-600 text-white rounded-full text-[10px] font-black flex items-center justify-center ring-2 ring-white animate-pulse">
                 {unreadCount}
               </span>
             )}
@@ -236,11 +272,11 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
             <button
               type="button"
               onClick={onLogout}
-              className="w-10 h-10 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-900 border border-rose-200 flex items-center justify-center transition-colors cursor-pointer"
+              className="w-8.5 h-8.5 rounded-xl btn-3d-gold text-[#782020] flex items-center justify-center shadow-2xs cursor-pointer active:scale-95"
               title="خروج از حساب کاربری و ورود مجدد"
               aria-label="خروج"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-4 h-4 stroke-[2.5]" />
             </button>
           )}
 
@@ -248,13 +284,13 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           <button
             type="button"
             onClick={() => onNavigateTab('deal_room')}
-            className={`px-3.5 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`h-8.5 px-3 rounded-xl text-[15px] font-black flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
               activeTab === 'deal_room' 
-                ? 'bg-amber-600 text-white border-amber-700 shadow-md' 
-                : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-xs' 
+                : 'bg-white hover:bg-amber-50 text-slate-800 border-2 border-[#dfc282]'
             }`}
           >
-            <Lock className="w-3.5 h-3.5 text-amber-700" />
+            <Lock className="w-3.5 h-3.5 text-amber-800" />
             <span className="hidden xl:inline">اتاق معامله محرمانه</span>
             <span className="xl:hidden">اتاق معامله</span>
           </button>
@@ -263,43 +299,73 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           <button
             type="button"
             onClick={onOpenRegisterModal}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#b88c42] to-[#8d6520] hover:from-[#a67c35] hover:to-[#7a5518] text-white text-xs font-black flex items-center gap-2 shadow-md transition-all hover:scale-102 cursor-pointer"
+            className="h-8.5 px-3.5 rounded-xl btn-3d-gold text-[#2c1b04] text-[15px] font-black flex items-center gap-1.5 shadow-2xs transition-all active:scale-95 cursor-pointer"
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-4 h-4 stroke-[2.5]" />
             <span>ثبت آگهی</span>
           </button>
         </div>
       </div>
 
-      {/* Desktop Main Navigation Tabs Bar */}
-      <nav className="bg-[#f7f4ed] border-t border-[#ede5d6] px-6">
-        <div className="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-          {navTabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => onNavigateTab(tab.id)}
-                className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shrink-0 transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-white text-slate-900 shadow-xs border border-[#decbb0] font-black scale-102'
-                    : tab.highlight
-                    ? 'text-amber-900 bg-amber-100/70 hover:bg-amber-200/80 font-black border border-amber-300/60'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-amber-600' : tab.highlight ? 'text-amber-700' : 'text-slate-400'}`} />
-                <span>{tab.label}</span>
-                {tab.highlight && !isActive && (
-                  <span className="text-[9px] bg-amber-500 text-white px-1.5 py-0.2 rounded-full font-black">
-                    ویژه
-                  </span>
-                )}
-              </button>
-            );
-          })}
+      {/* Desktop Main Navigation Tabs Bar with Smooth Touch/Wheel & Arrow Scrolling */}
+      <nav className="relative bg-[#f7f4ed] border-t border-[#ede5d6] px-2 sm:px-6 group/nav select-none">
+        <div className="max-w-7xl mx-auto relative flex items-center">
+          
+          {/* Scroll Right Arrow Button */}
+          <button
+            type="button"
+            onClick={() => handleScrollNav('right')}
+            className="absolute right-0 z-20 w-8 h-8.5 rounded-r-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90 hover:brightness-105 shrink-0"
+            title="پیمایش به راست"
+            aria-label="پیمایش راست"
+          >
+            <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+          </button>
+
+          {/* Navigation Items Horizontal Container */}
+          <div
+            ref={navScrollRef}
+            onWheel={handleNavWheel}
+            className="w-full flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-8 sm:px-9 scroll-smooth touch-pan-x overscroll-x-contain"
+          >
+            {navTabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  data-tab-id={tab.id}
+                  type="button"
+                  onClick={() => onNavigateTab(tab.id)}
+                  className={`h-8.5 px-3.5 rounded-xl text-[15px] font-black flex items-center gap-1.5 shrink-0 transition-all cursor-pointer active:scale-95 ${
+                    isActive
+                      ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                      : 'text-slate-800 hover:text-amber-950 hover:bg-white/80 border-2 border-transparent hover:border-[#dfc282]'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 stroke-[2.2] ${isActive ? 'text-[#2c1b04]' : 'text-slate-600'}`} />
+                  <span>{tab.label}</span>
+                  {tab.highlight && !isActive && (
+                    <span className="text-[10px] btn-3d-gold text-[#2c1b04] px-1.5 py-0.2 rounded-md font-black shadow-2xs">
+                      ویژه
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Scroll Left Arrow Button */}
+          <button
+            type="button"
+            onClick={() => handleScrollNav('left')}
+            className="absolute left-0 z-20 w-8 h-8.5 rounded-l-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90 hover:brightness-105 shrink-0"
+            title="پیمایش به چپ"
+            aria-label="پیمایش چپ"
+          >
+            <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+          </button>
+
         </div>
       </nav>
     </header>

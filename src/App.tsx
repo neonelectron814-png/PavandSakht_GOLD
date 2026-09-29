@@ -361,6 +361,7 @@ export default function App() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             onLogout={handleLogout}
+            onOpenLiveFeed={() => setIsLiveFeedModalOpen(true)}
           />
         );
 
@@ -525,8 +526,8 @@ export default function App() {
 
   // Render Mobile View Wrapper
   const renderMobileContent = () => (
-    <div className="w-full flex-1 flex flex-col relative bg-[#fcfbf9] text-[#1c1d22]">
-      {/* If not on home tab, render mobile Header */}
+    <div className="w-full flex-1 flex flex-col relative bg-[#f6f4ef] text-[#1c1d22]">
+      {/* If not on home tab, render Header */}
       {activeTab !== 'home' && (
         <Header
           activeRole={activeRole}
@@ -564,35 +565,14 @@ export default function App() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             onLogout={handleLogout}
+            onOpenLiveFeed={() => setIsLiveFeedModalOpen(true)}
           />
         ) : (
-          <div className="p-4 max-w-4xl mx-auto">
+          <div className="p-3 sm:p-4 w-full">
             {renderPageContent()}
           </div>
         )}
       </div>
-
-      {/* Floating Action Button (FAB) on non-home pages */}
-      {activeTab !== 'home' && (
-        <FAB
-          onOpenRegisterProperty={() => {
-            setSubmitModalType('property');
-            setIsSubmitModalOpen(true);
-          }}
-          onOpenMaterialQuote={() => {
-            setSubmitModalType('material_quote');
-            setIsSubmitModalOpen(true);
-          }}
-          onOpenBarterOffer={() => {
-            setSubmitModalType('barter');
-            setIsSubmitModalOpen(true);
-          }}
-          onOpenPartnership={() => {
-            setSubmitModalType('partnership');
-            setIsSubmitModalOpen(true);
-          }}
-        />
-      )}
 
       {/* Bottom Navigation Bar */}
       <BottomNav
@@ -656,17 +636,17 @@ export default function App() {
           ) : (
             <div className="w-full max-w-7xl mx-auto px-6 py-6 flex-1 flex flex-col">
               {/* Desktop Breadcrumb Bar */}
-              <div className="mb-6 bg-white border border-[#eae2d5] rounded-2xl px-6 py-3.5 flex items-center justify-between shadow-xs">
-                <div className="flex items-center gap-3 text-xs font-bold">
+              <div className="mb-6 bg-white border-2 border-[#dfc282] rounded-[24px] px-6 py-3 flex items-center justify-between shadow-[0_4px_16px_rgba(180,130,40,0.08)]">
+                <div className="flex items-center gap-3 text-[15px] font-black">
                   <button
                     onClick={() => setActiveTab('home')}
-                    className="flex items-center gap-1.5 text-slate-500 hover:text-amber-800 transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 text-slate-600 hover:text-amber-800 transition-colors cursor-pointer"
                   >
-                    <HomeIcon className="w-4 h-4 text-amber-700" />
+                    <HomeIcon className="w-4.5 h-4.5 text-amber-700" />
                     <span>صفحه اصلی</span>
                   </button>
                   <span className="text-slate-300 font-normal">/</span>
-                  <span className="text-slate-900 font-black text-sm">
+                  <span className="text-slate-950 font-black text-[15px]">
                     {getPageTitle(activeTab)}
                   </span>
                 </div>
@@ -674,16 +654,16 @@ export default function App() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setActiveTab('home')}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-800 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="h-8.5 px-3.5 rounded-xl btn-3d-gold text-[#2c1b04] text-[15px] font-black flex items-center gap-1.5 shadow-2xs transition-all active:scale-95 cursor-pointer"
                   >
                     <span>بازگشت به خانه</span>
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
                   </button>
                 </div>
               </div>
 
               {/* Subpage Main Content */}
-              <div className="flex-1 w-full bg-white/70 border border-[#eae2d5] rounded-3xl p-6 shadow-sm">
+              <div className="flex-1 w-full bg-white rounded-[32px] border-2 border-[#dfc282] p-6 sm:p-8 shadow-[0_8px_30px_rgba(180,130,40,0.08)]">
                 {renderPageContent()}
               </div>
             </div>
@@ -761,11 +741,11 @@ export default function App() {
       >
         <div className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-700 font-bold mb-1.5">انتخاب شهر یا استان:</label>
+            <label className="block text-slate-950 font-black text-xs sm:text-[13px] mb-2">انتخاب شهر یا استان:</label>
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
-              className="w-full bg-[#faf9f6] border border-[#ded7cb] rounded-xl p-3 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+              className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-3 text-slate-950 font-black text-xs shadow-2xs focus:outline-none transition-all cursor-pointer"
             >
               <option value="همه شهرهای ایران">همه شهرهای ایران</option>
               <option value="تهران">تهران</option>
@@ -778,25 +758,27 @@ export default function App() {
           </div>
 
           <div>
-            <label className="block text-slate-700 font-bold mb-1.5">وضعیت اعتبارسنجی اسناد:</label>
+            <label className="block text-slate-950 font-black text-xs sm:text-[13px] mb-2">وضعیت اعتبارسنجی اسناد:</label>
             <div className="space-y-2.5">
-              <label className="flex items-center gap-2.5 text-slate-700 cursor-pointer">
-                <input type="checkbox" defaultChecked className="rounded accent-amber-500 w-4 h-4" />
+              <label className="p-3 bg-white rounded-xl border-2 border-[#e6dfd3] shadow-[0_2px_0_#d5c8b2] flex items-center gap-3 cursor-pointer text-slate-950 font-black text-xs transition-all hover:border-[#caa758]">
+                <input type="checkbox" defaultChecked className="rounded accent-amber-600 w-4.5 h-4.5 cursor-pointer" />
                 <span>فقط فایل‌های سالم و دارای استعلام ثبتی معتبر</span>
               </label>
-              <label className="flex items-center gap-2.5 text-slate-700 cursor-pointer">
-                <input type="checkbox" defaultChecked className="rounded accent-amber-500 w-4 h-4" />
+              <label className="p-3 bg-white rounded-xl border-2 border-[#e6dfd3] shadow-[0_2px_0_#d5c8b2] flex items-center gap-3 cursor-pointer text-slate-950 font-black text-xs transition-all hover:border-[#caa758]">
+                <input type="checkbox" defaultChecked className="rounded accent-amber-600 w-4.5 h-4.5 cursor-pointer" />
                 <span>دارای گزارش ارزیابی و قیمت کارشناسی روز</span>
               </label>
             </div>
           </div>
 
-          <button
-            onClick={() => setIsFilterSheetOpen(false)}
-            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3.5 rounded-2xl text-xs cursor-pointer shadow-md transition-all"
-          >
-            اعمال فیلترها
-          </button>
+          <div className="pt-2">
+            <button
+              onClick={() => setIsFilterSheetOpen(false)}
+              className="w-full py-3.5 btn-3d-gold text-[#2c1b04] font-black text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 transition-transform"
+            >
+              <span>اعمال فیلترها</span>
+            </button>
+          </div>
         </div>
       </BottomSheetModal>
 

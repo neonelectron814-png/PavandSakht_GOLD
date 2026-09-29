@@ -3,7 +3,7 @@ import payvandBrandLogoImg from '../../assets/images/Pavand.png';
 
 // Reusable Gold Gradient definitions for SVG
 export const SvgGoldDefs: React.FC = () => (
-  <svg width="0" height="0" className="absolute hidden">
+  <svg width="0" height="0" className="absolute hidden" aria-hidden="true">
     <defs>
       {/* Primary Warm Metallic Gold Gradient */}
       <linearGradient id="gold-metal-primary" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -38,18 +38,59 @@ export const SvgGoldDefs: React.FC = () => (
   </svg>
 );
 
-// Brand Logo Emblem: Stylized Golden Monolith / Architectural Gateway with Pavand.png and Subtle Golden Glow
-export const PayvandLogoV3: React.FC<{ className?: string }> = ({ className = "w-9 h-9" }) => (
-  <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
-    <img
-      src={payvandBrandLogoImg}
-      alt="پیوندساخت"
-      loading="eager"
-      decoding="async"
-      className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_2px_6px_rgba(180,120,20,0.35)] transition-transform duration-300 group-hover:scale-105"
-    />
-  </div>
+export const GoldGradients: React.FC = () => (
+  <defs>
+    <linearGradient id="gold-metal-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#fdf1c9" />
+      <stop offset="25%" stopColor="#e9be6f" />
+      <stop offset="50%" stopColor="#be8828" />
+      <stop offset="75%" stopColor="#f1d48c" />
+      <stop offset="100%" stopColor="#83570c" />
+    </linearGradient>
+    <linearGradient id="gold-shadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#b48227" />
+      <stop offset="50%" stopColor="#81540a" />
+      <stop offset="100%" stopColor="#4f3102" />
+    </linearGradient>
+    <radialGradient id="gold-radial" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stopColor="#fffcf0" />
+      <stop offset="30%" stopColor="#e8bf72" />
+      <stop offset="70%" stopColor="#b07d1e" />
+      <stop offset="100%" stopColor="#5d3903" />
+    </radialGradient>
+    <linearGradient id="gold-highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+      <stop offset="100%" stopColor="#e5b863" stopOpacity="0.2" />
+    </linearGradient>
+  </defs>
 );
+
+// Brand Logo Emblem: Stylized Golden Monolith / Architectural Gateway with Pavand.png and Subtle Golden Glow
+export const PayvandLogoV3: React.FC<{ className?: string }> = ({ className = "w-9 h-9" }) => {
+  const [imgError, setImgError] = React.useState(false);
+
+  return (
+    <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
+      {!imgError ? (
+        <img
+          src={payvandBrandLogoImg}
+          alt="پیوندساخت"
+          loading="eager"
+          decoding="async"
+          onError={() => setImgError(true)}
+          className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_2px_6px_rgba(180,120,20,0.35)] transition-transform duration-300 group-hover:scale-105"
+        />
+      ) : (
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+          <GoldGradients />
+          <polygon points="50,10 90,32 90,78 50,95 10,78 10,32" fill="url(#gold-radial)" stroke="#4a2e02" strokeWidth="2" />
+          <polygon points="50,22 80,38 80,72 50,85 20,72 20,38" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.5" />
+          <circle cx="50" cy="50" r="14" fill="url(#gold-metal-primary)" stroke="#4a2e02" strokeWidth="1.5" />
+        </svg>
+      )}
+    </div>
+  );
+};
 
 export const PayvandLogo3D = PayvandLogoV3;
 
@@ -57,6 +98,7 @@ export const PayvandLogo3D = PayvandLogoV3;
 export const GoldenVilla3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="88" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
 
@@ -97,6 +139,7 @@ export const GoldenVilla3D: React.FC<{ className?: string }> = ({ className = "w
 export const GoldenHandshake3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="82" rx="34" ry="5.5" fill="#78500c" fillOpacity="0.22" />
 
@@ -138,6 +181,7 @@ export const GoldenHandshake3D: React.FC<{ className?: string }> = ({ className 
 export const GoldenMaterials3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="85" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
 
@@ -168,6 +212,7 @@ export const GoldenMaterials3D: React.FC<{ className?: string }> = ({ className 
 export const GoldenIndustrial3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="86" rx="38" ry="6" fill="#78500c" fillOpacity="0.22" />
 
@@ -212,6 +257,7 @@ export const GoldenIndustrial3D: React.FC<{ className?: string }> = ({ className
 export const GoldenDocumentSearch3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="48" cy="85" rx="35" ry="6" fill="#78500c" fillOpacity="0.22" />
 
@@ -244,10 +290,13 @@ export const GoldenDocumentSearch3D: React.FC<{ className?: string }> = ({ class
   </div>
 );
 
-// 6. Auction Gavel & Stand (فرصت‌های طلایی و مزایده و...)
+export const GoldenPriceStats3D = GoldenDocumentSearch3D;
+
+// 6. Auction Gavel & Stand (فرصت‌های طلایی و مزایده)
 export const GoldenGavel3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="44" cy="84" rx="32" ry="6" fill="#78500c" fillOpacity="0.25" />
 
@@ -271,10 +320,13 @@ export const GoldenGavel3D: React.FC<{ className?: string }> = ({ className = "w
   </div>
 );
 
+export const GoldenRateCutter3D = GoldenGavel3D;
+
 // 7. Crawler Excavator & Machinery (ماشین‌آلات و تجهیزات)
 export const GoldenExcavator3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="85" rx="36" ry="5.5" fill="#78500c" fillOpacity="0.22" />
 
@@ -302,10 +354,13 @@ export const GoldenExcavator3D: React.FC<{ className?: string }> = ({ className 
   </div>
 );
 
+export const GoldenMachinery3D = GoldenExcavator3D;
+
 // 8. Engineer Holding Blueprints (پیمانکاران و مجریان ساخت)
 export const GoldenEngineer3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="88" rx="34" ry="5.5" fill="#78500c" fillOpacity="0.22" />
 
@@ -337,6 +392,7 @@ export const GoldenEngineer3D: React.FC<{ className?: string }> = ({ className =
 export const GoldenInstallment3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="86" rx="35" ry="6" fill="#78500c" fillOpacity="0.22" />
 
@@ -366,10 +422,13 @@ export const GoldenInstallment3D: React.FC<{ className?: string }> = ({ classNam
   </div>
 );
 
+export const GoldenInstallments3D = GoldenInstallment3D;
+
 // 10. AI Smart Matching & Inquiries (درخواست‌های مشتری و تطبیق هوشمند)
 export const GoldenAiMatch3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       {/* Soft Ground Shadow */}
       <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
 
@@ -400,6 +459,7 @@ export const GoldenAiMatch3D: React.FC<{ className?: string }> = ({ className = 
 export const Golden3DStudio: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
       {/* 3D Isometric Cube / Building */}
       {/* Top Face */}
@@ -417,10 +477,13 @@ export const Golden3DStudio: React.FC<{ className?: string }> = ({ className = "
   </div>
 );
 
+export const Golden3DStudio3D = Golden3DStudio;
+
 // 12. Barter & Material Exchange 3D (تهاتر و مبادله)
 export const GoldenBarter3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
       <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
       {/* Circular Arrows */}
       <path d="M26 48C26 34 37 24 50 24C60 24 69 30 73 38" stroke="url(#gold-radial)" strokeWidth="7" strokeLinecap="round" />
@@ -431,6 +494,25 @@ export const GoldenBarter3D: React.FC<{ className?: string }> = ({ className = "
 
       {/* Center Building Symbol */}
       <rect x="42" y="42" width="16" height="16" rx="3" fill="url(#gold-metal-primary)" stroke="#4a2e02" strokeWidth="1.5" />
+    </svg>
+  </div>
+);
+
+// 13. Confidential Deal Room 3D (اتاق معامله امن)
+export const GoldenDealRoom3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <GoldGradients />
+      <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
+      {/* Shield Base */}
+      <path d="M50 16L80 28V52C80 70 66 84 50 88C34 84 20 70 20 52V28L50 16Z" fill="url(#gold-radial)" stroke="#4a2e02" strokeWidth="1.8" />
+      <path d="M50 24L74 34V52C74 66 63 78 50 81C37 78 26 66 26 52V34L50 24Z" fill="url(#gold-shadow)" stroke="#4a2e02" strokeWidth="1.4" />
+      
+      {/* Golden Vault Lock */}
+      <rect x="40" y="46" width="20" height="18" rx="4" fill="url(#gold-metal-primary)" stroke="#3e2501" strokeWidth="1.5" />
+      <path d="M44 46V39C44 35.6863 46.6863 33 50 33C53.3137 33 56 35.6863 56 39V46" stroke="url(#gold-metal-primary)" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="50" cy="54" r="2.5" fill="#3e2501" />
+      <line x1="50" y1="56.5" x2="50" y2="60" stroke="#3e2501" strokeWidth="2" strokeLinecap="round" />
     </svg>
   </div>
 );

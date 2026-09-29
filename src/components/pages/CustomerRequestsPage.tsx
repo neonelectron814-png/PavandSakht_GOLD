@@ -264,26 +264,26 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
     <div className="space-y-6 pb-20 text-[#111827]" dir="rtl">
       
       {/* Header Banner */}
-      <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ded5c5] space-y-3 relative overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-3 relative overflow-hidden shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-950 border border-amber-300 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-xs">
-              <Bot className="w-3.5 h-3.5 text-amber-700" />
+            <div className="inline-flex items-center gap-1.5 btn-3d-gold text-[#2c1b04] px-3.5 py-1 rounded-xl text-xs font-black mb-2 shadow-2xs">
+              <Bot className="w-3.5 h-3.5 text-amber-900 stroke-[2.5]" />
               <span>موتور جستجو و تطبیق هوشمند درخواست‌ها</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-black text-slate-950">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-950">
               تابلوی روزانه درخواست‌های مشتریان و استعلام قیمت آنی
             </h1>
-            <p className="text-xs text-slate-700 font-semibold mt-1 max-w-2xl leading-relaxed">
+            <p className="text-[15px] text-slate-700 font-bold mt-1 max-w-2xl leading-relaxed">
               ثبت تقاضای متریال، سنگ، کاشی، میلگرد یا رهن مسکن و تطبیق آنی با پایگاه ۵۰+ معدن‌دار، کارخانجات و املاکی‌های معتبر منطقه با امکان انتقال مستقیم به اتاق معامله امن.
             </p>
           </div>
 
           <button
             onClick={() => setShowNewModal(true)}
-            className="bg-amber-600 hover:bg-amber-700 text-white font-black text-xs px-5 py-3 rounded-2xl shadow-md transition-all shrink-0 cursor-pointer flex items-center justify-center gap-2"
+            className="h-10 px-4.5 btn-3d-gold text-[#2c1b04] text-[15px] font-black rounded-xl shadow-2xs transition-all active:scale-95 shrink-0 cursor-pointer flex items-center justify-center gap-2"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 text-amber-900" />
             <span>+ ثبت درخواست جدید</span>
           </button>
         </div>
@@ -293,10 +293,10 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
         <button
           onClick={() => setActiveCategory('all')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
             activeCategory === 'all'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
           همه درخواست‌های روز
@@ -304,49 +304,49 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
 
         <button
           onClick={() => setActiveCategory('stone')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'stone'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
-          <Mountain className="w-3.5 h-3.5 text-amber-600" />
+          <Mountain className="w-4 h-4 text-amber-800" />
           <span>سنگ و کوپ معدن</span>
         </button>
 
         <button
           onClick={() => setActiveCategory('tile')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'tile'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
-          <Package className="w-3.5 h-3.5 text-amber-600" />
+          <Package className="w-4 h-4 text-amber-800" />
           <span>کاشی و سرامیک</span>
         </button>
 
         <button
           onClick={() => setActiveCategory('rebar')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'rebar'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
-          <Factory className="w-3.5 h-3.5 text-amber-600" />
+          <Factory className="w-4 h-4 text-amber-800" />
           <span>میلگرد و آهن‌آلات</span>
         </button>
 
         <button
           onClick={() => setActiveCategory('rental')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'rental'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
-          <Building2 className="w-3.5 h-3.5 text-amber-600" />
+          <Building2 className="w-4 h-4 text-amber-800" />
           <span>تقاضای رهن و اجاره</span>
         </button>
       </div>
@@ -358,8 +358,8 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
           return (
             <div
               key={req.id}
-              className={`bg-white rounded-3xl p-5 border transition-all ${
-                isExpanded ? 'border-amber-400 shadow-md ring-2 ring-amber-300/30' : 'border-[#ded5c5] shadow-xs hover:border-[#caa758]'
+              className={`bg-white rounded-[28px] p-5 sm:p-6 border-2 transition-all shadow-[0_4px_16px_rgba(180,130,40,0.1)] ${
+                isExpanded ? 'border-[#caa758] ring-2 ring-amber-400/30' : 'border-[#dfc282] hover:border-[#caa758]'
               }`}
             >
               {/* Header summary of the request */}
@@ -369,29 +369,29 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
               >
                 <div>
                   <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                    <span className="text-[10px] bg-amber-100 text-amber-950 font-black px-2.5 py-0.5 rounded-lg border border-amber-300">
+                    <span className="text-xs bg-amber-50 text-amber-950 font-black px-3 py-1 rounded-xl border border-amber-300">
                       {req.volumeNeeded}
                     </span>
-                    <span className="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-lg">
+                    <span className="text-xs bg-[#faf8f4] text-slate-800 font-bold px-2.5 py-1 rounded-xl border border-[#e6dfd3]">
                       {req.city}
                     </span>
-                    <span className="text-[10px] text-slate-500 font-medium">
+                    <span className="text-xs text-slate-500 font-bold font-mono">
                       {req.date}
                     </span>
                   </div>
-                  <h3 className="font-black text-sm text-slate-950">{req.title}</h3>
-                  <p className="text-[11px] text-slate-600 font-semibold mt-1">
+                  <h3 className="font-black text-base sm:text-lg text-slate-950">{req.title}</h3>
+                  <p className="text-[13px] text-slate-700 font-bold mt-1">
                     درخواست‌کننده: {req.requesterName} • {req.requesterRole}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto">
+                <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
                   <div className="text-left">
-                    <span className="text-[10px] text-slate-500 block font-bold">پیش‌بینی بودجه:</span>
-                    <span className="text-sm font-black text-emerald-900">{formatTomanShort(req.estimatedBudget)}</span>
+                    <span className="text-xs text-slate-500 block font-bold">پیش‌بینی بودجه:</span>
+                    <span className="text-[15px] font-black text-emerald-950 font-mono">{formatTomanShort(req.estimatedBudget)} تومان</span>
                   </div>
-                  <span className={`text-xs px-3 py-1.5 rounded-xl font-black ${
-                    isExpanded ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-800'
+                  <span className={`h-8.5 px-3 rounded-xl text-xs font-black flex items-center justify-center shadow-2xs ${
+                    isExpanded ? 'btn-3d-gold text-[#2c1b04]' : 'bg-[#faf8f4] text-slate-800 border-2 border-[#dfc282]'
                   }`}>
                     {req.matchedSuppliers.length} استعلام آماده
                   </span>
@@ -402,46 +402,46 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
               {isExpanded && (
                 <div className="mt-4 pt-4 border-t border-[#ede6d8] space-y-4">
                   {/* Detailed Specs */}
-                  <div className="p-3 bg-[#fbf9f4] rounded-2xl border border-[#ded5c5] text-xs space-y-1">
-                    <span className="font-black text-slate-900 block">مشخصات فنی و شرایط تحویل:</span>
-                    <p className="text-slate-700 font-medium leading-relaxed">{req.specs}</p>
+                  <div className="p-3.5 bg-[#faf8f4] rounded-2xl border-2 border-[#dfc282] text-xs space-y-1">
+                    <span className="font-black text-slate-950 block text-[13px]">مشخصات فنی و شرایط تحویل:</span>
+                    <p className="text-slate-800 font-bold text-xs sm:text-[13px] leading-relaxed">{req.specs}</p>
                   </div>
 
                   {/* Matched Suppliers List */}
                   <div className="space-y-2.5">
-                    <span className="text-xs font-black text-slate-950 flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span className="text-[15px] font-black text-slate-950 flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-amber-700" />
                       استعلام‌های آنی متصل‌شده از پایگاه داده تأمین‌کنندگان:
                     </span>
 
                     {req.matchedSuppliers.map((sup) => (
                       <div
                         key={sup.id}
-                        className="p-3.5 rounded-2xl bg-white border-2 border-emerald-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        className="p-4 rounded-2xl bg-white border-2 border-[#dfc282] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-black text-xs text-slate-950">{sup.supplierName}</span>
-                            {sup.verified && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
+                            <span className="font-black text-[15px] text-slate-950">{sup.supplierName}</span>
+                            {sup.verified && <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />}
                           </div>
-                          <div className="flex items-center gap-2 text-[10.5px] text-slate-600 font-semibold">
+                          <div className="flex items-center gap-2 text-xs text-slate-700 font-bold">
                             <span>{sup.type === 'mine' ? 'سینه کار معدن' : sup.type === 'factory' ? 'درب کارخانه' : 'دفتر رسمی'}</span>
                             <span>• {sup.location}</span>
-                            <span className="text-amber-700 font-bold">★ {sup.rating}</span>
+                            <span className="text-amber-800 font-black">★ {sup.rating}</span>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between sm:justify-end gap-3">
                           <div className="text-left">
-                            <span className="text-xs font-black text-emerald-950 block">{formatTomanShort(sup.offeredPrice)}</span>
-                            <span className="text-[10px] text-slate-500 font-bold">{sup.unitPrice}</span>
+                            <span className="text-[15px] font-black text-emerald-950 block font-mono">{formatTomanShort(sup.offeredPrice)} تومان</span>
+                            <span className="text-xs text-slate-600 font-bold">{sup.unitPrice}</span>
                           </div>
 
                           <button
                             onClick={() => onEnterDealRoom(req.code)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-4 py-2.5 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                            className="h-9 px-4 btn-3d-gold text-[#2c1b04] font-black text-xs sm:text-[13px] rounded-xl shadow-2xs transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
                           >
-                            <Lock className="w-3.5 h-3.5" />
+                            <Lock className="w-3.5 h-3.5 stroke-[2.5]" />
                             <span>انتقال به اتاق معامله</span>
                           </button>
                         </div>
@@ -457,16 +457,16 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
 
       {/* New Request Modal */}
       {showNewModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl p-5 sm:p-6 w-full max-w-lg border border-[#ded5c5] shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto no-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm" dir="rtl">
+          <div className="bg-[#fbf9f4] rounded-[32px] p-5 sm:p-6 w-full max-w-lg border-2 border-[#dfc282] shadow-[0_20px_60px_rgba(160,118,48,0.25)] space-y-4 max-h-[90vh] overflow-y-auto no-scrollbar">
             <div className="flex items-center justify-between border-b border-[#ede6d8] pb-3">
-              <h3 className="font-black text-sm text-slate-950 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-amber-600" />
+              <h3 className="font-black text-base text-slate-950 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-700" />
                 <span>ثبت درخواست جدید و تطبیق هوشمند</span>
               </h3>
               <button
                 onClick={() => setShowNewModal(false)}
-                className="text-slate-400 hover:text-slate-800 text-sm font-black p-1"
+                className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center font-black text-sm cursor-pointer active:scale-95 shadow-2xs"
               >
                 ✕
               </button>
@@ -475,30 +475,30 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
             {formSuccess ? (
               <div className="p-6 text-center space-y-2">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
-                <h4 className="font-black text-sm text-emerald-950">درخواست شما با موفقیت ثبت شد</h4>
-                <p className="text-xs text-slate-600">موتور هوشمند در حال تطبیق با تأمین‌کنندگان و معادن می‌باشد.</p>
+                <h4 className="font-black text-base text-emerald-950">درخواست شما با موفقیت ثبت شد</h4>
+                <p className="text-[13px] text-slate-700 font-bold">موتور هوشمند در حال تطبیق با تأمین‌کنندگان و معادن می‌باشد.</p>
               </div>
             ) : (
               <form onSubmit={handleCreateRequest} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="font-bold text-slate-800 block mb-1">عنوان درخواست:</label>
+                  <label className="font-black text-[15px] text-slate-950 block mb-1">عنوان درخواست:</label>
                   <input
                     type="text"
                     required
                     placeholder="مثال: ۱۰۰۰ متر سنگ تراورتن عباس‌آباد یا رهن آپارتمان..."
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3.5 py-2.5 font-bold text-slate-950 focus:outline-none focus:border-amber-600"
+                    className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2.5 font-bold text-slate-950 text-[15px] focus:outline-none shadow-2xs"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="font-bold text-slate-800 block mb-1">دسته‌بندی تقاضا:</label>
+                    <label className="font-black text-xs text-slate-950 block mb-1">دسته‌بندی تقاضا:</label>
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value as any)}
-                      className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3 py-2.5 font-bold text-slate-950 focus:outline-none focus:border-amber-600 cursor-pointer"
+                      className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3 py-2.5 font-bold text-slate-950 text-xs focus:outline-none cursor-pointer shadow-2xs"
                     >
                       <option value="stone">سنگ و کوپ معدنی</option>
                       <option value="tile">کاشی و سرامیک</option>
@@ -510,54 +510,54 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
                   </div>
 
                   <div>
-                    <label className="font-bold text-slate-800 block mb-1">متراژ / حجم مورد نیاز:</label>
+                    <label className="font-black text-xs text-slate-950 block mb-1">متراژ / حجم مورد نیاز:</label>
                     <input
                       type="text"
                       placeholder="مثال: ۱۲۰۰ متر یا ۴۰ تن"
                       value={newVolume}
                       onChange={(e) => setNewVolume(e.target.value)}
-                      className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3 py-2.5 font-bold text-slate-950 focus:outline-none focus:border-amber-600"
+                      className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3 py-2.5 font-bold text-slate-950 text-xs focus:outline-none shadow-2xs"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="font-bold text-slate-800 block mb-1">شهر مقصد تحویل:</label>
+                    <label className="font-black text-xs text-slate-950 block mb-1">شهر مقصد تحویل:</label>
                     <input
                       type="text"
                       value={newCity}
                       onChange={(e) => setNewCity(e.target.value)}
-                      className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3 py-2.5 font-bold text-slate-950 focus:outline-none focus:border-amber-600"
+                      className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3 py-2.5 font-bold text-slate-950 text-xs focus:outline-none shadow-2xs"
                     />
                   </div>
 
                   <div>
-                    <label className="font-bold text-slate-800 block mb-1">سقف بودجه تقریبی (تومان):</label>
+                    <label className="font-black text-xs text-slate-950 block mb-1">سقف بودجه تقریبی (تومان):</label>
                     <input
                       type="number"
                       placeholder="مثال: ۱۵۰۰۰۰۰۰۰۰"
                       value={newBudget}
                       onChange={(e) => setNewBudget(e.target.value)}
-                      className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3 py-2.5 font-bold text-slate-950 focus:outline-none focus:border-amber-600"
+                      className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3 py-2.5 font-bold text-slate-950 text-xs focus:outline-none shadow-2xs"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-800 block mb-1">مشخصات ابعاد و ویژگی‌های فنی:</label>
+                  <label className="font-black text-xs text-slate-950 block mb-1">مشخصات ابعاد و ویژگی‌های فنی:</label>
                   <textarea
                     rows={2}
                     placeholder="ابعاد، درجه کیفیت، شرایط تخلیه و تحویل پای کارگاه..."
                     value={newSpecs}
                     onChange={(e) => setNewSpecs(e.target.value)}
-                    className="w-full bg-[#fbf9f4] border border-[#ded5c5] rounded-xl px-3.5 py-2 font-bold text-slate-950 focus:outline-none focus:border-amber-600"
+                    className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2 font-bold text-slate-950 text-xs focus:outline-none shadow-2xs"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3 rounded-2xl shadow-md transition-colors cursor-pointer mt-2"
+                  className="w-full h-10 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl shadow-2xs transition-all active:scale-95 cursor-pointer mt-2"
                 >
                   ثبت درخواست و شروع تطبیق خودکار
                 </button>

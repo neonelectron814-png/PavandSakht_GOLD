@@ -46,7 +46,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           }`}
         >
           <User className={`w-4.5 h-4.5 transition-colors ${isProfile ? 'stroke-[2.5] text-[#9a7024]' : 'stroke-[2] text-[#a88243]'}`} />
-          <span className={`text-[10px] mt-0.5 ${isProfile ? 'font-black text-[#845c1a]' : 'font-bold text-[#916b2c]'}`}>
+          <span className={`text-[11.5px] mt-0.5 ${isProfile ? 'font-black text-[#845c1a]' : 'font-extrabold text-[#7c561b]'}`}>
             پروفایل
           </span>
         </button>
@@ -61,28 +61,28 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <div className="relative">
             <MessageSquare className={`w-4.5 h-4.5 transition-colors ${isNotifications ? 'stroke-[2.5] text-[#9a7024]' : 'stroke-[2] text-[#a88243]'}`} />
             {unreadNotificationsCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 w-3.5 h-3.5 bg-amber-600 text-white text-[8.5px] font-black rounded-full flex items-center justify-center shadow-xs">
+              <span className="absolute -top-1 -right-1.5 w-3.5 h-3.5 bg-amber-600 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs">
                 {toPersianDigits(unreadNotificationsCount)}
               </span>
             )}
           </div>
-          <span className={`text-[10px] mt-0.5 ${isNotifications ? 'font-black text-[#845c1a]' : 'font-bold text-[#916b2c]'}`}>
+          <span className={`text-[11.5px] mt-0.5 ${isNotifications ? 'font-black text-[#845c1a]' : 'font-extrabold text-[#7c561b]'}`}>
             پیام‌ها
           </span>
         </button>
 
         {/* 3. Center Highlighted Button: ثبت آگهی with Golden Circle & White Plus */}
-        <div className="flex-1 flex flex-col items-center justify-center -mt-4 relative">
+        <div className="flex-1 flex flex-col items-center justify-center -mt-3.5 relative">
           <motion.button
             whileTap={{ scale: 0.92 }}
             whileHover={{ y: -2 }}
             onClick={onOpenSubmitModal}
-            className="w-12 h-12 rounded-full btn-3d-gold flex items-center justify-center text-[#221503] cursor-pointer transition-transform ring-3 ring-white shadow-xl"
+            className="w-11 h-11 rounded-full btn-3d-gold flex items-center justify-center text-[#221503] cursor-pointer transition-transform ring-2 ring-white shadow-lg"
             aria-label="ثبت آگهی جدید"
           >
-            <Plus className="w-6 h-6 stroke-[3.2] text-[#221503]" />
+            <Plus className="w-5.5 h-5.5 stroke-[3] text-[#221503]" />
           </motion.button>
-          <span className="text-[10px] font-black mt-0.5 text-[#5e3e09] tracking-tight">
+          <span className="text-[11.5px] font-black mt-0.5 text-[#5e3e09] tracking-tight">
             ثبت آگهی
           </span>
         </div>
@@ -95,7 +95,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           }`}
         >
           <LayoutGrid className={`w-4.5 h-4.5 transition-colors ${isCategories ? 'stroke-[2.5] text-[#9a7024]' : 'stroke-[2] text-[#a88243]'}`} />
-          <span className={`text-[10px] mt-0.5 ${isCategories ? 'font-black text-[#845c1a]' : 'font-bold text-[#916b2c]'}`}>
+          <span className={`text-[11.5px] mt-0.5 ${isCategories ? 'font-black text-[#845c1a]' : 'font-extrabold text-[#7c561b]'}`}>
             دسته‌بندی‌ها
           </span>
         </button>
@@ -108,7 +108,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           }`}
         >
           <Home className={`w-4.5 h-4.5 transition-colors ${isHome ? 'stroke-[2.5] text-[#9a7024] fill-[#caa758]' : 'stroke-[2] text-[#a88243]'}`} />
-          <span className={`text-[10px] mt-0.5 ${isHome ? 'font-black text-[#845c1a]' : 'font-bold text-[#916b2c]'}`}>
+          <span className={`text-[11.5px] mt-0.5 ${isHome ? 'font-black text-[#845c1a]' : 'font-extrabold text-[#7c561b]'}`}>
             خانه
           </span>
         </button>

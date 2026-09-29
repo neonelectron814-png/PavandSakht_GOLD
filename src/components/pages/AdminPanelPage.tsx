@@ -33,18 +33,18 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
   const verifiedProperties = properties.filter((p) => p.verifiedStatus === 'verified');
 
   return (
-    <div className="space-y-6 pb-12 text-[#1c1d22]">
+    <div className="space-y-6 pb-12 text-[#1c1d22]" dir="rtl">
       
-      {/* Header Banner */}
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-[#ded5c5] space-y-3 relative overflow-hidden shadow-xs">
+      {/* Header Banner (Full Framed 3D Gold Box) */}
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-3 relative overflow-hidden shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
         <div className="relative z-10 flex items-center justify-between">
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-rose-50 text-rose-900 border border-rose-200 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-rose-600" />
+            <div className="inline-flex items-center gap-1.5 btn-3d-gold text-[#2c1b04] px-3.5 py-1 rounded-xl text-xs font-black mb-2 shadow-2xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-800 stroke-[2.5]" />
               <span>پنل ارشد مدیریت و نظارت ثبتی پیوندساخت</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900">مدیریت اعتبارسنجی اسناد، کاربران و کمیسیون</h1>
-            <p className="text-xs text-slate-600 font-medium mt-1 max-w-xl">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-950">مدیریت اعتبارسنجی اسناد، کاربران و کمیسیون</h1>
+            <p className="text-[15px] text-slate-700 font-bold mt-1 max-w-xl leading-relaxed">
               بررسی کارشناسی سند، استعلام ثبت، مدیریت گزارش‌های تخلف و تنظیمات حقوقی پلتفرم.
             </p>
           </div>
@@ -53,24 +53,24 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
 
       {/* Stats Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
-          <span className="text-[10px] text-slate-500 font-bold">فایل‌های نیازمند تأیید:</span>
-          <p className="text-xl font-black text-amber-700">{toPersianDigits(pendingProperties.length)} فایل</p>
+        <div className="bg-white p-4.5 rounded-[24px] border-2 border-[#dfc282] space-y-1 shadow-[0_4px_16px_rgba(180,130,40,0.08)]">
+          <span className="text-xs text-slate-600 font-bold">فایل‌های نیازمند تأیید:</span>
+          <p className="text-xl font-black text-amber-900">{toPersianDigits(pendingProperties.length)} فایل</p>
         </div>
 
-        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
-          <span className="text-[10px] text-slate-500 font-bold">فایل‌های فعال سالم:</span>
-          <p className="text-xl font-black text-emerald-700">{toPersianDigits(verifiedProperties.length)} فایل</p>
+        <div className="bg-white p-4.5 rounded-[24px] border-2 border-[#dfc282] space-y-1 shadow-[0_4px_16px_rgba(180,130,40,0.08)]">
+          <span className="text-xs text-slate-600 font-bold">فایل‌های فعال سالم:</span>
+          <p className="text-xl font-black text-emerald-800">{toPersianDigits(verifiedProperties.length)} فایل</p>
         </div>
 
-        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
-          <span className="text-[10px] text-slate-500 font-bold">گزارش تخلف فعال:</span>
-          <p className="text-xl font-black text-rose-600">{toPersianDigits(1)} مورد</p>
+        <div className="bg-white p-4.5 rounded-[24px] border-2 border-[#dfc282] space-y-1 shadow-[0_4px_16px_rgba(180,130,40,0.08)]">
+          <span className="text-xs text-slate-600 font-bold">گزارش تخلف فعال:</span>
+          <p className="text-xl font-black text-rose-700">{toPersianDigits(1)} مورد</p>
         </div>
 
-        <div className="bg-white p-4.5 rounded-3xl border border-[#ded5c5] text-xs space-y-1 shadow-xs">
-          <span className="text-[10px] text-slate-500 font-bold">نرخ کمیسیون مصوب:</span>
-          <p className="text-xl font-black text-slate-900 font-mono">{toPersianDigits(commissionRate)}٪ درصد</p>
+        <div className="bg-white p-4.5 rounded-[24px] border-2 border-[#dfc282] space-y-1 shadow-[0_4px_16px_rgba(180,130,40,0.08)]">
+          <span className="text-xs text-slate-600 font-bold">نرخ کمیسیون مصوب:</span>
+          <p className="text-xl font-black text-slate-950 font-mono">{toPersianDigits(commissionRate)}٪ درصد</p>
         </div>
       </div>
 
@@ -78,10 +78,10 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
       <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
             activeTab === 'pending'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
-              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
           در انتظار اعتبارسنجی ({toPersianDigits(pendingProperties.length)})
@@ -89,10 +89,10 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
 
         <button
           onClick={() => setActiveTab('reports')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
             activeTab === 'reports'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
-              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
           گزارش‌های تخلف و فایل فیک
@@ -100,10 +100,10 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
 
         <button
           onClick={() => setActiveTab('settings')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
             activeTab === 'settings'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs font-black'
-              : 'bg-white text-slate-700 hover:text-slate-950 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282] shadow-2xs'
           }`}
         >
           تنظیمات نرخ و قوانین حقوقی
@@ -114,51 +114,51 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
       {activeTab === 'pending' && (
         <div className="space-y-4">
           {pendingProperties.length === 0 ? (
-            <div className="bg-white p-8 rounded-3xl border border-[#ded5c5] text-center text-xs text-slate-500 font-bold">
+            <div className="bg-white p-8 rounded-[28px] border-2 border-[#dfc282] text-center text-[15px] text-slate-600 font-bold shadow-[0_4px_16px_rgba(180,130,40,0.08)]">
               هیچ فایلی در انتظار اعتبارسنجی وجود ندارد.
             </div>
           ) : (
             pendingProperties.map((p) => (
-              <div key={p.id} className="bg-white p-5 rounded-3xl border border-[#ded5c5] shadow-xs space-y-4">
+              <div key={p.id} className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#eee7db] pb-3">
                   <div>
-                    <span className="text-[10px] bg-amber-50 text-amber-900 font-mono font-bold px-2.5 py-0.5 rounded-md border border-amber-300">
+                    <span className="text-xs bg-[#faf8f4] text-slate-900 font-mono font-bold px-2.5 py-0.5 rounded-lg border border-[#e6dfd3]">
                       {p.code}
                     </span>
-                    <h3 className="font-black text-sm text-slate-900 mt-1">{p.title}</h3>
+                    <h3 className="font-black text-base text-slate-950 mt-1">{p.title}</h3>
                   </div>
-                  <span className="text-sm font-black text-slate-900">{formatTomanShort(p.price)}</span>
+                  <span className="text-[15px] font-black text-amber-950 font-mono">{formatTomanShort(p.price)} تومان</span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-[#faf8f4] p-3.5 rounded-2xl border border-[#ded5c5]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-[#faf8f4] p-3.5 rounded-2xl border-2 border-[#e6dfd3]">
                   <div>
-                    <span className="text-slate-500 block font-bold">مالک:</span>
-                    <span className="font-black text-slate-900">{p.ownerName}</span>
+                    <span className="text-slate-600 block font-bold text-xs">مالک:</span>
+                    <span className="font-black text-slate-950 text-[15px]">{p.ownerName}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block font-bold">نوع سند:</span>
-                    <span className="font-black text-slate-900">{p.documentType || 'سند تک‌برگ'}</span>
+                    <span className="text-slate-600 block font-bold text-xs">نوع سند:</span>
+                    <span className="font-black text-slate-950 text-[15px]">{p.documentType || 'سند تک‌برگ'}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block font-bold">موقعیت:</span>
-                    <span className="font-black text-slate-900">{p.city} - {p.district}</span>
+                    <span className="text-slate-600 block font-bold text-xs">موقعیت:</span>
+                    <span className="font-black text-slate-950 text-[15px]">{p.city} - {p.district}</span>
                   </div>
                 </div>
 
                 <div className="flex gap-2 justify-end pt-1">
                   <button
                     onClick={() => onRejectProperty(p.id)}
-                    className="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-colors border border-rose-300 cursor-pointer"
+                    className="h-9 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 font-black text-[15px] flex items-center gap-1.5 transition-colors border-2 border-rose-300 cursor-pointer shadow-2xs active:scale-95"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4 stroke-[2.5]" />
                     <span>رد و اخطار نقص مدرک</span>
                   </button>
 
                   <button
                     onClick={() => onVerifyProperty(p.id)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-5 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                    className="h-9 px-4.5 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl flex items-center gap-1.5 transition-transform shadow-2xs cursor-pointer active:scale-95"
                   >
-                    <Check className="w-4 h-4" />
+                    <Check className="w-4 h-4 stroke-[3]" />
                     <span>تأیید و الصاق نشان اعتبارسنجی</span>
                   </button>
                 </div>
@@ -169,19 +169,19 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
       )}
 
       {activeTab === 'settings' && (
-        <div className="bg-white p-6 rounded-3xl border border-[#ded5c5] shadow-xs space-y-4">
-          <h3 className="text-sm font-black text-slate-900 border-b border-[#eee7db] pb-3">تنظیمات حقوقی و کمیسیون</h3>
+        <div className="bg-white p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4">
+          <h3 className="text-base font-black text-slate-950 border-b border-[#eee7db] pb-3">تنظیمات حقوقی و کمیسیون</h3>
           <div className="max-w-md space-y-3 text-xs">
-            <label className="block text-slate-700 font-bold">درصد کمیسیون مصوب سامانه:</label>
+            <label className="block text-slate-800 font-black text-[15px]">درصد کمیسیون مصوب سامانه:</label>
             <div className="flex items-center gap-3">
               <input
                 type="number"
                 step="0.1"
                 value={commissionRate}
                 onChange={(e) => setCommissionRate(Number(e.target.value))}
-                className="w-32 bg-white border border-[#ded5c5] rounded-xl px-3.5 py-2.5 font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                className="w-32 bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-2 font-black text-slate-950 text-[15px] focus:outline-none shadow-2xs"
               />
-              <span className="font-bold text-slate-600">درصد (قانونی)</span>
+              <span className="font-black text-[15px] text-slate-700">درصد (قانونی)</span>
             </div>
           </div>
         </div>

@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
 import { 
-  HardHat, 
   Mountain, 
   Truck, 
   Pickaxe, 
   CheckCircle2, 
   Phone, 
   MapPin, 
-  Briefcase, 
-  Sparkles, 
   ShieldCheck, 
-  Filter, 
-  Calendar,
-  Layers,
-  Award
+  HardHat, 
+  Search
 } from 'lucide-react';
-import { formatToman, formatTomanShort, toPersianDigits, maskPhoneNumber } from '../../utils/formatters';
+import { maskPhoneNumber } from '../../utils/formatters';
 
 interface MiningAndCivilItem {
   id: string;
@@ -33,7 +28,6 @@ interface MiningAndCivilItem {
 }
 
 const mockCivilData: MiningAndCivilItem[] = [
-  // 1. Mines
   {
     id: 'mine-1',
     category: 'mines',
@@ -76,8 +70,6 @@ const mockCivilData: MiningAndCivilItem[] = [
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=700',
     tags: ['پوکه سبک', 'عایق صوتی و حرارتی', 'شیب‌بندی بام'],
   },
-
-  // 2. Heavy Machinery
   {
     id: 'mach-1',
     category: 'machinery',
@@ -89,44 +81,28 @@ const mockCivilData: MiningAndCivilItem[] = [
     pricing: 'اجاره ماهانه یا متری توافقی',
     rating: 4.9,
     verified: true,
-    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&q=80&w=700',
-    tags: ['بیل مکانیکی', 'پیکور سنگین', 'گودبرداری عمیق'],
+    image: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&q=80&w=700',
+    tags: ['بیل مکانیکی', 'پیکور سنگین', 'گودبرداری'],
   },
   {
     id: 'mach-2',
     category: 'machinery',
-    title: 'تاورکرین ۱۰ تن پتان فرانسوی با خودنصب',
-    subtitle: 'ارتفاع خودایستا تا ۶۵ متر، با دفترچه بازرسی فنی معتبر و بیمه مسئولیت',
-    location: 'تهران - منطقه ۱ و ۲',
+    title: 'اجاره تاورکرین پتن ۱۲ و ۱۶ تن فرانسوی (Tower Crane)',
+    subtitle: 'مونتاژ، دمونتاژ، اپراتوری، بیمه کامل و اخذ سرتیفیکیت استاندارد فنی ادواری',
+    location: 'تهران، کرج و شمال کشور',
     phone: '09128889900',
-    capacityOrSpec: 'طول فلش ۶۰ متر، نوک فلش ۲.۵ تن',
-    pricing: 'اجاره ماهیانه ۱۸۰,۰۰۰,۰۰۰ تومان',
+    capacityOrSpec: 'طول فلش ۶۰ متر - تناژ نوک فلش ۲.۵ تن',
+    pricing: 'اجاره ماهانه با تیم نگهداری مقیم',
     rating: 5.0,
     verified: true,
-    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=700',
-    tags: ['جرثقیل برجی', 'استاندارد ایمنی', 'مونتاژ و دمونتاژ'],
+    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&q=80&w=700',
+    tags: ['تاورکرین پتن', 'جرثقیل برجی', 'دارای سرتیفیکیت'],
   },
-  {
-    id: 'mach-3',
-    category: 'machinery',
-    title: 'لودر کاترپیلار ۹۶۶ و ۹۸۸ جهت بارگیری و معدن',
-    subtitle: 'مخصوص بارگیری شن و ماسه، باطله‌برداری معادن و تسطیح محوطه کارگاهی',
-    location: 'اصفهان و یزد',
-    phone: '09132223344',
-    capacityOrSpec: 'موتور اورهال، آماده شیفت کاری سنگین',
-    pricing: 'شیفتی یا ماهانه بر اساس قرارداد',
-    rating: 4.8,
-    verified: true,
-    image: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&q=80&w=700',
-    tags: ['لودر سنگین', 'باطله‌برداری', 'بارگیری معدن'],
-  },
-
-  // 3. Civil Contractors
   {
     id: 'civ-1',
     category: 'civil_contractors',
-    title: 'شرکت راه‌سازی و آسفالت‌کاری پیشگامان عمران',
-    subtitle: 'اجرای آسفالت مکانیزه با فینیشر، زیرسازی، جدول‌گذاری بتنی و محوطه‌سازی کارخانجات',
+    title: 'شرکت راه‌سازی و زیرساخت آسفالت آریا بتن',
+    subtitle: 'پیمانکاری آسفالت، خاک‌ریزی، تسطیح، زیرسازی شهرک‌های صنعتی و معابر شهری با فینیشر',
     location: 'تهران، البرز و قزوین',
     phone: '02188990011',
     capacityOrSpec: 'تولید و پخش آسفالت توپکا و بیندر',
@@ -150,8 +126,6 @@ const mockCivilData: MiningAndCivilItem[] = [
     image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&q=80&w=700',
     tags: ['نیلینگ', 'سازه نگهبان', 'تاییدیه نظام مهندسی'],
   },
-
-  // 4. Craftsmen
   {
     id: 'crf-1',
     category: 'craftsmen',
@@ -194,41 +168,40 @@ export const CraftsmenPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-20 text-[#111827]" dir="rtl">
-      
-      {/* Header Banner */}
-      <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#ded5c5] space-y-3 relative overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+      {/* Header Banner Card (Full Framed 3D Gold Box) */}
+      <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-3 relative overflow-hidden shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-950 border border-amber-300 px-3.5 py-1 rounded-full text-xs font-black mb-2 shadow-xs">
-              <Mountain className="w-3.5 h-3.5 text-amber-700" />
+            <div className="inline-flex items-center gap-1.5 btn-3d-gold text-[#2c1b04] px-3.5 py-1 rounded-xl text-xs font-black mb-2 shadow-2xs">
+              <Mountain className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>پیوند عمران، معادن و ماشین‌آلات سنگین</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-black text-slate-950">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-950">
               شبکه جامع معادن، ماشین‌آلات راه و معدن و پیمانکاران اجرایی
             </h1>
-            <p className="text-xs text-slate-700 font-semibold mt-1 max-w-2xl leading-relaxed">
+            <p className="text-[15px] text-slate-700 font-bold mt-1 max-w-2xl leading-relaxed">
               ارتباط مستقیم با معدن‌داران سنگ و شن و ماسه، ماشین‌آلات سنگین (بیل مکانیکی، لودر، تاورکرین)، پیمانکاران راه‌سازی و استادکاران دارای رتبه‌بندی رسمی.
             </p>
           </div>
 
-          <div className="bg-[#fffcf7] p-3.5 rounded-2xl border border-amber-200 text-xs space-y-1 shrink-0 text-center">
-            <span className="text-[10px] text-slate-600 font-bold block">هسته اصلی تولید:</span>
-            <span className="font-black text-amber-950 text-xs flex items-center justify-center gap-1">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          <div className="bg-[#fffcf7] p-3.5 rounded-2xl border-2 border-[#dfc282] text-xs space-y-1 shrink-0 text-center shadow-2xs">
+            <span className="text-xs text-slate-600 font-bold block">هسته اصلی تولید:</span>
+            <span className="font-black text-amber-950 text-[15px] flex items-center justify-center gap-1">
+              <ShieldCheck className="w-4.5 h-4.5 text-emerald-700" />
               تأییدیه پروانه بهره‌برداری
             </span>
           </div>
         </div>
       </div>
 
-      {/* 4 Pillars Navigation Bar */}
+      {/* 4 Pillars Navigation Bar (Compact 3D Gold Buttons, 15px Font) */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
         <button
           onClick={() => setActiveCategory('all')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
             activeCategory === 'all'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
           }`}
         >
           تمام بخش‌های عمران و معدن
@@ -236,50 +209,50 @@ export const CraftsmenPage: React.FC = () => {
 
         <button
           onClick={() => setActiveCategory('mines')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'mines'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
           }`}
         >
-          <Mountain className="w-3.5 h-3.5" />
-          <span>معدن‌دارها و استخراج</span>
+          <Pickaxe className="w-4 h-4 text-amber-800" />
+          <span>معادن سنگ و مصالح</span>
         </button>
 
         <button
           onClick={() => setActiveCategory('machinery')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'machinery'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
           }`}
         >
-          <Truck className="w-3.5 h-3.5" />
-          <span>بیل مکانیکی و ماشین‌آلات</span>
+          <Truck className="w-4 h-4 text-amber-800" />
+          <span>ماشین‌آلات سنگین و تاورکرین</span>
         </button>
 
         <button
           onClick={() => setActiveCategory('civil_contractors')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'civil_contractors'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
           }`}
         >
-          <Briefcase className="w-3.5 h-3.5" />
-          <span>راه‌سازی، گود و جدول‌کشی</span>
+          <HardHat className="w-4 h-4 text-amber-800" />
+          <span>پیمانکاران خاک‌برداری و نیلینگ</span>
         </button>
 
         <button
           onClick={() => setActiveCategory('craftsmen')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
             activeCategory === 'craftsmen'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm'
-              : 'bg-white hover:bg-slate-50 text-slate-800 border border-[#ded5c5]'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
           }`}
         >
-          <HardHat className="w-3.5 h-3.5" />
-          <span>استادکاران و مهندسان مجری</span>
+          <HardHat className="w-4 h-4 text-amber-800" />
+          <span>استادکاران و اکیپ اجرایی</span>
         </button>
       </div>
 
@@ -288,10 +261,10 @@ export const CraftsmenPage: React.FC = () => {
         {filteredItems.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-3xl p-5 border border-[#ded5c5] shadow-[0_2px_12px_rgba(0,0,0,0.04)] space-y-4 flex flex-col justify-between"
+            className="bg-white rounded-[28px] p-5 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4 flex flex-col justify-between hover:shadow-xl transition-all"
           >
             <div className="space-y-3">
-              {/* Image & Badges */}
+              {/* Image & Category Tag */}
               <div className="relative h-44 rounded-2xl overflow-hidden">
                 <img
                   src={item.image}
@@ -299,70 +272,69 @@ export const CraftsmenPage: React.FC = () => {
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
-                <span className="absolute top-2.5 right-2.5 bg-slate-900/90 text-white text-[10px] font-black px-2.5 py-1 rounded-xl backdrop-blur-md">
+                <span className="absolute top-2.5 right-2.5 bg-slate-900/90 text-white text-xs font-black px-2.5 py-1 rounded-xl backdrop-blur-md">
                   {item.category === 'mines' && 'معدن‌دار رسمی'}
                   {item.category === 'machinery' && 'ماشین‌آلات عمرانی'}
                   {item.category === 'civil_contractors' && 'پیمانکار زیرساخت'}
                   {item.category === 'craftsmen' && 'استادکار مجرب'}
                 </span>
-                <span className="absolute bottom-2.5 left-2.5 bg-amber-500 text-slate-950 font-black text-[10px] px-2.5 py-1 rounded-xl shadow-md flex items-center gap-1">
+                <span className="absolute bottom-2.5 left-2.5 btn-3d-gold text-[#2c1b04] font-black text-xs px-2.5 py-1 rounded-xl shadow-md flex items-center gap-1">
                   <span>★ {item.rating}</span>
                 </span>
               </div>
 
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="font-black text-sm text-slate-950">{item.title}</h3>
+                  <h3 className="font-black text-base text-slate-950">{item.title}</h3>
                   {item.verified && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
                 </div>
-                <p className="text-[11px] text-slate-600 font-semibold mt-1 leading-relaxed">
+                <p className="text-[13px] text-slate-700 font-bold mt-1 leading-relaxed">
                   {item.subtitle}
                 </p>
               </div>
 
               {/* Specs & Pricing */}
-              <div className="p-3 bg-[#fbf9f4] rounded-2xl border border-[#ded5c5] space-y-1.5 text-xs">
+              <div className="p-3.5 bg-[#faf8f4] rounded-2xl border-2 border-[#e6dfd3] space-y-1.5 text-xs">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-600 font-bold">موقعیت و لوکیشن:</span>
-                  <span className="font-bold text-slate-900 flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                  <span className="text-slate-600 font-bold text-xs">موقعیت و لوکیشن:</span>
+                  <span className="font-bold text-slate-950 flex items-center gap-1 text-[13px]">
+                    <MapPin className="w-4 h-4 text-amber-800" />
                     {item.location}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-600 font-bold">مشخصات / ظرفیت:</span>
-                  <span className="font-bold text-slate-900">{item.capacityOrSpec}</span>
+                  <span className="text-slate-600 font-bold text-xs">مشخصات / ظرفیت:</span>
+                  <span className="font-bold text-slate-950 text-[13px]">{item.capacityOrSpec}</span>
                 </div>
                 <div className="flex justify-between items-center border-t border-[#ede6d8] pt-1.5">
-                  <span className="text-slate-600 font-bold">نرخ / شرایط همکاری:</span>
-                  <span className="font-black text-emerald-900">{item.pricing}</span>
+                  <span className="text-slate-600 font-bold text-xs">نرخ / شرایط همکاری:</span>
+                  <span className="font-black text-emerald-900 text-[15px]">{item.pricing}</span>
                 </div>
               </div>
 
               {/* Tags */}
               <div className="flex flex-wrap gap-1.5">
                 {item.tags.map((tag, idx) => (
-                  <span key={idx} className="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-lg">
+                  <span key={idx} className="text-xs bg-amber-50 text-amber-950 font-black px-2.5 py-1 rounded-lg border border-amber-200">
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Direct Contact Button */}
+            {/* Direct Contact Button (Compact, 15px Font Size) */}
             <div className="pt-2">
               <a
                 href={`tel:${item.phone}`}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-black py-3 rounded-2xl flex items-center justify-center gap-2 shadow-md transition-colors"
+                className="w-full h-10 btn-3d-gold text-[#2c1b04] text-[15px] font-black rounded-xl flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-transform"
               >
-                <Phone className="w-4 h-4 text-amber-400" />
+                <Phone className="w-4 h-4 stroke-[2.5]" />
                 <span>تماس مستقیم با تأمین‌کننده ({maskPhoneNumber(item.phone)})</span>
               </a>
             </div>
           </div>
         ))}
       </div>
-
     </div>
   );
 };

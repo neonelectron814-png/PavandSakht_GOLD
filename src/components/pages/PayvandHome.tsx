@@ -14,17 +14,21 @@ import {
   Clock,
   LogOut
 } from 'lucide-react';
-import { SvgGoldDefs, PayvandLogoV3, GoldenInstallment3D, GoldenAiMatch3D } from '../common/Golden3DIcons';
+import { 
+  SvgGoldDefs, 
+  PayvandLogoV3, 
+  GoldenVilla3D,
+  GoldenHandshake3D,
+  GoldenMaterials3D,
+  GoldenIndustrial3D,
+  GoldenGavel3D,
+  GoldenExcavator3D,
+  GoldenDocumentSearch3D,
+  GoldenEngineer3D,
+  GoldenInstallment3D, 
+  GoldenAiMatch3D 
+} from '../common/Golden3DIcons';
 import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
-
-import factoryIconImg from '../../assets/images/gold_factory_icon_1790348345530.jpg';
-import materialsIconImg from '../../assets/images/gold_materials_icon_1790348354545.jpg';
-import handshakeIconImg from '../../assets/images/gold_handshake_icon_1790348362919.jpg';
-import villaIconImg from '../../assets/images/gold_villa_icon_1790348371720.jpg';
-import documentIconImg from '../../assets/images/gold_document_icon_1790348381782.jpg';
-import gavelIconImg from '../../assets/images/gold_gavel_icon_1790348390844.jpg';
-import excavatorIconImg from '../../assets/images/gold_excavator_icon_1790348400260.jpg';
-import engineerIconImg from '../../assets/images/gold_engineer_icon_1790348408949.jpg';
 
 interface PayvandHomeProps {
   onNavigateTab: (tab: string) => void;
@@ -36,6 +40,7 @@ interface PayvandHomeProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   onLogout?: () => void;
+  onOpenLiveFeed?: () => void;
 }
 
 export const PayvandHome: React.FC<PayvandHomeProps> = ({
@@ -48,6 +53,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
   searchQuery,
   setSearchQuery,
   onLogout,
+  onOpenLiveFeed,
 }) => {
   const [internalSearch, setInternalSearch] = useState(searchQuery);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -86,7 +92,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'real_estate',
       title: 'املاک و مستغلات',
       subtitle: 'رهن، اجاره و فروش',
-      image: villaIconImg,
+      isComponent: true,
+      component: GoldenVilla3D,
       badge: 'رهن و فروش',
       action: () => onNavigateTab('market'),
     },
@@ -95,7 +102,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'participation',
       title: 'مشارکت در ساخت',
       subtitle: 'مالکین و سازندگان',
-      image: handshakeIconImg,
+      isComponent: true,
+      component: GoldenHandshake3D,
       badge: 'سازندگان رتبه‌دار',
       action: () => onNavigateTab('partnership'),
     },
@@ -104,7 +112,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'materials_mines',
       title: 'مصالح و متریال',
       subtitle: 'کاشی، فولاد، سیمان و...',
-      image: materialsIconImg,
+      isComponent: true,
+      component: GoldenMaterials3D,
       badge: 'قیمت بورس',
       action: () => onNavigateTab('materials'),
     },
@@ -113,7 +122,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'industrial',
       title: 'کارخانجات و شهرک‌ها',
       subtitle: 'خرید مستقیم تولیدکننده',
-      image: factoryIconImg,
+      isComponent: true,
+      component: GoldenIndustrial3D,
       badge: 'تولید دست اول',
       action: () => onNavigateTab('materials'),
     },
@@ -122,7 +132,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'auctions_deals',
       title: 'فرصت‌های طلایی',
       subtitle: 'مزایدات و نرخ‌شکن',
-      image: gavelIconImg,
+      isComponent: true,
+      component: GoldenGavel3D,
       badge: 'زیر قیمت',
       action: () => onNavigateTab('rate_cutter'),
     },
@@ -131,7 +142,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'machinery',
       title: 'پیوند عمران و معادن',
       subtitle: 'ماشین‌آلات سنگین و معدن',
-      image: excavatorIconImg,
+      isComponent: true,
+      component: GoldenExcavator3D,
       badge: 'تجهیزات راه و معدن',
       action: () => onNavigateTab('craftsmen'),
     },
@@ -140,7 +152,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'inquiry',
       title: 'استعلام قیمت و متراژ',
       subtitle: 'شاخص آهن، سیمان و ملک',
-      image: documentIconImg,
+      isComponent: true,
+      component: GoldenDocumentSearch3D,
       badge: 'داده زنده',
       action: () => onNavigateTab('price_data'),
     },
@@ -149,7 +162,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       id: 'contractors',
       title: 'پیمانکاران و مجریان',
       subtitle: 'استادکاران و مهندسین',
-      image: engineerIconImg,
+      isComponent: true,
+      component: GoldenEngineer3D,
       badge: 'مجریان ذیصلاح',
       action: () => onNavigateTab('craftsmen'),
     },
@@ -192,35 +206,35 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
           className="flex items-center cursor-pointer p-0.5 select-none z-20 group"
           title="پیوندساخت - صفحه اصلی"
         >
-          <div className="w-16 h-16 sm:w-18 sm:h-18 shrink-0 flex items-center justify-center">
-            <PayvandLogoV3 className="w-full h-full object-contain" />
+          <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 flex items-center justify-center">
+            <PayvandLogoV3 className="w-16 h-16 sm:w-[72px] sm:h-[72px] object-contain" />
           </div>
         </motion.button>
 
-        {/* Left side in RTL: 3D Gold Logout Button & Notification Bell Button */}
-        <div className="flex items-center gap-2 z-20">
+        {/* Left side in RTL: 3D Gold Logout Button & Notification Bell Button (Smaller, Sleeker) */}
+        <div className="flex items-center gap-1.5 z-20">
           {onLogout && (
             <motion.button
               whileTap={{ scale: 0.92 }}
               onClick={onLogout}
-              className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-sm"
+              className="w-8.5 h-8.5 rounded-xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-2xs"
               aria-label="خروج از حساب"
               title="خروج و رفتن به صفحه ورود/ثبت‌نام"
             >
-              <LogOut className="w-5 h-5 stroke-[2.5] text-[#782020] hover:text-[#9e1c1c] transition-colors" />
+              <LogOut className="w-4 h-4 stroke-[2.5] text-[#782020] hover:text-[#9e1c1c] transition-colors" />
             </motion.button>
           )}
 
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={onOpenNotifications}
-            className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-sm"
+            className="w-8.5 h-8.5 rounded-xl btn-3d-gold flex items-center justify-center relative cursor-pointer shrink-0 shadow-2xs"
             aria-label="اعلان‌ها"
             title="اعلانات و پیام‌ها"
           >
-            <Bell className="w-5 h-5 stroke-[2.5] text-[#2c1b04]" />
+            <Bell className="w-4 h-4 stroke-[2.5] text-[#2c1b04]" />
             {unreadNotificationsCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-rose-600 ring-2 ring-white animate-pulse" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-600 ring-2 ring-white animate-pulse" />
             )}
           </motion.button>
         </div>
@@ -229,47 +243,73 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       {/* =========================================================================
           SEARCH & CITY ROW (Search on Right in RTL, City selector on Left in RTL)
           ========================================================================= */}
-      <div className="w-full px-4 mt-2.5 z-10 flex items-center gap-2" dir="rtl">
+      <div className="w-full px-4 mt-2 z-10 flex items-center gap-2" dir="rtl">
         {/* Main Search Bar (Right side in RTL) */}
         <form
           onSubmit={handleSearchSubmit}
-          className="flex-1 h-11 bg-white rounded-2xl border-2 border-[#dfc282] shadow-[0_3px_10px_rgba(0,0,0,0.03)] flex items-center px-1.5 focus-within:border-[#caa758] transition-all min-w-0"
+          className="flex-1 h-10 bg-white rounded-xl border-2 border-[#dfc282] shadow-2xs flex items-center px-1.5 focus-within:border-[#caa758] transition-all min-w-0"
         >
-          {/* 3D Gold Search Button - Perfectly Centered */}
+          {/* 3D Gold Search Button - Smaller, Compact */}
           <button
             type="submit"
-            className="btn-3d-gold w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-transform"
+            className="btn-3d-gold w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs cursor-pointer active:scale-95 transition-transform"
             title="جستجو"
             aria-label="جستجو"
           >
-            <Search className="w-4 h-4 text-[#2c1b04] stroke-[2.8]" />
+            <Search className="w-3.5 h-3.5 text-[#2c1b04] stroke-[2.8]" />
           </button>
 
           <input
             type="text"
             value={internalSearch}
             onChange={(e) => setInternalSearch(e.target.value)}
-            placeholder="جستجو در املاک، متریال و..."
-            className="flex-1 h-full bg-transparent px-2.5 text-xs font-bold text-slate-950 placeholder-slate-400 focus:outline-none text-right min-w-0"
+            placeholder="جستجو در املاک، متریال، تهاتر و..."
+            className="flex-1 h-full bg-transparent px-2.5 text-sm font-bold text-slate-950 placeholder-slate-400 focus:outline-none text-right min-w-0"
             dir="rtl"
           />
         </form>
 
-        {/* 3D Gold City / Province Selector Pill (Left side in RTL) */}
+        {/* 3D Gold City / Province Selector Pill (Compact Button, Bigger Text) */}
         <motion.button
           whileTap={{ scale: 0.94 }}
           onClick={onOpenCityModal}
-          className="btn-3d-gold h-11 rounded-2xl px-3 flex items-center justify-between gap-1.5 cursor-pointer transition-all shrink-0 max-w-[135px] sm:max-w-[155px] shadow-xs"
+          className="btn-3d-gold h-10 rounded-xl px-2.5 flex items-center justify-between gap-1.5 cursor-pointer transition-all shrink-0 max-w-[140px] sm:max-w-[160px] shadow-2xs"
           title="انتخاب استان و شهر"
         >
           <div className="flex items-center gap-1 min-w-0">
             <MapPin className="w-3.5 h-3.5 text-[#4b330e] shrink-0" />
-            <span className="text-[11px] font-black text-[#221503] truncate">
+            <span className="text-xs sm:text-[12.5px] font-black text-[#221503] truncate">
               {selectedCity === 'انتخاب استان / شهر' ? 'انتخاب شهر' : selectedCity}
             </span>
           </div>
-          <ChevronDown className="w-3.5 h-3.5 text-[#5e3e09] shrink-0" />
+          <ChevronDown className="w-3 h-3 text-[#5e3e09] shrink-0" />
         </motion.button>
+      </div>
+
+      {/* =========================================================================
+          DYNAMIC LIVE MARKET PULSE BAR (پالس زنده و پویای بازار)
+          ========================================================================= */}
+      <div className="w-full px-4 mt-2 z-10 max-w-lg mx-auto">
+        <motion.div 
+          whileTap={{ scale: 0.98 }}
+          onClick={() => onOpenLiveFeed && onOpenLiveFeed()}
+          className="w-full bg-gradient-to-r from-amber-50 via-amber-100/90 to-amber-50 rounded-2xl border-2 border-[#dfc282] px-3 py-2 flex items-center justify-between shadow-[0_2px_8px_rgba(180,130,40,0.08)] cursor-pointer hover:border-[#b88a31] transition-all group select-none"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600" />
+            </span>
+            <span className="text-[11px] font-black text-[#422904] truncate">
+              پالس زنده بازار: <span className="text-emerald-800 font-extrabold">۲۴ معامله و استعلام در جریان</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 text-[10.5px] font-black text-amber-800 group-hover:text-amber-950 shrink-0">
+            <span>مشاهده تابلو</span>
+            <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          </div>
+        </motion.div>
       </div>
 
       {/* =========================================================================
@@ -357,33 +397,24 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                 whileTap={{ scale: 0.94, y: 1 }}
                 whileHover={{ y: -2 }}
                 onClick={cat.action}
-                className="bg-white rounded-[22px] px-2 py-3 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_6px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_0_#b88a31,0_10px_20px_rgba(180,130,40,0.15)] transition-all flex flex-col items-center justify-center text-center h-[138px] sm:h-[142px] cursor-pointer group select-none relative overflow-hidden"
+                className="bg-white rounded-[22px] px-2 py-2 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_5px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_0_#b88a31,0_8px_16px_rgba(180,130,40,0.14)] transition-all flex flex-col items-center justify-center text-center h-[124px] sm:h-[128px] cursor-pointer group select-none relative overflow-hidden"
               >
                 {/* Golden 3D Accent corner line */}
                 <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
 
-                {/* 3D Realistic Golden Icon */}
-                <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center transform group-hover:scale-106 transition-transform shrink-0">
-                  {IconComponent ? (
+                {/* 3D Realistic Golden Icon - Compact & Centered */}
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transform group-hover:scale-106 transition-transform shrink-0">
+                  {IconComponent && (
                     <IconComponent className="w-full h-full" />
-                  ) : (
-                    <img
-                      src={cat.image}
-                      alt={cat.title}
-                      loading="eager"
-                      decoding="async"
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-contain filter drop-shadow-[0_4px_6px_rgba(160,118,48,0.22)]"
-                    />
                   )}
                 </div>
 
-                {/* 2-line Label: Crisp Persian Typography with Clear Hierarchy */}
+                {/* 2-line Label: Bigger, Crisp Vazir Persian Typography */}
                 <div className="mt-1.5 w-full px-0.5 flex flex-col items-center justify-center">
-                  <span className="block text-[12px] sm:text-[12.5px] font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
+                  <span className="block text-[13.5px] sm:text-sm font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
                     {cat.title}
                   </span>
-                  <span className="block text-[10px] sm:text-[10.5px] font-bold text-[#644b1c] leading-tight tracking-tight mt-0.5 whitespace-nowrap">
+                  <span className="block text-[11px] sm:text-[11.5px] font-bold text-[#644b1c] leading-tight tracking-tight mt-0.5 whitespace-nowrap">
                     {cat.subtitle}
                   </span>
                 </div>
