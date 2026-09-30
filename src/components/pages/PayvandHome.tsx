@@ -31,7 +31,7 @@ import {
   GoldenAiMatch3D,
   Golden3DStudio 
 } from '../common/Golden3DIcons';
-import { AdOrderModal, SponsoredAd, DEFAULT_AD } from '../modals/AdOrderModal';
+import { AdOrderModal, SponsoredAd, DEFAULT_AD, normalizeTargetUrl } from '../modals/AdOrderModal';
 import { AnimatedTypewriterTopic } from '../common/AnimatedTypewriterTopic';
 import { useAdQueue } from '../../hooks/useAdQueue';
 import { toPersianDigits } from '../../utils/formatters';
@@ -334,7 +334,12 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
           <div 
             onClick={() => {
               if (currentAd.targetUrl && currentAd.targetUrl !== '#') {
-                window.open(currentAd.targetUrl, '_blank');
+                const finalUrl = normalizeTargetUrl(currentAd.targetUrl);
+                if (finalUrl.startsWith('tel:')) {
+                  window.location.href = finalUrl;
+                } else {
+                  window.open(finalUrl, '_blank', 'noopener,noreferrer');
+                }
               } else {
                 setIsAdModalOpen(true);
               }
@@ -358,10 +363,18 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
               />
             )}
 
-            {/* Animated Typewriter Topic on Mobile Banner */}
-            <div className="absolute bottom-3 right-3 z-20 scale-90 sm:scale-100 origin-bottom-right">
+            {/* Animated Typewriter Topic on Mobile Banner (Right Side) */}
+            <div className="absolute bottom-3 right-3 z-20 scale-85 sm:scale-100 origin-bottom-right">
               <AnimatedTypewriterTopic topic={currentAd.topic} />
             </div>
+
+            {/* Destination URL Action / Hint Pill at bottom-left */}
+            {currentAd.targetUrl && currentAd.targetUrl !== '#' && (
+              <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/85 backdrop-blur-md text-amber-300 border border-[#dfc282] text-[10px] font-black px-2.5 py-1 rounded-xl shadow-lg">
+                <ExternalLink className="w-3 h-3 stroke-[2.5]" />
+                <span>ورود به لینک</span>
+              </div>
+            )}
 
             {/* Action Bar: Button & Live Queue / Remaining Timer */}
             <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 sm:gap-2">

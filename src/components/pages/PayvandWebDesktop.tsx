@@ -12,7 +12,8 @@ import {
   ChevronLeft,
   Megaphone,
   Clock,
-  Layers
+  Layers,
+  ExternalLink
 } from 'lucide-react';
 import { Property, User, UserRole, PriceIndex, LiveTickerItem } from '../../types';
 import { formatTomanShort, toPersianDigits } from '../../utils/formatters';
@@ -34,7 +35,7 @@ import {
   GoldenBarter3D,
   GoldenDealRoom3D
 } from '../common/Golden3DIcons';
-import { AdOrderModal, SponsoredAd, DEFAULT_AD } from '../modals/AdOrderModal';
+import { AdOrderModal, SponsoredAd, DEFAULT_AD, normalizeTargetUrl } from '../modals/AdOrderModal';
 import { AnimatedTypewriterTopic } from '../common/AnimatedTypewriterTopic';
 import { useAdQueue } from '../../hooks/useAdQueue';
 
@@ -334,7 +335,12 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
           <div 
             onClick={() => {
               if (currentAd.targetUrl && currentAd.targetUrl !== '#') {
-                window.open(currentAd.targetUrl, '_blank');
+                const finalUrl = normalizeTargetUrl(currentAd.targetUrl);
+                if (finalUrl.startsWith('tel:')) {
+                  window.location.href = finalUrl;
+                } else {
+                  window.open(finalUrl, '_blank', 'noopener,noreferrer');
+                }
               } else {
                 setIsAdModalOpen(true);
               }
@@ -358,10 +364,18 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
               />
             )}
 
-            {/* Animated Typewriter Topic Badge on Banner */}
+            {/* Animated Typewriter Topic Badge on Banner (Right Side) */}
             <div className="absolute bottom-4 right-4 z-20">
               <AnimatedTypewriterTopic topic={currentAd.topic} />
             </div>
+
+            {/* Destination URL Action / Hint Pill at bottom-left */}
+            {currentAd.targetUrl && currentAd.targetUrl !== '#' && (
+              <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-black/85 backdrop-blur-md text-amber-300 border border-[#dfc282] text-xs font-black px-4 py-2 rounded-2xl shadow-xl group-hover:bg-gradient-to-r group-hover:from-amber-400 group-hover:to-amber-500 group-hover:text-slate-950 transition-all cursor-pointer">
+                <ExternalLink className="w-4 h-4 stroke-[2.5]" />
+                <span>کلیک برای ورود به صفحه تبلیغ‌دهنده</span>
+              </div>
+            )}
 
             {/* Action Bar: Button & Live Queue / Remaining Timer */}
             <div className="absolute top-4 left-4 z-20 flex items-center gap-2.5">

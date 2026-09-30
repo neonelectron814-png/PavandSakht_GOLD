@@ -21,7 +21,8 @@ import {
   FileCheck,
   RefreshCw,
   Layers,
-  Calendar
+  Calendar,
+  ExternalLink
 } from 'lucide-react';
 import { formatToman, toPersianDigits } from '../../utils/formatters';
 import { AnimatedTypewriterTopic } from '../common/AnimatedTypewriterTopic';
@@ -29,6 +30,29 @@ import { useAdQueue, EnqueueResult } from '../../hooks/useAdQueue';
 
 export const HOURLY_RATE_TOMAN = 125000; // 125,000 Tomans per hour
 export const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 1024; // 1 Gigabyte (1 GB)
+
+export function normalizeTargetUrl(rawUrl: string): string {
+  const trimmed = (rawUrl || '').trim();
+  if (!trimmed || trimmed === '#') return '#';
+  
+  // Check if phone number (e.g. 09121234567 or +989121234567)
+  const cleanDigits = trimmed.replace(/[\s-]/g, '');
+  if (/^(09|\+989|989)\d{8,9}$/.test(cleanDigits)) {
+    return `tel:${cleanDigits}`;
+  }
+  
+  // Check if it already has a protocol
+  if (/^(https?|tel|mailto|tg|instagram):\/\//i.test(trimmed) || /^tel:/i.test(trimmed)) {
+    return trimmed;
+  }
+  
+  // Handle instagram or telegram shortcuts (e.g. @brand)
+  if (trimmed.startsWith('@')) {
+    return `https://t.me/${trimmed.substring(1)}`;
+  }
+  
+  return `https://${trimmed}`;
+}
 
 export const DEFAULT_AD: SponsoredAd = {
   id: 'ad-default',
@@ -191,6 +215,11 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
       return;
     }
 
+    if (!targetUrl || !targetUrl.trim()) {
+      setUploadError('درج آدرس صفحه مقصد یا لینک تبلیغات الزامی است (تا کاربران هنگام کلیک روی بنر به صفحه موردنظر شما هدایت شوند).');
+      return;
+    }
+
     setUploadError('');
     setStep('gateway');
     setOtpTimer(120);
@@ -205,6 +234,7 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
       setStep('success');
 
       const effectiveMedia = directMediaUrl.trim() || mediaPreviewUrl;
+      const formattedTargetUrl = normalizeTargetUrl(targetUrl);
 
       // Add to automated Queue or start immediately if open
       const result = enqueueAd({
@@ -212,7 +242,7 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
         mediaType: selectedFormat,
         phoneNumber,
         topic: customTopic.trim() || selectedTopic,
-        targetUrl: targetUrl.trim() || '#',
+        targetUrl: formattedTargetUrl,
         durationHours,
         durationLabel: `${durationHours} ساعت`,
         pricePaid: totalPrice,
@@ -550,20 +580,36 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
                   />
                 </div>
 
-                {/* 6. Click Target Link (Optional) */}
-                <div className="space-y-1.5 bg-[#fffdfa] p-4 rounded-2xl border border-[#ede6d8]">
-                  <label className="text-[11px] font-black text-slate-800 block">
-                    لینک یا شماره تماس جهت کلیک بازدیدکنندگان روی تبلیغ (اختیاری):
-                  </label>
+                {/* 6. Mandatory Click Target Link */}
+                <div className="space-y-2 bg-[#fffdf5] p-4 rounded-2xl border-2 border-amber-400/80 shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-black text-slate-950 flex items-center gap-1.5">
+                      <LinkIcon className="w-4 h-4 text-amber-700" />
+                      <span>آدرس صفحه مقصد / لینک تبلیغات:</span>
+                      <span className="text-red-600 font-black text-xs">* (کاملاً الزامی)</span>
+                    </label>
+                    <span className="text-[10px] font-black text-amber-950 bg-amber-200/90 px-2.5 py-0.5 rounded-full border border-amber-400">
+                      هدایت با کلیک روی بنر
+                    </span>
+                  </div>
+
+                  <p className="text-[11.5px] text-slate-700 font-bold leading-relaxed">
+                    این فیلد <span className="text-red-700 font-black">اجباری</span> است؛ زیرا به محض کلیک کاربران روی ویدیو، گیف یا عکس بنر شما، مستقیماً به صفحه یا لینک شما (سایت، اینستاگرام، تلگرام، واتساپ، ایتا یا شماره تماس) منتقل خواهند شد.
+                  </p>
+
                   <div className="relative">
                     <input
                       type="text"
+                      required
                       value={targetUrl}
-                      onChange={(e) => setTargetUrl(e.target.value)}
-                      placeholder="https://yourwebsite.ir یا شماره تماس ۰۹۱۲..."
-                      className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-mono text-left focus:outline-none focus:border-amber-600 pl-9"
+                      onChange={(e) => {
+                        setTargetUrl(e.target.value);
+                        if (uploadError) setUploadError('');
+                      }}
+                      placeholder="https://mysite.ir یا instagram.com/mybrand یا t.me/mychannel یا ۰۹۱۲..."
+                      className="w-full bg-white border-2 border-[#dfc282] focus:border-amber-600 rounded-xl px-3.5 py-2.5 text-xs font-mono text-left focus:outline-none pl-9 shadow-inner placeholder:text-slate-400 placeholder:font-sans"
                     />
-                    <LinkIcon className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                    <ExternalLink className="w-4 h-4 text-amber-600 absolute left-3 top-3" />
                   </div>
                 </div>
 
