@@ -1,36 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, 
   Sparkles, 
   Upload, 
   Image as ImageIcon, 
+  Film,
+  Video,
   Link as LinkIcon, 
   CreditCard, 
   CheckCircle2, 
   ShieldCheck, 
   Clock, 
   Eye, 
-  ExternalLink,
   ChevronLeft,
-  Building2,
   Lock,
-  ArrowRight,
-  RefreshCw
+  Phone,
+  Tag,
+  AlertCircle,
+  FileCheck,
+  RefreshCw,
+  Layers,
+  Calendar
 } from 'lucide-react';
 import { formatToman, toPersianDigits } from '../../utils/formatters';
+import { AnimatedTypewriterTopic } from '../common/AnimatedTypewriterTopic';
+import { useAdQueue, EnqueueResult } from '../../hooks/useAdQueue';
+
+export const HOURLY_RATE_TOMAN = 125000; // 125,000 Tomans per hour
+export const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 1024; // 1 Gigabyte (1 GB)
+
+export const DEFAULT_AD: SponsoredAd = {
+  id: 'ad-default',
+  mediaUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+  mediaType: 'video',
+  phoneNumber: '09121234567',
+  topic: 'پروژه‌های عمرانی و ساختمانی',
+  isGif: false,
+  targetUrl: 'https://payvand-sakht.ir/sponsor',
+  durationLabel: '۱ ساعت',
+  durationHours: 1,
+  pricePaid: 125000,
+};
+
+export const PRESET_SPONSOR_MEDIA = [
+  {
+    id: 'default-video',
+    title: 'تیزر ویدیویی ساختمانی',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    mediaType: 'video' as const,
+  }
+];
 
 export interface SponsoredAd {
   id: string;
-  brandName: string;
-  slogan: string;
-  subText: string;
   mediaUrl: string;
-  isGif: boolean;
+  mediaType: 'video' | 'gif' | 'image';
+  phoneNumber: string;
+  topic: string;
   targetUrl: string;
-  durationLabel: string;
   durationHours: number;
+  durationLabel: string;
   pricePaid: number;
+  createdAt?: number;
+  expiresAt?: number;
+  status?: 'active' | 'queued';
+  fileName?: string;
+  fileSizeMb?: string;
+  isGif?: boolean;
+  brandName?: string;
+  slogan?: string;
+  subText?: string;
 }
 
 interface AdOrderModalProps {
@@ -39,82 +79,14 @@ interface AdOrderModalProps {
   onAdActivated: (ad: SponsoredAd) => void;
 }
 
-export const PRESET_SPONSOR_MEDIA = [
-  {
-    id: 'gif-steel',
-    title: 'فولاد و اسکلت فلزی جهان‌آرا',
-    slogan: 'تولید و تأمین مستقیم تیرآهن و میلگرد پای‌کار',
-    subText: 'دارای استاندارد ملی و گواهی کنترل کیفیت ذوب',
-    url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=900',
-    isGif: true,
-    gifTag: 'GIF پویا و متحرک',
-  },
-  {
-    id: 'gif-luxury-villa',
-    title: 'هلدینگ ساختمانی عمارت مدرن',
-    slogan: 'طراحی، نظارت و اجرای ویلاهای هوشمند فوق‌لوکس',
-    subText: 'با ضمانت ۵ ساله و تیم مهندسی نظام مهندسی',
-    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=900',
-    isGif: true,
-    gifTag: 'GIF لوکس معماری',
-  },
-  {
-    id: 'gif-marble',
-    title: 'صنایع سنگ معدن و اسلب آرتا',
-    slogan: 'فروش بی‌واسطه اسلب بوک‌مچ و تایل دهبید و عباس‌آباد',
-    subText: 'ارسال مستقیم از سینه کار به تمام نقاط کشور',
-    url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=900',
-    isGif: false,
-    gifTag: 'بنر باکیفیت 4K',
-  },
-  {
-    id: 'gif-concrete',
-    title: 'بتن‌آماده و تراک‌میکسر پایتخت',
-    slogan: 'توزیع بتن استاندارد عیار ۳۵۰ تا ۵۰۰ با پمپ دکل',
-    subText: 'آزمایشگاه مقاومت فشاری سر صحنه پروژه',
-    url: 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?auto=format&fit=crop&q=80&w=900',
-    isGif: true,
-    gifTag: 'GIF متحرک بتن',
-  },
-];
-
-export const AD_PLANS = [
-  {
-    id: '1_hour',
-    title: '۱ ساعت ویژه (پربازدیدترین ساعات)',
-    badge: 'تست فوری و پرمخاطب',
-    durationHours: 1,
-    durationLabel: '۱ ساعت',
-    price: 1000000, // 1 million Tomans as requested
-    desc: 'نمایش بی‌واسطه در صدر اپلیکیشن در اوج ترافیک روز',
-  },
-  {
-    id: '24_hours',
-    title: '۲۴ ساعت (یک شبانه‌روز کامل)',
-    badge: 'محبوب‌ترین',
-    durationHours: 24,
-    durationLabel: '۲۴ ساعت',
-    price: 10000000, // 10 million Tomans
-    desc: 'پوشش تمام شیفت‌های کاری معماران و سازندگان',
-  },
-  {
-    id: '7_days',
-    title: '۷ روز طلایی (یک هفته مستمر)',
-    badge: 'تخفیف ویژه دوره‌ای',
-    durationHours: 168,
-    durationLabel: '۷ روز',
-    price: 50000000, // 50 million Tomans
-    desc: 'ثبت برند در ذهن بیش از ۱۰۰ هزار فعال صنعت مسکن',
-  },
-  {
-    id: '30_days',
-    title: 'ماهانه (۳۰ روزه VIP اسپانسر رسمی)',
-    badge: 'بصرفه‌ترین و بالاترین بازدهی',
-    durationHours: 720,
-    durationLabel: 'ماهانه (۳۰ روز)',
-    price: 150000000, // 150 million Tomans as requested
-    desc: 'نمایش اختصاصی ماهانه + اولویت در نتایج جستجو و پیامک اطلاع‌رسانی',
-  },
+const PRESET_TOPICS = [
+  'مصالح و آهن‌آلات ساختمانی',
+  'املاک، ویلا و مستغلات لوکس',
+  'طراحی معماری، نما و دکوراسیون',
+  'تجهیزات، ماشین‌آلات و پیمانکاری',
+  'سازه، بتن آماده و اسکلت فلزی',
+  'شیرآلات، تأسیسات و برق ساختمان',
+  'سایر حوزه‌های تخصصی مسکن'
 ];
 
 export const AdOrderModal: React.FC<AdOrderModalProps> = ({
@@ -124,26 +96,41 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
 }) => {
   const [step, setStep] = useState<'form' | 'gateway' | 'success'>('form');
   
-  // Form fields
-  const [brandName, setBrandName] = useState('شرکت سازه‌گستر نوین');
-  const [slogan, setSlogan] = useState('تأمین مستقیم متریال و اجرای پروژه‌های ساختمانی');
-  const [subText, setSubText] = useState('مشاوره رایگان، ارسال پای کارگاه با ضمانت اصالت');
-  const [selectedMedia, setSelectedMedia] = useState(PRESET_SPONSOR_MEDIA[0]);
-  const [customMediaUrl, setCustomMediaUrl] = useState('');
-  const [isGif, setIsGif] = useState(true);
-  const [targetUrl, setTargetUrl] = useState('https://payvand-sakht.ir/sponsor/09121234567');
-  const [selectedPlanId, setSelectedPlanId] = useState('1_hour');
+  // Form State
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedFormat, setSelectedFormat] = useState<'video' | 'gif' | 'image'>('video');
+  const [selectedTopic, setSelectedTopic] = useState(PRESET_TOPICS[0]);
+  const [customTopic, setCustomTopic] = useState('');
+  const [durationHours, setDurationHours] = useState<number>(1);
+  const [targetUrl, setTargetUrl] = useState('');
   
+  // Upload & Media State (Max 1GB)
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreviewUrl, setMediaPreviewUrl] = useState<string>(
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+  );
+  const [uploadError, setUploadError] = useState<string>('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Alternative direct URL
+  const [directMediaUrl, setDirectMediaUrl] = useState('');
+
   // Payment Gateway simulation states
-  const [selectedBank, setSelectedBank] = useState<'mellat' | 'melli' | 'saman'>('mellat');
   const [cardNumber, setCardNumber] = useState('۶۰۳۷ - ۹۹۱۸ - **** - ****');
   const [cvv2, setCvv2] = useState('***');
   const [dynamicOtp, setDynamicOtp] = useState('');
   const [otpTimer, setOtpTimer] = useState(120);
   const [isPaying, setIsPaying] = useState(false);
   const [trackingCode, setTrackingCode] = useState('');
+  const [registeredAd, setRegisteredAd] = useState<SponsoredAd | null>(null);
 
-  const currentPlan = AD_PLANS.find((p) => p.id === selectedPlanId) || AD_PLANS[0];
+  // Queue state and methods
+  const { activeAd, queueCount, formattedRemainingTime, enqueueAd } = useAdQueue();
+  const [enqueueResult, setEnqueueResult] = useState<EnqueueResult | null>(null);
+
+  // Price Calculation: Hours * 125,000 Tomans
+  const totalPrice = Math.max(1, durationHours) * HOURLY_RATE_TOMAN;
 
   useEffect(() => {
     let interval: any;
@@ -157,538 +144,672 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
 
   if (!isOpen) return null;
 
-  const activeMediaUrl = customMediaUrl.trim() || selectedMedia.url;
+  // File Upload Handler with 1 GB Limit validation
+  const handleFileSelection = (file: File) => {
+    setUploadError('');
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
+      setUploadError(`حجم فایل انتخابی (${sizeGb} گیگابایت) بیشتر از سقف مجاز ۱ گیگابایت است.`);
+      return;
+    }
+
+    setMediaFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setMediaPreviewUrl(objectUrl);
+    setDirectMediaUrl('');
+
+    // Auto-detect format from file type
+    if (file.type.startsWith('video/')) {
+      setSelectedFormat('video');
+    } else if (file.type.includes('gif') || file.name.toLowerCase().endsWith('.gif')) {
+      setSelectedFormat('gif');
+    } else {
+      setSelectedFormat('image');
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelection(e.dataTransfer.files[0]);
+    }
+  };
 
   const handleProceedToGateway = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!brandName.trim() || !slogan.trim()) return;
+
+    if (!phoneNumber || phoneNumber.length < 10) {
+      setUploadError('لطفاً شماره موبایل معتبر (جهت پیگیری تبلیغ) را وارد نمایید.');
+      return;
+    }
+
+    const effectiveUrl = directMediaUrl.trim() || mediaPreviewUrl;
+    if (!effectiveUrl) {
+      setUploadError('لطفاً فایل رسانه تبلیغ (عکس، گیف یا ویدیو) را آپلود یا آدرس آن را وارد نمایید.');
+      return;
+    }
+
+    setUploadError('');
     setStep('gateway');
     setOtpTimer(120);
-    setDynamicOtp('۷۸۴۲۹۱');
   };
 
-  const handleExecutePayment = () => {
+  const handlePay = () => {
     setIsPaying(true);
     setTimeout(() => {
       setIsPaying(false);
-      const randomTrack = 'TRK-' + Math.floor(10000000 + Math.random() * 90000000);
+      const randomTrack = Math.floor(100000000 + Math.random() * 900000000).toString();
       setTrackingCode(randomTrack);
       setStep('success');
 
-      // Activate ad in parent app
-      onAdActivated({
-        id: 'ad-' + Date.now(),
-        brandName,
-        slogan,
-        subText,
-        mediaUrl: activeMediaUrl,
-        isGif,
-        targetUrl,
-        durationLabel: currentPlan.durationLabel,
-        durationHours: currentPlan.durationHours,
-        pricePaid: currentPlan.price,
+      const effectiveMedia = directMediaUrl.trim() || mediaPreviewUrl;
+
+      // Add to automated Queue or start immediately if open
+      const result = enqueueAd({
+        mediaUrl: effectiveMedia,
+        mediaType: selectedFormat,
+        phoneNumber,
+        topic: customTopic.trim() || selectedTopic,
+        targetUrl: targetUrl.trim() || '#',
+        durationHours,
+        durationLabel: `${durationHours} ساعت`,
+        pricePaid: totalPrice,
+        isGif: selectedFormat === 'gif',
+        fileName: mediaFile ? mediaFile.name : undefined,
+        fileSizeMb: mediaFile ? (mediaFile.size / (1024 * 1024)).toFixed(1) : undefined,
       });
-    }, 1800);
+
+      setEnqueueResult(result);
+      setRegisteredAd(result.ad);
+      onAdActivated(result.ad);
+    }, 1500);
   };
+
+  const activeMediaUrl = directMediaUrl.trim() || mediaPreviewUrl;
+  const isVideo = selectedFormat === 'video' || activeMediaUrl.endsWith('.mp4') || activeMediaUrl.includes('video');
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 pointer-events-auto" dir="rtl">
+        {/* Backdrop */}
         <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          className="bg-white rounded-t-[32px] sm:rounded-3xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden border border-[#ded5c5]"
-          dir="rtl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/65 backdrop-blur-xs"
+          onClick={onClose}
+        />
+
+        {/* Modal Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          transition={{ duration: 0.18 }}
+          className="bg-white rounded-[32px] w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border-2 border-[#dfc282] z-10 text-slate-800"
         >
-          {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-[#ede6d8] flex items-center justify-between bg-[#fffdfa]">
+          {/* Header - ONLY ONE clean X button */}
+          <div className="p-4 sm:p-5 border-b border-[#ede6d8] flex items-center justify-between bg-[#fffdfa] shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-b from-[#fef0c7] to-[#d4a749] border border-[#caa758] flex items-center justify-center text-amber-950 shadow-sm">
-                <Sparkles className="w-5 h-5 text-amber-900" />
+              <div className="w-10 h-10 rounded-2xl btn-3d-gold flex items-center justify-center text-[#2c1b04] shadow-xs">
+                <Sparkles className="w-5 h-5 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-base font-black text-slate-950">
-                  {step === 'form' && 'سفارش و درج بنر یا گیف (GIF) تبلیغاتی'}
-                  {step === 'gateway' && 'درگاه امن پرداخت شاپرک (شبیه‌ساز پرداخت)'}
-                  {step === 'success' && 'پرداخت موفق و فعال‌سازی آنی تبلیغ'}
+                <h3 className="text-base sm:text-lg font-black text-slate-950">
+                  {step === 'form' && 'ثبت تبلیغ ساعتی (عکس، گیف یا ویدیو)'}
+                  {step === 'gateway' && 'درگاه امن پرداخت شاپرک'}
+                  {step === 'success' && 'پرداخت موفق و فعال‌سازی تبلیغ در صف نمایش'}
                 </h3>
-                <p className="text-xs font-semibold text-slate-600 mt-0.5">
-                  {step === 'form' && 'جایگاه ویژه صدر اپلیکیشن پیوندساخت با بیشترین نرخ کلیک'}
-                  {step === 'gateway' && 'اتصال مستقیم به شبکه بانکی با تضمین رمزنگاری E2EE'}
-                  {step === 'success' && 'تبلیغ و بنر شما هم‌اکنون در بالای صفحه اصلی فعال گردید'}
+                <p className="text-xs font-bold text-amber-900/80 mt-0.5">
+                  {step === 'form' && 'تعرفه ساعتی ۱۲۵ هزار تومان • سقف حجم آپلود فایل تا ۱ گیگابایت'}
+                  {step === 'gateway' && 'پرداخت مستقیم شتابی و اعمال آنی تبلیغ'}
+                  {step === 'success' && 'تبلیغ شما ثبت و هم‌اکنون در بالای صفحه به نمایش درآمد'}
                 </p>
               </div>
             </div>
             
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border border-slate-200 hover:border-red-200 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-90"
+              aria-label="بستن"
+              title="بستن"
             >
               <X className="w-4.5 h-4.5 stroke-[2.5]" />
             </button>
           </div>
 
-          {/* Modal Content */}
-          <div className="overflow-y-auto no-scrollbar p-4 sm:p-6 space-y-5 flex-1">
+          {/* Modal Body with smooth scrolling */}
+          <div className="overflow-y-auto p-4 sm:p-6 space-y-5 flex-1" style={{ scrollbarWidth: 'thin' }}>
             
-            {/* STEP 1: FORM & MEDIA SELECTION */}
+            {/* =========================================================================
+                STEP 1: REGISTRATION FORM
+                ========================================================================= */}
             {step === 'form' && (
               <form onSubmit={handleProceedToGateway} className="space-y-5">
                 
-                {/* 1. Live Banner Preview */}
+                {/* Error Banner */}
+                {uploadError && (
+                  <div className="bg-red-50 border border-red-300 text-red-800 p-3 rounded-2xl text-xs font-bold flex items-center gap-2 animate-in fade-in">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+                    <span>{uploadError}</span>
+                  </div>
+                )}
+
+                {/* Real-time Ad Queue Status Banner */}
+                <div className="bg-amber-50/90 border-2 border-amber-300 rounded-2xl p-4 text-xs text-amber-950 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-black text-amber-950 flex items-center gap-1.5 text-xs sm:text-[13px]">
+                      <Clock className="w-4 h-4 text-amber-700" />
+                      <span>سیستم هوشمند صف‌بندی خودکار تبلیغات ساعتی</span>
+                    </span>
+                    <span className="bg-amber-200 text-amber-950 px-2.5 py-0.5 rounded-full text-[11px] font-black border border-amber-400/50">
+                      {queueCount === 0 ? 'صف خالی (آماده نمایش آنی)' : `${toPersianDigits(queueCount)} تبلیغ در نوبت صف`}
+                    </span>
+                  </div>
+
+                  <p className="text-[11.5px] text-amber-900/90 leading-relaxed font-bold">
+                    {queueCount === 0 ? (
+                      <>
+                        در حال حاضر تبلیغ با موضوع <span className="font-black text-amber-950">«{activeAd.topic}»</span> در حال نمایش است (زمان باقیمانده: <span className="font-mono text-amber-950">{formattedRemainingTime}</span>). تبلیغ جدید شما در <span className="font-black underline">نوبت اول صف</span> قرار می‌گیرد و پس از پایان تبلیغ جاری، به طور <span className="font-black text-emerald-800">۱۰۰٪ اتوماتیک</span> پخش خواهد شد.
+                      </>
+                    ) : (
+                      <>
+                        در حال حاضر <span className="font-black text-amber-950">{toPersianDigits(queueCount)} تبلیغ</span> در صف رزرو هستند. تبلیغ شما در <span className="font-black underline">نوبت شماره {toPersianDigits(queueCount + 1)}</span> ثبت می‌شود و بلافاصله پس از اتمام تبلیغات قبلی به طور خودکار به نمایش درمی‌آید.
+                      </>
+                    )}
+                  </p>
+                </div>
+
+                {/* 1. Phone Number Field */}
+                <div className="bg-[#fffdfa] p-3.5 sm:p-4 rounded-2xl border-2 border-[#dfc282]/70 space-y-1.5 shadow-2xs">
+                  <label className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                    <Phone className="w-4 h-4 text-amber-700" />
+                    <span>شماره موبایل ثبت‌کننده تبلیغ (الزامی جهت پیگیری):</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="مثال: ۰۹۱۲۳۴۵۶۷۸۹"
+                    className="w-full bg-white border border-[#ded5c5] rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-950 focus:outline-none focus:border-amber-600 text-left font-mono"
+                    dir="ltr"
+                  />
+                </div>
+
+                {/* 2. Media Type Selection: Photo, GIF, Video */}
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-950 block">
+                    نوع فایل تبلیغاتی شما:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFormat('video')}
+                      className={`py-3 px-2 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        selectedFormat === 'video'
+                          ? 'border-amber-600 bg-amber-50/90 text-amber-950 font-black shadow-xs ring-1 ring-amber-400'
+                          : 'border-[#ded5c5] bg-white text-slate-700 hover:bg-slate-50 font-bold'
+                      }`}
+                    >
+                      <Video className="w-5 h-5 text-amber-700" />
+                      <span className="text-xs">🎥 ویدیو (MP4/MOV)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFormat('gif')}
+                      className={`py-3 px-2 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        selectedFormat === 'gif'
+                          ? 'border-amber-600 bg-amber-50/90 text-amber-950 font-black shadow-xs ring-1 ring-amber-400'
+                          : 'border-[#ded5c5] bg-white text-slate-700 hover:bg-slate-50 font-bold'
+                      }`}
+                    >
+                      <Film className="w-5 h-5 text-amber-700" />
+                      <span className="text-xs">🎞️ گیف متحرک (GIF)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFormat('image')}
+                      className={`py-3 px-2 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        selectedFormat === 'image'
+                          ? 'border-amber-600 bg-amber-50/90 text-amber-950 font-black shadow-xs ring-1 ring-amber-400'
+                          : 'border-[#ded5c5] bg-white text-slate-700 hover:bg-slate-50 font-bold'
+                      }`}
+                    >
+                      <ImageIcon className="w-5 h-5 text-amber-700" />
+                      <span className="text-xs">📷 عکس باکیفیت (HD)</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3. Real File Upload Box (Max 1GB) */}
+                <div className="space-y-2 bg-[#fbf9f4] p-4 rounded-2xl border-2 border-[#dfc282]/80">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-slate-950 flex items-center gap-1.5">
+                      <Upload className="w-4 h-4 text-amber-700" />
+                      آپلود فایل (عکس، گیف یا ویدیو):
+                    </span>
+                    <span className="text-[11px] bg-amber-200/90 text-amber-950 px-2.5 py-0.5 rounded-full font-black border border-amber-400/50">
+                      حداکثر سقف مجاز: ۱ گیگابایت (1 GB)
+                    </span>
+                  </div>
+
+                  {/* Drag and drop / Click upload container */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-2xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
+                      isDragging
+                        ? 'border-amber-600 bg-amber-100/60 scale-[1.01]'
+                        : 'border-[#dfc282] bg-white hover:bg-amber-50/50'
+                    }`}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="video/mp4,video/webm,video/quicktime,image/jpeg,image/png,image/gif,image/webp"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleFileSelection(e.target.files[0]);
+                        }
+                      }}
+                    />
+
+                    <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-900 shadow-2xs">
+                      {selectedFormat === 'video' ? (
+                        <Video className="w-6 h-6" />
+                      ) : selectedFormat === 'gif' ? (
+                        <Film className="w-6 h-6" />
+                      ) : (
+                        <ImageIcon className="w-6 h-6" />
+                      )}
+                    </div>
+
+                    {mediaFile ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-center gap-1.5 text-xs font-black text-emerald-800">
+                          <FileCheck className="w-4 h-4 text-emerald-600" />
+                          <span>فایل آماده ثبت: {mediaFile.name}</span>
+                        </div>
+                        <span className="text-[11px] text-slate-500 font-mono block">
+                          حجم: {(mediaFile.size / (1024 * 1024)).toFixed(1)} مگابایت (از سقف ۱ گیگابایت)
+                        </span>
+                        <span className="text-[11px] text-amber-700 underline font-bold cursor-pointer">
+                          کلیک برای تعویض فایل
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        <span className="text-xs font-black text-slate-900 block">
+                          کلیک کنید یا فایل خود را به اینجا بکشید
+                        </span>
+                        <span className="text-[11px] text-slate-500 font-medium block">
+                          پشتیبانی از فرمت‌های MP4, MOV, GIF, PNG, JPG (تا ۱۰۰۰ مگابایت / ۱ گیگابایت)
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Or Direct URL Input */}
+                  <div className="pt-1.5">
+                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                      یا آدرس مستقیم اینترنتی فایل را وارد کنید (اختیاری):
+                    </label>
+                    <input
+                      type="url"
+                      value={directMediaUrl}
+                      onChange={(e) => {
+                        setDirectMediaUrl(e.target.value);
+                        setMediaFile(null);
+                      }}
+                      placeholder="https://example.com/ad-teaser.mp4 یا ad.gif"
+                      className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-mono text-left focus:outline-none focus:border-amber-600"
+                    />
+                  </div>
+                </div>
+
+                {/* 4. Live Visual Simulator (ZERO TEXT) */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-slate-950 flex items-center gap-1.5">
                       <Eye className="w-4 h-4 text-amber-700" />
-                      پیش‌نمایش زنده بنر شما در اپلیکیشن:
+                      پیش‌نمایش زنده بنر رسانه‌ای در اپلیکیشن (کاملاً خالص و بدون متن):
                     </span>
-                    <span className="text-[10px] bg-amber-100 text-amber-950 font-black px-2.5 py-0.5 rounded-full border border-amber-300">
-                      {isGif ? 'فرمت GIF متحرک' : 'فرمت بنر ثابت'}
+                    <span className="text-[10.5px] bg-amber-100 text-amber-950 font-black px-2.5 py-0.5 rounded-full border border-amber-300">
+                      {isVideo ? '🎥 ویدیو با پخش خودکار' : selectedFormat === 'gif' ? '🎞️ گیف متحرک' : '📷 تصویر ثابت'}
                     </span>
                   </div>
 
-                  {/* Banner Simulator Card */}
-                  <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-r from-[#171d24] via-[#1c222b] to-[#12161b] text-white shadow-md min-h-[140px] flex items-center border border-amber-400/40 p-3.5">
-                    {/* Background media */}
-                    <div className="absolute top-0 left-0 w-1/2 h-full overflow-hidden pointer-events-none">
+                  {/* Simulator Screen */}
+                  <div className="relative rounded-[24px] overflow-hidden bg-black shadow-md h-48 sm:h-56 flex items-center justify-center border-2 border-amber-400/50">
+                    {isVideo ? (
+                      <video
+                        src={activeMediaUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
                       <img
                         src={activeMediaUrl}
                         alt="پیش‌نمایش بنر"
-                        className="w-full h-full object-cover object-center opacity-90"
+                        className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#1c222b]/60 to-[#171d24]" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                    
+                    {/* Animated Typewriter Topic on Simulator */}
+                    <div className="absolute bottom-2.5 right-2.5 z-20 scale-85 sm:scale-90 origin-bottom-right">
+                      <AnimatedTypewriterTopic topic={customTopic.trim() || selectedTopic} />
                     </div>
 
-                    <div className="relative z-10 max-w-[62%] space-y-1">
-                      <span className="inline-block text-[9px] bg-amber-500/30 text-amber-300 border border-amber-400/40 px-2 py-0.5 rounded-md font-black">
-                        اسپانسر ویژه: {brandName || 'نام برند شما'}
+                    {/* Only the official single button shown in the simulator */}
+                    <div className="absolute top-2.5 left-2.5">
+                      <span className="btn-3d-gold text-[#2c1b04] text-[10.5px] font-black px-2.5 py-1 rounded-lg shadow-xs flex items-center gap-1">
+                        <span>برای ثبت تبلیغ</span>
                       </span>
-                      <h4 className="text-sm font-black text-white line-clamp-2 leading-tight">
-                        {slogan || 'شعار یا عنوان آگهی شما'}
-                      </h4>
-                      <p className="text-[10px] text-slate-300 line-clamp-1">
-                        {subText || 'توضیحات تکمیلی محصول یا خدمات'}
-                      </p>
-                      <div className="pt-1">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full btn-3d-gold text-[10px] font-black">
-                          <span>مشاهده و تماس</span>
-                          <ChevronLeft className="w-3 h-3" />
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 2. Choose Banner / GIF */}
-                <div className="space-y-2.5 bg-[#fbf9f4] p-4 rounded-2xl border border-[#ede6d8]">
-                  <span className="text-xs font-black text-slate-950 block">
-                    انتخاب گیف (GIF) یا بنر آماده یا آپلود دلخواه:
-                  </span>
+                {/* 5. Ad Subject / Topic Selection */}
+                <div className="space-y-2 bg-[#fffdfa] p-4 rounded-2xl border border-[#ede6d8]">
+                  <label className="text-xs font-black text-slate-950 flex items-center gap-1.5">
+                    <Tag className="w-4 h-4 text-amber-700" />
+                    <span>موضوع تبلیغات شما:</span>
+                  </label>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {PRESET_SPONSOR_MEDIA.map((item) => {
-                      const isSelected = selectedMedia.id === item.id && !customMediaUrl;
+                  <select
+                    value={selectedTopic}
+                    onChange={(e) => setSelectedTopic(e.target.value)}
+                    className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-black text-slate-900 focus:outline-none focus:border-amber-600"
+                  >
+                    {PRESET_TOPICS.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+
+                  <input
+                    type="text"
+                    value={customTopic}
+                    onChange={(e) => setCustomTopic(e.target.value)}
+                    placeholder="یا موضوع اختصاصی خودتان را بنویسید (اختیاری)"
+                    className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-600"
+                  />
+                </div>
+
+                {/* 6. Click Target Link (Optional) */}
+                <div className="space-y-1.5 bg-[#fffdfa] p-4 rounded-2xl border border-[#ede6d8]">
+                  <label className="text-[11px] font-black text-slate-800 block">
+                    لینک یا شماره تماس جهت کلیک بازدیدکنندگان روی تبلیغ (اختیاری):
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={targetUrl}
+                      onChange={(e) => setTargetUrl(e.target.value)}
+                      placeholder="https://yourwebsite.ir یا شماره تماس ۰۹۱۲..."
+                      className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-mono text-left focus:outline-none focus:border-amber-600 pl-9"
+                    />
+                    <LinkIcon className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                  </div>
+                </div>
+
+                {/* 7. Hourly Duration & Price (۱۲۵,۰۰۰ تومان ساعتی) */}
+                <div className="space-y-3 bg-[#fbf9f4] p-4 rounded-2xl border-2 border-[#dfc282]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-slate-950 flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-amber-700" />
+                      انتخاب مدت زمان نمایش (تعرفه ساعتی):
+                    </span>
+                    <span className="text-[11px] font-black text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">
+                      ساعتی ۱۲۵,۰۰۰ تومان
+                    </span>
+                  </div>
+
+                  {/* Quick Hour Badges */}
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {[1, 2, 6, 12, 24, 48].map((h) => {
+                      const isSelected = durationHours === h;
                       return (
                         <button
-                          key={item.id}
+                          key={h}
                           type="button"
-                          onClick={() => {
-                            setSelectedMedia(item);
-                            setCustomMediaUrl('');
-                            setIsGif(item.isGif);
-                            setBrandName(item.title);
-                            setSlogan(item.slogan);
-                            setSubText(item.subText);
-                          }}
-                          className={`p-2 rounded-xl border text-right transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+                          onClick={() => setDurationHours(h)}
+                          className={`py-2 px-1 rounded-xl text-xs font-black cursor-pointer transition-all border ${
                             isSelected
-                              ? 'border-amber-600 bg-amber-50 ring-2 ring-amber-400/40 shadow-xs'
-                              : 'border-[#ded5c5] bg-white hover:bg-slate-50'
+                              ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                              : 'bg-white border-[#ded5c5] text-slate-700 hover:bg-slate-50'
                           }`}
                         >
-                          <div className="h-16 rounded-lg overflow-hidden bg-slate-100 mb-1.5 relative">
-                            <img
-                              src={item.url}
-                              alt={item.title}
-                              className="w-full h-full object-cover"
-                            />
-                            <span className="absolute bottom-1 right-1 text-[8.5px] bg-black/75 text-amber-300 px-1.5 py-0.5 rounded font-black backdrop-blur-xs">
-                              {item.gifTag}
-                            </span>
-                          </div>
-                          <span className="text-[10.5px] font-black text-slate-900 line-clamp-1">{item.title}</span>
+                          {h === 24 ? '۲۴ س (۱ روز)' : h === 48 ? '۴۸ س (۲ روز)' : `${h} ساعت`}
                         </button>
                       );
                     })}
                   </div>
 
-                  {/* Custom URL or upload link */}
-                  <div className="pt-1">
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
-                      یا آدرس اینترنتی گیف/بنر اختصاصی خودتان را وارد نمایید (اختیاری):
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="url"
-                        value={customMediaUrl}
-                        onChange={(e) => setCustomMediaUrl(e.target.value)}
-                        placeholder="https://example.com/my-banner.gif"
-                        className="flex-1 bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-mono text-left focus:outline-none focus:border-amber-600"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const testGifs = [
-                            'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?auto=format&fit=crop&q=80&w=900',
-                            'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=900',
-                            'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=900',
-                          ];
-                          const picked = testGifs[Math.floor(Math.random() * testGifs.length)];
-                          setCustomMediaUrl(picked);
-                          setIsGif(true);
-                        }}
-                        className="px-3 py-2 bg-white border border-[#ded5c5] rounded-xl text-xs font-bold text-slate-800 hover:bg-slate-100 cursor-pointer shrink-0"
-                      >
-                        تست گیف تصادفی
-                      </button>
+                  {/* Custom Hours Input */}
+                  <div className="pt-2 flex items-center gap-3">
+                    <span className="text-xs font-bold text-slate-700 shrink-0">یا تعداد ساعت دلخواه:</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={720}
+                      value={durationHours}
+                      onChange={(e) => setDurationHours(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-28 bg-white border border-[#ded5c5] rounded-xl px-3 py-1.5 text-xs font-black text-center text-slate-950 focus:outline-none focus:border-amber-600"
+                    />
+                    <span className="text-xs font-black text-slate-600">ساعت</span>
+                  </div>
+
+                  {/* Calculated Price Summary */}
+                  <div className="pt-3 border-t border-[#ede6d8] flex items-center justify-between">
+                    <div>
+                      <span className="text-xs text-slate-600 font-bold block">
+                        محاسبه هزینه ({durationHours} ساعت × ۱۲۵,۰۰۰ تومان):
+                      </span>
+                    </div>
+                    <div className="text-left">
+                      <span className="text-base sm:text-lg font-black text-amber-950">
+                        {formatToman(totalPrice)}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* 3. Customer Info */}
-                <div className="space-y-3 bg-[#fffdfa] p-4 rounded-2xl border border-[#ede6d8]">
-                  <span className="text-xs font-black text-slate-950 block">
-                    اطلاعات کسب‌وکار و پیوند مقصد:
-                  </span>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-black text-slate-800 block mb-1">
-                        نام برند یا کسب‌وکار:
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={brandName}
-                        onChange={(e) => setBrandName(e.target.value)}
-                        placeholder="مثال: شرکت بتن‌آماده البرز"
-                        className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-bold text-slate-950 focus:outline-none focus:border-amber-600"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] font-black text-slate-800 block mb-1">
-                        شعار یا تیتر اصلی بنر:
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={slogan}
-                        onChange={(e) => setSlogan(e.target.value)}
-                        placeholder="مثال: تخفیف ۱۰ درصدی میلگرد و بتن عیار ۴۰۰"
-                        className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-bold text-slate-950 focus:outline-none focus:border-amber-600"
-                      />
-                    </div>
-                  </div>
-
+                {/* Submit to Payment Gateway */}
+                <div className="pt-2 flex items-center justify-between border-t border-[#ede6d8]">
                   <div>
-                    <label className="text-[11px] font-black text-slate-800 block mb-1">
-                      لینک سایت، صفحه اینستاگرام یا شماره تماس مقصد کلیک:
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        required
-                        value={targetUrl}
-                        onChange={(e) => setTargetUrl(e.target.value)}
-                        placeholder="https://yourwebsite.ir یا شماره تماس 0912..."
-                        className="w-full bg-white border border-[#ded5c5] rounded-xl px-3 py-2 text-xs font-mono text-left focus:outline-none focus:border-amber-600 pl-9"
-                      />
-                      <LinkIcon className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                    </div>
+                    <span className="text-xs text-slate-500 font-bold block">مبلغ نهایی قابل پرداخت:</span>
+                    <span className="text-base sm:text-lg font-black text-slate-950">
+                      {formatToman(totalPrice)}
+                    </span>
                   </div>
-                </div>
 
-                {/* 4. Choose Duration Plan & Price */}
-                <div className="space-y-2.5">
-                  <span className="text-xs font-black text-slate-950 block">
-                    انتخاب دوره و تعرفه نمایش بنر:
-                  </span>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {AD_PLANS.map((plan) => {
-                      const isSelected = selectedPlanId === plan.id;
-                      return (
-                        <div
-                          key={plan.id}
-                          onClick={() => setSelectedPlanId(plan.id)}
-                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative flex flex-col justify-between ${
-                            isSelected
-                              ? 'bg-amber-50/90 border-amber-500 shadow-md ring-2 ring-amber-400/40'
-                              : 'bg-white border-[#ded5c5] hover:bg-slate-50'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-black text-slate-950">{plan.title}</span>
-                            <span className="text-[9px] bg-amber-200 text-amber-950 px-2 py-0.5 rounded-full font-black">
-                              {plan.badge}
-                            </span>
-                          </div>
-
-                          <p className="text-[10px] text-slate-600 font-medium mb-2 leading-relaxed">
-                            {plan.desc}
-                          </p>
-
-                          <div className="pt-2 border-t border-[#ede6d8] flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-slate-500">مبلغ تعرفه:</span>
-                            <span className="text-sm font-black text-amber-950">
-                              {formatToman(plan.price)}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Submit 3D Gold Action Button */}
-                <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-2xl btn-3d-gold flex items-center justify-center gap-2 text-sm"
+                    className="h-11 px-6 rounded-xl btn-3d-gold text-[#2c1b04] text-xs sm:text-sm font-black flex items-center gap-2 cursor-pointer shadow-md active:scale-95 transition-transform"
                   >
-                    <CreditCard className="w-5 h-5 stroke-[2.5]" />
-                    <span>تأیید اطلاعات و هدایت به درگاه پرداخت ({formatToman(currentPlan.price)})</span>
+                    <CreditCard className="w-4 h-4 stroke-[2.5]" />
+                    <span>ثبت و پرداخت هزینه ({durationHours} ساعت)</span>
                   </button>
                 </div>
 
               </form>
             )}
 
-            {/* STEP 2: SHAPARAK PAYMENT GATEWAY SIMULATION */}
+            {/* =========================================================================
+                STEP 2: SIMULATED PAYMENT GATEWAY
+                ========================================================================= */}
             {step === 'gateway' && (
-              <div className="space-y-4" dir="rtl">
-                
-                {/* Gateway Header Banner */}
-                <div className="bg-[#1f2937] text-white p-4 rounded-2xl flex items-center justify-between border border-slate-700 shadow-sm">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black">
-                      <Lock className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black">شبکه الکترونیکی پرداخت کارت (شاپرک)</h4>
-                      <p className="text-[10px] text-slate-300 font-mono">درگاه امن بانکی معتبر و دارای گواهی SSL ۲۵۶ بیتی</p>
-                    </div>
-                  </div>
-                  <div className="text-left">
-                    <span className="text-[10px] text-slate-400 block">پذیرنده:</span>
-                    <span className="text-xs font-bold text-amber-400">سوپر اپلیکیشن پیوندساخت</span>
-                  </div>
-                </div>
-
-                {/* Bank Selectors */}
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedBank('mellat')}
-                    className={`p-2.5 rounded-xl border text-center text-xs font-bold cursor-pointer transition-all ${
-                      selectedBank === 'mellat' ? 'border-rose-600 bg-rose-50 text-rose-950 font-black' : 'border-slate-200 bg-white text-slate-700'
-                    }`}
-                  >
-                    به‌پرداخت ملت
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedBank('melli')}
-                    className={`p-2.5 rounded-xl border text-center text-xs font-bold cursor-pointer transition-all ${
-                      selectedBank === 'melli' ? 'border-blue-600 bg-blue-50 text-blue-950 font-black' : 'border-slate-200 bg-white text-slate-700'
-                    }`}
-                  >
-                    سداد بانک ملی
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedBank('saman')}
-                    className={`p-2.5 rounded-xl border text-center text-xs font-bold cursor-pointer transition-all ${
-                      selectedBank === 'saman' ? 'border-sky-600 bg-sky-50 text-sky-950 font-black' : 'border-slate-200 bg-white text-slate-700'
-                    }`}
-                  >
-                    سامان کیش
-                  </button>
-                </div>
-
-                {/* Amount Box */}
-                <div className="bg-[#faf8f4] p-3.5 rounded-2xl border border-[#ded5c5] flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-600">مبلغ قابل پرداخت:</span>
-                  <div className="text-left">
-                    <span className="font-black text-amber-950 text-base">{formatToman(currentPlan.price)}</span>
-                    <span className="text-[10px] text-slate-500 block font-mono">معادل {toPersianDigits((currentPlan.price * 10).toLocaleString())} ریال</span>
-                  </div>
-                </div>
-
-                {/* Gateway Inputs */}
-                <div className="space-y-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs text-xs">
+              <div className="space-y-4 max-w-lg mx-auto py-2">
+                <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex items-center justify-between text-xs">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-700 block mb-1">
-                      شماره کارت ۱۶ رقمی شتاب:
-                    </label>
+                    <span className="font-bold text-slate-700 block">پذیرنده: سوپراپلیکیشن پیوندساخت</span>
+                    <span className="font-bold text-slate-600 mt-0.5 block">
+                      مدت رزرو: {durationHours} ساعت • موضوع: {customTopic || selectedTopic}
+                    </span>
+                    <span className="font-black text-amber-950 mt-1 block text-sm">
+                      مبلغ تراکنش: {formatToman(totalPrice)}
+                    </span>
+                  </div>
+                  <div className="w-12 h-12 bg-white rounded-xl border border-amber-300 flex items-center justify-center p-1">
+                    <ShieldCheck className="w-7 h-7 text-emerald-600" />
+                  </div>
+                </div>
+
+                <div className="bg-white p-4.5 rounded-2xl border border-slate-200 space-y-3 shadow-xs">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">شماره کارت بانکی عضو شتاب:</label>
                     <input
                       type="text"
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full bg-[#f8f9fa] border border-slate-300 rounded-xl px-3 py-2.5 font-mono text-center text-slate-900 font-bold focus:outline-none focus:border-amber-600"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono text-center tracking-widest font-black"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
-                        کد امنیتی CVV2:
-                      </label>
+                      <label className="text-xs font-bold text-slate-700 block mb-1">کد CVV2:</label>
                       <input
                         type="password"
+                        maxLength={4}
                         value={cvv2}
                         onChange={(e) => setCvv2(e.target.value)}
-                        className="w-full bg-[#f8f9fa] border border-slate-300 rounded-xl px-3 py-2.5 font-mono text-center text-slate-900 font-bold focus:outline-none focus:border-amber-600"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono text-center font-black"
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-bold text-slate-700 block mb-1">
-                        تاریخ انقضا:
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          defaultValue="۰۸"
-                          className="w-1/2 bg-[#f8f9fa] border border-slate-300 rounded-xl px-2 py-2.5 font-mono text-center text-slate-900 font-bold"
-                          placeholder="ماه"
-                        />
-                        <input
-                          type="text"
-                          defaultValue="۰۶"
-                          className="w-1/2 bg-[#f8f9fa] border border-slate-300 rounded-xl px-2 py-2.5 font-mono text-center text-slate-900 font-bold"
-                          placeholder="سال"
-                        />
-                      </div>
+                      <label className="text-xs font-bold text-slate-700 block mb-1">رمز پویا (یکبار مصرف):</label>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        placeholder="۱۲۳۴۵۶"
+                        value={dynamicOtp}
+                        onChange={(e) => setDynamicOtp(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono text-center font-black"
+                      />
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="text-[11px] font-bold text-slate-700">
-                        رمز دوم پویا:
-                      </label>
-                      <span className="text-[10px] text-amber-800 font-bold">
-                        زمان اعتبار: {toPersianDigits(otpTimer)} ثانیه
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={dynamicOtp}
-                        onChange={(e) => setDynamicOtp(e.target.value)}
-                        placeholder="کد ۶ رقمی پیامک‌شده"
-                        className="flex-1 bg-[#f8f9fa] border border-slate-300 rounded-xl px-3 py-2.5 font-mono text-center text-slate-900 font-bold tracking-widest focus:outline-none focus:border-amber-600"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOtpTimer(120);
-                          setDynamicOtp('۹۴۰۲۱۵');
-                        }}
-                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 cursor-pointer"
-                      >
-                        دریافت مجدد
-                      </button>
-                    </div>
+                  <div className="text-center text-[11px] text-slate-500 font-bold pt-1">
+                    زمان باقیمانده تا انقضای رمز: {otpTimer} ثانیه
                   </div>
                 </div>
 
-                {/* Gateway Action Buttons */}
-                <div className="flex items-center gap-2 pt-2">
+                <div className="flex gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setStep('form')}
-                    className="w-1/3 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs cursor-pointer border border-slate-300"
+                    className="flex-1 py-3 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 cursor-pointer"
                   >
                     انصراف و بازگشت
                   </button>
-
                   <button
                     type="button"
-                    onClick={handleExecutePayment}
+                    onClick={handlePay}
                     disabled={isPaying}
-                    className="flex-1 py-3.5 rounded-2xl btn-3d-gold flex items-center justify-center gap-2 text-xs font-black shadow-lg"
+                    className="flex-1 py-3 rounded-xl btn-3d-gold text-[#2c1b04] text-xs font-black shadow-md flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {isPaying ? (
                       <>
-                        <RefreshCw className="w-4 h-4 animate-spin text-amber-950" />
-                        <span>در حال تایید و ثبت تراکنش...</span>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>در حال تایید پرداخت...</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className="w-4 h-4 stroke-[3]" />
-                        <span>تأیید و پرداخت نهایی ({formatToman(currentPlan.price)})</span>
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>پرداخت نهایی و اعمال تبلیغ</span>
                       </>
                     )}
                   </button>
                 </div>
-
               </div>
             )}
 
-            {/* STEP 3: SUCCESS CONFIRMATION */}
-            {step === 'success' && (
-              <div className="space-y-4 text-center py-2" dir="rtl">
-                <div className="w-16 h-16 rounded-3xl bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center border-2 border-emerald-400 shadow-md">
+            {/* =========================================================================
+                STEP 3: SUCCESS & QUEUE ACTIVATION
+                ========================================================================= */}
+            {step === 'success' && registeredAd && (
+              <div className="py-6 text-center space-y-4 max-w-md mx-auto">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 border-2 border-emerald-400 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
                   <CheckCircle2 className="w-9 h-9 stroke-[2.5]" />
                 </div>
 
-                <div className="space-y-1">
-                  <h4 className="text-base font-black text-slate-950">
-                    پرداخت با موفقیت انجام شد و بنر شما فعال گردید!
-                  </h4>
-                  <p className="text-xs font-semibold text-slate-600">
-                    تبلیغ برند «{brandName}» برای مدت {currentPlan.durationLabel} در صدر اپلیکیشن پیوندساخت به نمایش درآمد.
-                  </p>
-                </div>
+                <h3 className="text-lg font-black text-slate-950">
+                  {enqueueResult?.isQueued
+                    ? `تبلیغ شما در صف نوبت نمایش (نوبت شماره ${toPersianDigits(enqueueResult.queuePosition)}) ثبت شد!`
+                    : 'تبلیغ شما با موفقیت پرداخت و فعال گردید!'}
+                </h3>
+                
+                <p className="text-xs text-slate-600 font-bold leading-relaxed">
+                  {enqueueResult?.isQueued ? (
+                    <>
+                      با توجه به در حال پخش بودن تبلیغ دیگر، رسانه شما در صف هوشمند قرار گرفت و پس از اتمام تبلیغ جاری، به مدت{' '}
+                      <span className="text-amber-900 font-black">{registeredAd.durationHours} ساعت</span>{' '}
+                      به طور <span className="text-emerald-800 font-black">کاملاً اتوماتیک</span> روی بنر اصلی به نمایش درخواهد آمد.
+                    </>
+                  ) : (
+                    <>
+                      فایل رسانه‌ای شما به مدت <span className="text-amber-900 font-black">{registeredAd.durationHours} ساعت</span> در جایگاه صدر اپلیکیشن پیوندساخت فعال گردید و هم‌اکنون برای تمامی کاربران نمایش داده می‌شود.
+                    </>
+                  )}
+                </p>
 
-                {/* Receipt Card */}
-                <div className="bg-[#faf8f4] p-4 rounded-2xl border border-[#ded5c5] text-xs space-y-2 text-right">
-                  <div className="flex justify-between py-1 border-b border-[#ede6d8]">
-                    <span className="text-slate-600 font-bold">شماره پیگیری تراکنش:</span>
+                {/* Ad Details Summary Card */}
+                <div className="bg-[#fbf9f4] p-4 rounded-2xl border border-[#ede6d8] text-right space-y-2 text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#ede6d8]">
+                    <span className="text-slate-500 font-bold">شماره پیگیری پرداخت:</span>
                     <span className="font-mono font-black text-slate-950">{trackingCode}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-[#ede6d8]">
-                    <span className="text-slate-600 font-bold">مبلغ پرداخت‌شده:</span>
-                    <span className="font-black text-amber-950">{formatToman(currentPlan.price)}</span>
+                  {enqueueResult?.isQueued && (
+                    <div className="flex items-center justify-between bg-amber-100/70 p-2 rounded-xl text-amber-950 font-black">
+                      <span>موقعیت در صف نوبت:</span>
+                      <span>نوبت شماره {toPersianDigits(enqueueResult.queuePosition)}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-bold">شماره تماس تبلیغ‌دهنده:</span>
+                    <span className="font-mono font-black text-slate-950">{registeredAd.phoneNumber}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-[#ede6d8]">
-                    <span className="text-slate-600 font-bold">دوره نمایش انتخابی:</span>
-                    <span className="font-bold text-slate-950">{currentPlan.title}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-bold">موضوع تبلیغ:</span>
+                    <span className="font-black text-slate-900">{registeredAd.topic}</span>
                   </div>
-                  <div className="flex justify-between py-1">
-                    <span className="text-slate-600 font-bold">وضعیت انتشار:</span>
-                    <span className="font-black text-emerald-800 flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping inline-block" />
-                      فعال در صفحه اصلی (Live)
-                    </span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-bold">مدت اعتبار نمایش:</span>
+                    <span className="font-black text-amber-900">{registeredAd.durationHours} ساعت</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1 border-t border-[#ede6d8]">
+                    <span className="text-slate-500 font-bold">مبلغ پرداختی:</span>
+                    <span className="font-black text-emerald-800">{formatToman(registeredAd.pricePaid)}</span>
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full py-3.5 rounded-2xl btn-3d-gold text-xs font-black shadow-lg"
+                  className="w-full py-3 rounded-xl btn-3d-gold text-[#2c1b04] text-xs font-black shadow-md cursor-pointer"
                 >
-                  مشاهده بنر فعال در صفحه اصلی
+                  مشاهده بنر و وضعیت صف در صفحه اصلی
                 </button>
               </div>
             )}
 
           </div>
-
         </motion.div>
       </div>
     </AnimatePresence>

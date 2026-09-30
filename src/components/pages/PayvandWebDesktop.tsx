@@ -11,7 +11,8 @@ import {
   Award,
   ChevronLeft,
   Megaphone,
-  Clock
+  Clock,
+  Layers
 } from 'lucide-react';
 import { Property, User, UserRole, PriceIndex, LiveTickerItem } from '../../types';
 import { formatTomanShort, toPersianDigits } from '../../utils/formatters';
@@ -33,7 +34,9 @@ import {
   GoldenBarter3D,
   GoldenDealRoom3D
 } from '../common/Golden3DIcons';
-import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
+import { AdOrderModal, SponsoredAd, DEFAULT_AD } from '../modals/AdOrderModal';
+import { AnimatedTypewriterTopic } from '../common/AnimatedTypewriterTopic';
+import { useAdQueue } from '../../hooks/useAdQueue';
 
 interface PayvandWebDesktopProps {
   currentUser: User;
@@ -72,18 +75,7 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
   const [activeSlide, setActiveSlide] = useState(0);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [adScope, setAdScope] = useState<'national' | 'provincial'>('national');
-  const [currentAd, setCurrentAd] = useState<SponsoredAd>({
-    id: 'ad-default',
-    brandName: PRESET_SPONSOR_MEDIA[0].title,
-    slogan: PRESET_SPONSOR_MEDIA[0].slogan,
-    subText: PRESET_SPONSOR_MEDIA[0].subText,
-    mediaUrl: PRESET_SPONSOR_MEDIA[0].url,
-    isGif: true,
-    targetUrl: 'https://payvand-sakht.ir/sponsor',
-    durationLabel: '۱ ساعت ویژه (پربازدید)',
-    durationHours: 1,
-    pricePaid: 1000000,
-  });
+  const { activeAd: currentAd, queueCount, formattedRemainingTime } = useAdQueue();
 
   const services = [
     {
@@ -335,92 +327,70 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
           </div>
         </div>
 
-        {/* FULL-WIDTH EXPANSIVE VIP SPONSOR BILLBOARD BANNER */}
-        <div className="w-full relative rounded-[32px] overflow-hidden border-2 border-[#dfc282] shadow-[0_8px_30px_rgba(180,130,40,0.18)] bg-gradient-to-l from-[#181004] via-[#281b08] to-[#0f0902] text-white flex flex-col justify-between">
+        {/* FULL-WIDTH EXPANSIVE VIP SPONSOR BILLBOARD BANNER - PURE VIDEO, GIF & PHOTO */}
+        <div className="w-full relative rounded-[32px] overflow-hidden border-2 border-[#dfc282] shadow-[0_8px_30px_rgba(180,130,40,0.18)] bg-black text-white">
           
-          {/* Top Bar inside Ad */}
-          <div className="flex items-center justify-between px-5 py-2.5 bg-black/45 border-b border-amber-500/25 backdrop-blur-xs">
-            <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" />
-              </span>
-              <span className="text-xs sm:text-[13px] font-black text-amber-300">
-                جایگاه تبلیغاتی و اسپانسر ویژه ملی صنعت مسکن و ساختمان پیوندساخت
-              </span>
-              {currentAd.isGif && (
-                <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] px-2 py-0.5 rounded-md font-bold">
-                  GIF پویا
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={() => setIsAdModalOpen(true)}
-              className="btn-3d-gold text-[13px] font-black px-4 py-1.5 rounded-xl flex items-center gap-1.5 text-[#2c1b04] cursor-pointer shadow-xs active:scale-95 transition-transform"
-            >
-              <Megaphone className="w-4 h-4 stroke-[2.5]" />
-              <span>رزرو بنر تبلیغاتی VIP</span>
-            </button>
-          </div>
-
-          {/* Expanded Full-Width Banner Content */}
+          {/* Full-Bleed Media Display - ONLY Video, GIF, or Photo */}
           <div 
-            onClick={() => setIsAdModalOpen(true)}
-            className="p-5 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-6 cursor-pointer group hover:bg-white/[0.04] transition-colors"
+            onClick={() => {
+              if (currentAd.targetUrl && currentAd.targetUrl !== '#') {
+                window.open(currentAd.targetUrl, '_blank');
+              } else {
+                setIsAdModalOpen(true);
+              }
+            }}
+            className="relative w-full h-72 sm:h-80 md:h-96 lg:h-[420px] overflow-hidden cursor-pointer group bg-black"
           >
-            {/* Right side: Large Media Visual Preview */}
-            <div className="relative w-full md:w-72 lg:w-96 h-40 sm:h-48 md:h-44 lg:h-52 rounded-2xl overflow-hidden shrink-0 border-2 border-amber-400/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+            {currentAd.mediaUrl.endsWith('.mp4') || currentAd.mediaUrl.includes('video') ? (
+              <video
+                src={currentAd.mediaUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
+              />
+            ) : (
               <img
                 src={currentAd.mediaUrl}
-                alt={currentAd.brandName}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                alt="تبلیغ رسانه‌ای"
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
               />
-              <span className="absolute bottom-2 right-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black px-2.5 py-1 rounded-lg shadow-md border border-amber-300">
-                ⭐ اسپانسر رسمی VIP
-              </span>
+            )}
+
+            {/* Animated Typewriter Topic Badge on Banner */}
+            <div className="absolute bottom-4 right-4 z-20">
+              <AnimatedTypewriterTopic topic={currentAd.topic} />
             </div>
 
-            {/* Left side: Information, Headlines, and CTA */}
-            <div className="flex-1 min-w-0 space-y-2.5 text-right w-full">
-              <div className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-400/30 px-3 py-1 rounded-xl text-xs font-black text-amber-300">
-                <span>برند برگزیده و تأییدشده</span>
+            {/* Action Bar: Button & Live Queue / Remaining Timer */}
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsAdModalOpen(true);
+                }}
+                className="btn-3d-gold text-[#2c1b04] text-xs sm:text-[13px] font-black px-4.5 py-2 rounded-xl shadow-lg flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+              >
+                <Megaphone className="w-4 h-4 stroke-[2.5]" />
+                <span>برای ثبت تبلیغ</span>
+              </button>
+
+              {/* Live Remaining Time Badge */}
+              <div className="bg-black/80 backdrop-blur-md text-amber-300 border border-amber-400/35 text-xs font-black px-3.5 py-2 rounded-xl shadow-lg flex items-center gap-1.5 select-none">
+                <Clock className="w-3.5 h-3.5 text-amber-400" />
+                <span>باقیمانده: {formattedRemainingTime}</span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-amber-100 group-hover:text-amber-50 transition-colors leading-tight">
-                {currentAd.brandName}
-              </h3>
-
-              <p className="text-sm sm:text-base font-bold text-slate-200 leading-relaxed max-w-2xl">
-                {currentAd.slogan}
-              </p>
-
-              {currentAd.subText && (
-                <p className="text-xs sm:text-sm font-medium text-slate-400 line-clamp-2 leading-relaxed">
-                  {currentAd.subText}
-                </p>
+              {/* Queue Counter Badge if any queued ads */}
+              {queueCount > 0 && (
+                <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black px-3 py-2 rounded-xl shadow-lg flex items-center gap-1.5 select-none">
+                  <Layers className="w-3.5 h-3.5 text-slate-950" />
+                  <span>{toPersianDigits(queueCount)} در صف نوبت</span>
+                </div>
               )}
-
-              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-bold text-amber-300">
-                <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-amber-400/20">
-                  <Clock className="w-3.5 h-3.5" />
-                  مدت نمایش: {currentAd.durationLabel}
-                </span>
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsAdModalOpen(true);
-                  }}
-                  className="btn-3d-gold text-[#2c1b04] text-[13px] font-black px-4 py-1.5 rounded-xl flex items-center gap-1.5 shadow-2xs active:scale-95 transition-transform cursor-pointer"
-                >
-                  <span>سفارش و رزرو فوری این جایگاه</span>
-                  <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
-                </button>
-              </div>
             </div>
-
           </div>
 
         </div>
@@ -585,7 +555,9 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       <AdOrderModal
         isOpen={isAdModalOpen}
         onClose={() => setIsAdModalOpen(false)}
-        onAdActivated={(newAd) => setCurrentAd(newAd)}
+        onAdActivated={(_newAd) => {
+          // Handled automatically by useAdQueue
+        }}
       />
     </div>
   );
