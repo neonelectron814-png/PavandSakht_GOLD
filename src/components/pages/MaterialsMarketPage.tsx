@@ -274,20 +274,23 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
               </div>
 
               {/* Price & Actions */}
-              <div className="pt-3 border-t border-[#eee7db] flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-slate-600 block font-bold">قیمت واحد ({item.unit}):</span>
-                  <span className="text-base font-black text-amber-950 font-mono">
-                    {formatToman(item.price)} تومان
-                  </span>
+              <div className="pt-3.5 border-t border-[#eee7db] space-y-2.5">
+                <div className="flex items-center justify-between bg-[#faf8f4] px-3.5 py-2 rounded-xl border border-[#eee7db]">
+                  <span className="text-xs text-slate-600 font-bold">قیمت واحد ({item.unit}):</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-base sm:text-lg font-black text-amber-950 font-mono">
+                      {formatToman(item.price)}
+                    </span>
+                    <span className="text-xs font-bold text-slate-700">تومان</span>
+                  </div>
                 </div>
 
                 <button
                   onClick={() => onOpenMaterialQuoteModal(item)}
-                  className="h-9 px-3.5 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                  className="w-full h-10 btn-3d-gold text-[#2c1b04] font-black text-xs sm:text-[14px] rounded-xl flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-98 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5 text-[#2c1b04]" />
-                  <span>استعلام پیش‌فاکتور</span>
+                  <Send className="w-4 h-4 text-[#2c1b04] stroke-[2.5]" />
+                  <span>استعلام پیش‌فاکتور رسمی</span>
                 </button>
               </div>
             </div>

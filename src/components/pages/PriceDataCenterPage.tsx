@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, LineChart as LineChartIcon, Calculator, ArrowUpRight, Activity, BarChart3, Clock, Calendar } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { TrendingUp, LineChart as LineChartIcon, Calculator, ArrowUpRight, Activity, BarChart3, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { PriceIndex } from '../../types';
 import { mockPriceIndices } from '../../data/mockData';
@@ -32,14 +32,15 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
 
   if (!data || data.length === 0) return null;
 
-  const svgWidth = 880;
-  const svgHeight = 310;
-  const padTop = 25;
-  const padBottom = 48;
-  const padLeft = 20;
-  const padRight = 130; // Generous space to completely prevent price & text overlap
+  const svgWidth = 920;
+  const svgHeight = 360; // Taller, expansive canvas
+  const padTop = 30;
+  const padBottom = 52;
+  const padLeft = 32;
+  const padRight = 200; // 200px dedicated solely to the price axis
+  const safetyBuffer = 65; // 65px extra clearance between rightmost candle and price axis
 
-  const plotW = svgWidth - padLeft - padRight;
+  const plotW = svgWidth - padLeft - padRight - safetyBuffer;
   const plotH = svgHeight - padTop - padBottom;
 
   const allLows = data.map((d) => d.low);
@@ -48,9 +49,9 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
   const maxVal = Math.max(...allHighs);
   const valRange = maxVal - minVal || 1;
 
-  // Add 6% headroom and footroom for comfortable breathing space
-  const domainMin = minVal - valRange * 0.06;
-  const domainMax = maxVal + valRange * 0.06;
+  // Add 12% headroom and footroom for comfortable breathing space
+  const domainMin = minVal - valRange * 0.12;
+  const domainMax = maxVal + valRange * 0.12;
   const domainRange = domainMax - domainMin;
 
   const getY = (val: number) => {
@@ -60,10 +61,10 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
 
   const candleCount = data.length;
   const step = plotW / candleCount;
-  const candleW = Math.max(8, Math.min(18, step * 0.65));
+  const candleW = Math.max(12, Math.min(24, step * 0.55)); // Prominent, bold candlestick bodies
 
   // 5 horizontal price gridlines
-  const gridLevels = [0.06, 0.28, 0.52, 0.76, 0.96].map((ratio) => {
+  const gridLevels = [0.12, 0.32, 0.52, 0.72, 0.90].map((ratio) => {
     const price = domainMin + domainRange * ratio;
     const y = getY(price);
     return { price, y };
@@ -102,14 +103,23 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
         </div>
       </div>
 
-      {/* SVG Canvas Area */}
-      <div className="relative flex-1 w-full min-h-[230px]">
+      {/* SVG Canvas Area - Large and Spacious */}
+      <div className="relative flex-1 w-full min-h-[320px] sm:min-h-[360px]">
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           className="w-full h-full overflow-visible"
-          preserveAspectRatio="none"
           onMouseLeave={() => setHoveredIndex(null)}
         >
+          {/* Vertical Axis Dividing Line between chart area and price numbers */}
+          <line
+            x1={svgWidth - padRight}
+            y1={padTop - 5}
+            x2={svgWidth - padRight}
+            y2={padTop + plotH + 5}
+            stroke="#dfc282"
+            strokeWidth={1.5}
+          />
+
           {/* Horizontal Gridlines & Price Scale Axis */}
           {gridLevels.map((lvl, idx) => (
             <g key={idx}>
@@ -118,14 +128,14 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
                 y1={lvl.y}
                 x2={svgWidth - padRight}
                 y2={lvl.y}
-                stroke="#e8e1d3"
+                stroke="#eee7db"
                 strokeWidth={1}
                 strokeDasharray="4 4"
               />
               <text
-                x={svgWidth - padRight + 12}
+                x={svgWidth - padRight + 16}
                 y={lvl.y + 4}
-                className="fill-slate-700 text-[11.5px] font-mono font-bold"
+                className="fill-slate-700 text-[12.5px] font-mono font-bold"
               >
                 {formatTomanShort(lvl.price)}
               </text>
@@ -142,14 +152,14 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
             strokeWidth={1.5}
             strokeDasharray="5 3"
           />
-          {/* Price Tag Badge on Right Axis (Fully separated with 12px gap) */}
-          <g transform={`translate(${svgWidth - padRight + 6}, ${lastY - 11})`}>
-            <rect width={105} height={22} rx={6} fill="#92400e" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))" />
+          {/* Price Tag Badge on Right Axis (Fully separated with clear gap) */}
+          <g transform={`translate(${svgWidth - padRight + 12}, ${lastY - 13})`}>
+            <rect width={125} height={26} rx={8} fill="#92400e" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))" />
             <text
-              x={52}
-              y={15}
+              x={62.5}
+              y={18}
               fill="#ffffff"
-              fontSize={11}
+              fontSize={12}
               fontWeight="bold"
               textAnchor="middle"
               fontFamily="monospace"
@@ -167,7 +177,7 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
             const yClose = getY(c.close);
 
             const bodyY = Math.min(yOpen, yClose);
-            const bodyH = Math.max(3, Math.abs(yClose - yOpen));
+            const bodyH = Math.max(4, Math.abs(yClose - yOpen));
 
             const isHovered = hoveredIndex === i;
 
@@ -198,7 +208,7 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
                   x2={cx}
                   y2={yLow}
                   stroke={c.isGreen ? '#10b981' : '#f43f5e'}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   strokeLinecap="round"
                 />
 
@@ -208,10 +218,10 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
                   y={bodyY}
                   width={candleW}
                   height={bodyH}
-                  rx={2}
+                  rx={2.5}
                   fill={c.isGreen ? '#10b981' : '#f43f5e'}
                   stroke={c.isGreen ? '#059669' : '#e11d48'}
-                  strokeWidth={1}
+                  strokeWidth={1.2}
                   opacity={isHovered ? 1 : 0.95}
                 />
 
@@ -238,7 +248,7 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
                 key={i}
                 x={cx}
                 y={svgHeight - 16}
-                className="fill-slate-600 text-[11px] font-bold"
+                className="fill-slate-600 text-[11.5px] font-bold"
                 textAnchor="middle"
               >
                 {c.month}
@@ -427,6 +437,25 @@ export const PriceDataCenterPage: React.FC = () => {
   const [year, setYear] = useState<number>(1402);
   const [floor, setFloor] = useState<number>(3);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const regionsScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollRegions = (direction: 'left' | 'right') => {
+    if (regionsScrollRef.current) {
+      const amount = direction === 'left' ? -240 : 240;
+      regionsScrollRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
+
+  const handleRegionsWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (regionsScrollRef.current) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        regionsScrollRef.current.scrollBy({
+          left: -e.deltaY * 1.5,
+          behavior: 'auto'
+        });
+      }
+    }
+  };
 
   const handleEstimate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -479,33 +508,80 @@ export const PriceDataCenterPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Region Selector Tabs (Compact 3D Gold Buttons, 15px Font Size) */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-        {mockPriceIndices.map((idx) => {
-          const isSelected = selectedIndex.id === idx.id;
-          return (
-            <button
-              key={idx.id}
-              onClick={() => {
-                setSelectedIndex(idx);
-                setEstimatedPrice(null);
-              }}
-              className={`h-9 px-3.5 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
-                isSelected
-                  ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                  : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282] shadow-2xs'
-              }`}
-            >
-              <span>
-                {idx.city} - {idx.district}
-              </span>
-            </button>
-          );
-        })}
+      {/* Region Selector Card with Dedicated Border & Generous Spacing */}
+      <div className="bg-white p-4 sm:p-5 rounded-[24px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.08)] space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <span className="text-xs sm:text-[13.5px] font-black text-slate-900">
+              انتخاب منطقه تحت پوشش جهت نمایش شاخص و نمودار:
+            </span>
+          </div>
+          <span className="text-[11.5px] font-bold text-slate-500 bg-[#faf8f4] px-2.5 py-0.5 rounded-lg border border-[#ede5d6]">
+            {mockPriceIndices.length} منطقه پایش
+          </span>
+        </div>
+
+        {/* Region Selector Tabs with Navigation Controls & Wheel Support */}
+        <div className="relative flex items-center gap-2">
+          {/* Scroll Right Button */}
+          <button
+            type="button"
+            onClick={() => handleScrollRegions('right')}
+            className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+            title="مشاهده مناطق قبلی"
+            aria-label="مناطق قبلی"
+          >
+            <ChevronRight className="w-4 h-4 stroke-[3]" />
+          </button>
+
+          <div 
+            ref={regionsScrollRef}
+            onWheel={handleRegionsWheel}
+            className="flex-1 flex gap-2 overflow-x-auto py-1 px-0.5 scroll-smooth touch-pan-x select-none"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#dfc282 #faf8f4'
+            }}
+          >
+            {mockPriceIndices.map((idx) => {
+              const isSelected = selectedIndex.id === idx.id;
+              return (
+                <button
+                  key={idx.id}
+                  onClick={() => {
+                    setSelectedIndex(idx);
+                    setEstimatedPrice(null);
+                  }}
+                  className={`h-9 px-4 rounded-xl text-[14.5px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+                    isSelected
+                      ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                      : 'bg-[#faf8f4] text-slate-800 hover:bg-amber-50/80 border-2 border-[#dfc282] shadow-2xs'
+                  }`}
+                >
+                  <span>
+                    {idx.city} - {idx.district}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Scroll Left Button */}
+          <button
+            type="button"
+            onClick={() => handleScrollRegions('left')}
+            className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+            title="مشاهده سایر مناطق"
+            aria-label="سایر مناطق"
+          >
+            <ChevronLeft className="w-4 h-4 stroke-[3]" />
+          </button>
+        </div>
       </div>
 
-      {/* Main Chart Card - Full Framed Gold Box */}
-      <div className="bg-white p-5 sm:p-6 rounded-[32px] border-2 border-[#dfc282] space-y-4 shadow-[0_6px_20px_rgba(180,130,40,0.12)] relative overflow-hidden">
+      {/* Main Chart Card - Full Framed Gold Box with Generous Top Margin */}
+      <div className="bg-white p-5 sm:p-7 rounded-[32px] border-2 border-[#dfc282] space-y-5 shadow-[0_8px_24px_rgba(180,130,40,0.12)] relative overflow-hidden mt-4">
         
         {/* Terminal Top Bar: Title & Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#eee7db] pb-4">
@@ -513,7 +589,7 @@ export const PriceDataCenterPage: React.FC = () => {
             <h2 className="font-black text-lg sm:text-xl text-slate-950 flex items-center gap-2">
               <Activity className="w-5 h-5 text-amber-600 animate-pulse" />
               <span>
-                ترمینال زنده تحلیل قیمت - {selectedIndex.city} ({selectedIndex.district})
+                ترمینال زنده تحلیل قیمت • {selectedIndex.city} - {selectedIndex.district.replace(/^\((.+)\)$/, '$1')}
               </span>
             </h2>
             <p className="text-xs sm:text-[13px] text-slate-600 font-bold mt-1">
