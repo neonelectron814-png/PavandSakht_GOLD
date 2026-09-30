@@ -131,7 +131,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
     { id: 'market', label: 'بازار املاک', icon: Building2 },
     { id: 'materials', label: 'مصالح و متریال', icon: Boxes },
     { id: 'building_3d', label: 'طراحی ۳بعدی و هوش مصنوعی', icon: Bot, highlight: true },
-    { id: 'deal_room', label: 'اتاق معامله امن', icon: Lock },
+    { id: 'deal_room', label: 'اتاق معامله', icon: Lock },
     { id: 'rate_cutter', label: 'شکارچی قیمت', icon: Tag },
     { id: 'barter', label: 'تهاتر و معاوضه', icon: Repeat },
     { id: 'installments', label: 'فروش اقساطی', icon: CreditCard },
@@ -291,8 +291,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
             }`}
           >
             <Lock className="w-3.5 h-3.5 text-amber-800" />
-            <span className="hidden xl:inline">اتاق معامله محرمانه</span>
-            <span className="xl:hidden">اتاق معامله</span>
+            <span>اتاق معامله</span>
           </button>
 
           {/* Register Ad Button */}

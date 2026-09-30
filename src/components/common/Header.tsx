@@ -130,7 +130,7 @@ const quickServices = [
   { id: 'materials', title: 'مصالح و متریال', icon: Package, badge: 'قیمت بورس', badgeBg: 'bg-blue-100 text-blue-800' },
   { id: 'craftsmen', title: 'پیوند عمران و معادن', icon: Hammer, badge: 'ماشین‌آلات و معدن', badgeBg: 'bg-purple-100 text-purple-800' },
   { id: 'rate_cutter', title: 'فرصت‌های طلایی و نرخ‌شکن', icon: Flame, badge: 'زیر قیمت', badgeBg: 'bg-rose-100 text-rose-800' },
-  { id: 'deal_room', title: 'اتاق معامله امن', icon: Lock, badge: 'محرمانه', badgeBg: 'bg-amber-100 text-amber-800' },
+  { id: 'deal_room', title: 'اتاق معامله', icon: Lock, badge: 'محرمانه', badgeBg: 'bg-amber-100 text-amber-800' },
   { id: 'barter', title: 'اتاق تهاتر', icon: RefreshCw, badge: 'ملک با متریال', badgeBg: 'bg-indigo-100 text-indigo-800' },
   { id: 'price_data', title: 'استعلام قیمت و متراژ', icon: TrendingUp, badge: 'داده زنده', badgeBg: 'bg-emerald-100 text-emerald-800' },
 ];
