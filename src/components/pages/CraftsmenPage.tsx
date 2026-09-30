@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Mountain, 
   Truck, 
@@ -8,7 +8,9 @@ import {
   MapPin, 
   ShieldCheck, 
   HardHat, 
-  Search
+  Search,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { maskPhoneNumber } from '../../utils/formatters';
 
@@ -159,6 +161,25 @@ const mockCivilData: MiningAndCivilItem[] = [
 export const CraftsmenPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<'all' | 'mines' | 'machinery' | 'civil_contractors' | 'craftsmen'>('all');
   const [searchFilter, setSearchFilter] = useState('');
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollTabs = (direction: 'left' | 'right') => {
+    if (tabsScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -240 : 240;
+      tabsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleTabsWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (tabsScrollRef.current) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        tabsScrollRef.current.scrollBy({
+          left: -e.deltaY * 1.5,
+          behavior: 'auto'
+        });
+      }
+    }
+  };
 
   const filteredItems = mockCivilData.filter((item) => {
     if (activeCategory !== 'all' && item.category !== activeCategory) return false;
@@ -194,65 +215,97 @@ export const CraftsmenPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4 Pillars Navigation Bar (Compact 3D Gold Buttons, 15px Font) */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+      {/* 4 Pillars Navigation Bar (Compact 3D Gold Buttons with Scroll Navigation & Wheel Support) */}
+      <div className="relative flex items-center gap-2">
+        {/* Scroll Right Button */}
         <button
-          onClick={() => setActiveCategory('all')}
-          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
-            activeCategory === 'all'
-              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
-          }`}
+          type="button"
+          onClick={() => handleScrollTabs('right')}
+          className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+          title="مشاهده بخش‌های قبلی"
+          aria-label="بخش‌های قبلی"
         >
-          تمام بخش‌های عمران و معدن
+          <ChevronRight className="w-4 h-4 stroke-[3]" />
         </button>
 
-        <button
-          onClick={() => setActiveCategory('mines')}
-          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
-            activeCategory === 'mines'
-              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
-          }`}
+        <div 
+          ref={tabsScrollRef}
+          onWheel={handleTabsWheel}
+          className="flex-1 flex gap-2 overflow-x-auto py-1 px-0.5 scroll-smooth touch-pan-x select-none"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#dfc282 #faf8f4'
+          }}
         >
-          <Pickaxe className="w-4 h-4 text-amber-800" />
-          <span>معادن سنگ و مصالح</span>
-        </button>
+          <button
+            onClick={() => setActiveCategory('all')}
+            className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+              activeCategory === 'all'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
+            }`}
+          >
+            تمام بخش‌های عمران و معدن
+          </button>
 
-        <button
-          onClick={() => setActiveCategory('machinery')}
-          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
-            activeCategory === 'machinery'
-              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
-          }`}
-        >
-          <Truck className="w-4 h-4 text-amber-800" />
-          <span>ماشین‌آلات سنگین و تاورکرین</span>
-        </button>
+          <button
+            onClick={() => setActiveCategory('mines')}
+            className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+              activeCategory === 'mines'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
+            }`}
+          >
+            <Pickaxe className="w-4 h-4 text-amber-800" />
+            <span>معادن سنگ و مصالح</span>
+          </button>
 
-        <button
-          onClick={() => setActiveCategory('civil_contractors')}
-          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
-            activeCategory === 'civil_contractors'
-              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
-          }`}
-        >
-          <HardHat className="w-4 h-4 text-amber-800" />
-          <span>پیمانکاران خاک‌برداری و نیلینگ</span>
-        </button>
+          <button
+            onClick={() => setActiveCategory('machinery')}
+            className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+              activeCategory === 'machinery'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
+            }`}
+          >
+            <Truck className="w-4 h-4 text-amber-800" />
+            <span>ماشین‌آلات سنگین و تاورکرین</span>
+          </button>
 
+          <button
+            onClick={() => setActiveCategory('civil_contractors')}
+            className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+              activeCategory === 'civil_contractors'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
+            }`}
+          >
+            <HardHat className="w-4 h-4 text-amber-800" />
+            <span>پیمانکاران خاک‌برداری و نیلینگ</span>
+          </button>
+
+          <button
+            onClick={() => setActiveCategory('craftsmen')}
+            className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+              activeCategory === 'craftsmen'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
+            }`}
+          >
+            <HardHat className="w-4 h-4 text-amber-800" />
+            <span>استادکاران و اکیپ اجرایی</span>
+          </button>
+        </div>
+
+        {/* Scroll Left Button */}
         <button
-          onClick={() => setActiveCategory('craftsmen')}
-          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
-            activeCategory === 'craftsmen'
-              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282]'
-          }`}
+          type="button"
+          onClick={() => handleScrollTabs('left')}
+          className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+          title="مشاهده سایر بخش‌ها"
+          aria-label="سایر بخش‌ها"
         >
-          <HardHat className="w-4 h-4 text-amber-800" />
-          <span>استادکاران و اکیپ اجرایی</span>
+          <ChevronLeft className="w-4 h-4 stroke-[3]" />
         </button>
       </div>
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Package, Factory, Store, MapPin, ShieldCheck, Send, Mountain, PlusCircle } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Package, Factory, Store, MapPin, ShieldCheck, Send, Mountain, PlusCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MaterialProduct, MaterialCategory } from '../../types';
 import { mockMaterials } from '../../data/mockData';
 import { formatToman, toPersianDigits } from '../../utils/formatters';
@@ -27,6 +27,25 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [supplierType, setSupplierType] = useState<'all' | 'mine' | 'factory' | 'local'>('all');
   const [maxDistance, setMaxDistance] = useState<number>(300);
+  const categoriesScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollCategories = (direction: 'left' | 'right') => {
+    if (categoriesScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -260 : 260;
+      categoriesScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleCategoriesWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (categoriesScrollRef.current) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        categoriesScrollRef.current.scrollBy({
+          left: -e.deltaY * 1.5,
+          behavior: 'auto'
+        });
+      }
+    }
+  };
 
   const filteredMaterials = mockMaterials.filter((m) => {
     if (selectedCategory !== 'all' && m.category !== selectedCategory) return false;
@@ -134,32 +153,65 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
           </div>
         </div>
 
-        {/* Categories Carousel (Compact 3D Gold Buttons, 15px Font) */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        {/* Categories Carousel (Compact 3D Gold Buttons with Scroll Navigation & Wheel Support) */}
+        <div className="relative flex items-center gap-2 pt-1">
+          {/* Scroll Right (Previous in RTL) Button */}
           <button
-            onClick={() => setSelectedCategory('all')}
-            className={`h-8.5 px-3.5 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center ${
-              selectedCategory === 'all'
-                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282]'
-            }`}
+            type="button"
+            onClick={() => handleScrollCategories('right')}
+            className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+            title="مشاهده دسته‌های قبلی"
+            aria-label="دسته‌های قبلی"
           >
-            همه دسته‌ها
+            <ChevronRight className="w-4 h-4 stroke-[3]" />
           </button>
 
-          {categoriesList.map((cat) => (
+          {/* Scrollable Container */}
+          <div 
+            ref={categoriesScrollRef}
+            onWheel={handleCategoriesWheel}
+            className="flex-1 flex gap-2 overflow-x-auto py-1 px-0.5 scroll-smooth touch-pan-x select-none"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#dfc282 #faf8f4'
+            }}
+          >
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`h-8.5 px-3.5 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center ${
-                selectedCategory === cat
+              onClick={() => setSelectedCategory('all')}
+              className={`h-8.5 px-3.5 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+                selectedCategory === 'all'
                   ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
                   : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282]'
               }`}
             >
-              {cat}
+              همه دسته‌ها
             </button>
-          ))}
+
+            {categoriesList.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`h-8.5 px-3.5 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+                  selectedCategory === cat
+                    ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+                    : 'bg-white text-slate-800 hover:bg-amber-50/60 border-2 border-[#dfc282]'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Scroll Left (Next in RTL) Button */}
+          <button
+            type="button"
+            onClick={() => handleScrollCategories('left')}
+            className="w-8 h-8 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
+            title="مشاهده سایر دسته‌ها"
+            aria-label="سایر دسته‌ها"
+          >
+            <ChevronLeft className="w-4 h-4 stroke-[3]" />
+          </button>
         </div>
       </div>
 

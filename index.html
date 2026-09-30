@@ -14,23 +14,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <style>
-      /* Global Hidden & Smooth Scrollbars for all platforms & browsers */
-      html, body, #root, * {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-      }
-      *::-webkit-scrollbar,
-      html::-webkit-scrollbar,
-      body::-webkit-scrollbar,
-      div::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        background: transparent !important;
-      }
+      /* Global Smooth & Elegant Golden Scrollbars for all platforms & browsers */
       html {
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+      }
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      /* Custom Luxury Gold Scrollbar Styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #fbf9f4;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #dfc282;
+        border-radius: 8px;
+        border: 2px solid #fbf9f4;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b88a31;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #dfc282 #fbf9f4;
       }
     </style>
   </head>
