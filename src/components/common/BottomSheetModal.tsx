@@ -49,10 +49,10 @@ export const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl btn-3d-gold flex items-center justify-center cursor-pointer shadow-xs text-[#2c1b04] active:scale-95 transition-transform"
+            className="w-8.5 h-8.5 rounded-full bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border border-slate-200 hover:border-red-200 flex items-center justify-center cursor-pointer shadow-2xs active:scale-90 transition-all"
             aria-label="بستن"
           >
-            <X className="w-4 h-4 stroke-[3]" />
+            <X className="w-4.5 h-4.5 stroke-[2.5]" />
           </button>
         </div>
 

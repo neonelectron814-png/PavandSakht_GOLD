@@ -346,11 +346,11 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-xl btn-3d-gold text-[#2c1b04] flex items-center justify-center cursor-pointer shadow-2xs active:scale-95 transition-transform"
+              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border border-slate-200 hover:border-red-200 flex items-center justify-center cursor-pointer shadow-2xs active:scale-90 transition-all"
               aria-label="بستن"
               title="بستن پنجره"
             >
-              <X className="w-4.5 h-4.5 stroke-[3]" />
+              <X className="w-5 h-5 stroke-[2.5]" />
             </button>
           </div>
 

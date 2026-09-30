@@ -20,6 +20,7 @@ const categoriesList: MaterialCategory[] = [
   'آلومینیوم و شیشه',
   'تجهیزات برق',
   'لوله و اتصالات',
+  'ضایعات و بازیافت ساختمانی',
 ];
 
 export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpenMaterialQuoteModal }) => {

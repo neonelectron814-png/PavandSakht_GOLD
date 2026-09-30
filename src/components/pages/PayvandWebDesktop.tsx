@@ -15,17 +15,25 @@ import {
 } from 'lucide-react';
 import { Property, User, UserRole, PriceIndex, LiveTickerItem } from '../../types';
 import { formatTomanShort, toPersianDigits } from '../../utils/formatters';
-import { SvgGoldDefs, PayvandLogoV3, GoldenInstallment3D, GoldenAiMatch3D, Golden3DStudio, GoldenBarter3D } from '../common/Golden3DIcons';
+import { 
+  SvgGoldDefs, 
+  PayvandLogoV3, 
+  GoldenVilla3D,
+  GoldenHandshake3D,
+  GoldenMaterials3D,
+  GoldenIndustrial3D,
+  GoldenScrapMetal3D,
+  GoldenGavel3D,
+  GoldenExcavator3D,
+  GoldenDocumentSearch3D,
+  GoldenEngineer3D,
+  GoldenInstallment3D, 
+  GoldenAiMatch3D, 
+  Golden3DStudio, 
+  GoldenBarter3D,
+  GoldenDealRoom3D
+} from '../common/Golden3DIcons';
 import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
-
-import factoryIconImg from '../../assets/images/gold_factory_icon_1790348345530.jpg';
-import materialsIconImg from '../../assets/images/gold_materials_icon_1790348354545.jpg';
-import handshakeIconImg from '../../assets/images/gold_handshake_icon_1790348362919.jpg';
-import villaIconImg from '../../assets/images/gold_villa_icon_1790348371720.jpg';
-import documentIconImg from '../../assets/images/gold_document_icon_1790348381782.jpg';
-import gavelIconImg from '../../assets/images/gold_gavel_icon_1790348390844.jpg';
-import excavatorIconImg from '../../assets/images/gold_excavator_icon_1790348400260.jpg';
-import engineerIconImg from '../../assets/images/gold_engineer_icon_1790348408949.jpg';
 
 interface PayvandWebDesktopProps {
   currentUser: User;
@@ -79,29 +87,48 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
 
   const services = [
     {
-      id: 'building_3d',
-      title: 'استودیو ۳بعدی و هوش مصنوعی',
-      subtitle: 'مدل‌سازی WebGL، برآورد متره، محاسبه مالی و استعلام کارخانه',
+      id: 'market',
+      title: 'بازار املاک و مستغلات',
+      subtitle: 'معاملات خرید، فروش و رهن فایل‌های اعتبارسنجی‌شده',
       isComponent: true,
-      component: Golden3DStudio,
-      badge: 'هوش مصنوعی سه‌بعدی',
+      component: GoldenVilla3D,
+      badge: 'فایلینگ سراسری',
       highlight: true,
-      onClick: () => onNavigateTab('building_3d'),
+      onClick: () => onNavigateTab('market'),
     },
     {
-      id: 'barter',
-      title: 'تهاتر و معاوضه تخصصی',
-      subtitle: 'مبادله ملک با متریال، خودرو یا واحدهای آماده',
+      id: 'partnership',
+      title: 'مشارکت در ساخت',
+      subtitle: 'اتصال مالکین زمین به سازندگان رتبه‌دار و معتبر',
       isComponent: true,
-      component: GoldenBarter3D,
-      badge: 'تهاتر بدون واسطه',
-      onClick: () => onNavigateTab('barter'),
+      component: GoldenHandshake3D,
+      badge: 'سرمایه‌گذاری',
+      onClick: () => onNavigateTab('partnership'),
+    },
+    {
+      id: 'materials',
+      title: 'مصالح و متریال ساختمانی',
+      subtitle: 'خرید مستقیم آهن‌آلات، سیمان، کاشی و تجهیزات',
+      isComponent: true,
+      component: GoldenMaterials3D,
+      badge: 'قیمت بورس و کارخانه',
+      onClick: () => onNavigateTab('materials'),
+    },
+    {
+      id: 'scrap_metals',
+      title: 'ضایعات و بازیافت ساختمانی',
+      subtitle: 'خرید و فروش آهن قراضه، میلگرد، تخریب و فلزات',
+      isComponent: true,
+      component: GoldenScrapMetal3D,
+      badge: 'شکار ضایعات',
+      onClick: () => onNavigateTab('materials'),
     },
     {
       id: 'industrial',
       title: 'کارخانجات و شهرک‌های صنعتی',
       subtitle: 'خرید و واگذاری کارخانجات، سوله و انبار صنعتی',
-      image: factoryIconImg,
+      isComponent: true,
+      component: GoldenIndustrial3D,
       badge: 'شهرک‌های صنعتی',
       onClick: () => {
         setSearchQuery('شهرک صنعتی');
@@ -109,59 +136,38 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       },
     },
     {
-      id: 'materials',
-      title: 'مصالح و متریال ساختمانی',
-      subtitle: 'خرید مستقیم آهن‌آلات، سیمان، کاشی و تجهیزات',
-      image: materialsIconImg,
-      badge: 'قیمت بورس و کارخانه',
-      onClick: () => onNavigateTab('materials'),
-    },
-    {
-      id: 'partnership',
-      title: 'مشارکت در ساخت',
-      subtitle: 'اتصال مالکین زمین به سازندگان رتبه‌دار و معتبر',
-      image: handshakeIconImg,
-      badge: 'سرمایه‌گذاری',
-      onClick: () => onNavigateTab('partnership'),
-    },
-    {
-      id: 'market',
-      title: 'بازار املاک و مستغلات',
-      subtitle: 'معاملات خرید، فروش و رهن فایل‌های اعتبارسنجی‌شده',
-      image: villaIconImg,
-      badge: 'فایلینگ سراسری',
-      highlight: true,
-      onClick: () => onNavigateTab('market'),
-    },
-    {
-      id: 'price_estimate',
-      title: 'استعلام قیمت و متراژ',
-      subtitle: 'دیتاسنتر رسمی قیمت مسکن و محاسبه‌گر متراژ',
-      image: documentIconImg,
-      badge: 'داده زنده',
-      onClick: () => onNavigateTab('price_data'),
-    },
-    {
       id: 'auctions_deals',
       title: 'فرصت‌های طلایی و مزایده',
       subtitle: 'فایل‌های زیر قیمت کارشناسی و مزایدات معتبر',
-      image: gavelIconImg,
+      isComponent: true,
+      component: GoldenGavel3D,
       badge: 'اکازیون روز',
       onClick: () => onNavigateTab('rate_cutter'),
     },
     {
       id: 'machinery',
-      title: 'ماشین‌آلات و تجهیزات',
+      title: 'پیوند عمران و ماشین‌آلات',
       subtitle: 'تأمین و اجاره تاورکرین، بیل مکانیکی و لودر',
-      image: excavatorIconImg,
+      isComponent: true,
+      component: GoldenExcavator3D,
       badge: 'تجهیزات سنگین',
       onClick: () => onNavigateTab('craftsmen'),
+    },
+    {
+      id: 'price_estimate',
+      title: 'استعلام قیمت و متراژ',
+      subtitle: 'دیتاسنتر رسمی قیمت مسکن و محاسبه‌گر متراژ',
+      isComponent: true,
+      component: GoldenDocumentSearch3D,
+      badge: 'داده زنده',
+      onClick: () => onNavigateTab('price_data'),
     },
     {
       id: 'contractors',
       title: 'پیمانکاران و مجریان ساخت',
       subtitle: 'فهرست مهندسان نظام مهندسی و اکیپ‌های مجرب',
-      image: engineerIconImg,
+      isComponent: true,
+      component: GoldenEngineer3D,
       badge: 'مجریان ذیصلاح',
       onClick: () => onNavigateTab('craftsmen'),
     },
@@ -182,6 +188,34 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       component: GoldenAiMatch3D,
       badge: 'استعلام آنی',
       onClick: () => onNavigateTab('customer_requests'),
+    },
+    {
+      id: 'building_3d',
+      title: 'استودیو ۳بعدی و هوش مصنوعی',
+      subtitle: 'مدل‌سازی WebGL، برآورد متره و محاسبه ساختاری',
+      isComponent: true,
+      component: Golden3DStudio,
+      badge: 'هوش مصنوعی سه‌بعدی',
+      highlight: true,
+      onClick: () => onNavigateTab('building_3d'),
+    },
+    {
+      id: 'deal_room',
+      title: 'اتاق معامله امن (Deal Room)',
+      subtitle: 'میز مذاکره محرمانه، استعلام سند و داوری حقوقی',
+      isComponent: true,
+      component: GoldenDealRoom3D,
+      badge: 'امنیت حقوقی',
+      onClick: () => onNavigateTab('deal_room'),
+    },
+    {
+      id: 'barter',
+      title: 'تهاتر و معاوضه تخصصی',
+      subtitle: 'مبادله ملک با متریال، خودرو یا واحدهای آماده',
+      isComponent: true,
+      component: GoldenBarter3D,
+      badge: 'تهاتر بدون واسطه',
+      onClick: () => onNavigateTab('barter'),
     },
   ];
 
@@ -399,15 +433,15 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
       <section className="py-8 px-6 max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-black text-slate-950">دسته‌بندی‌های ۱۰‌گانه پیوندساخت</h2>
-            <p className="text-[15px] text-slate-700 font-bold mt-1">اکوسیستم جامع و اعتبارسنجی‌شده صنعت مسکن، ساختمان و متریال</p>
+            <h2 className="text-2xl font-black text-slate-950">دسته‌بندی‌های تخصصی پیوندساخت</h2>
+            <p className="text-[15px] text-slate-700 font-bold mt-1">اکوسیستم جامع و اعتبارسنجی‌شده صنعت مسکن، ساختمان، متریال و ضایعات</p>
           </div>
           <span className="text-[15px] font-black text-amber-950 btn-3d-gold px-4 py-1.5 rounded-xl shadow-2xs">
-            ۱۰ دسته‌بندی تخصصی فعال
+            {services.length} دسته‌بندی تخصصی فعال
           </span>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {services.map((service) => {
             const IconComponent = (service as any).isComponent ? (service as any).component : null;
             return (
@@ -425,21 +459,12 @@ export const PayvandWebDesktop: React.FC<PayvandWebDesktopProps> = ({
                   {service.highlight && <Award className="w-4 h-4 text-amber-600" />}
                 </div>
 
-                {/* Prominent Large Icon - Matching Mobile First Page Scale */}
+                {/* Prominent Large 3D Gold Icon */}
                 <div className="my-3 flex justify-center transform group-hover:scale-110 transition-transform">
-                  {IconComponent ? (
+                  {IconComponent && (
                     <div className="w-20 h-20 sm:w-22 sm:h-22 flex items-center justify-center">
                       <IconComponent className="w-full h-full object-contain filter drop-shadow-[0_6px_14px_rgba(160,118,48,0.28)]" />
                     </div>
-                  ) : (
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      loading="lazy"
-                      decoding="async"
-                      referrerPolicy="no-referrer"
-                      className="w-20 h-20 sm:w-22 sm:h-22 object-contain filter drop-shadow-[0_6px_14px_rgba(160,118,48,0.28)]"
-                    />
                   )}
                 </div>
 

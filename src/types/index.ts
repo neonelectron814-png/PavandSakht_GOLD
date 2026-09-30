@@ -99,7 +99,8 @@ export type MaterialCategory =
   | 'در و پنجره' 
   | 'آلومینیوم و شیشه' 
   | 'تجهیزات برق' 
-  | 'لوله و اتصالات';
+  | 'لوله و اتصالات'
+  | 'ضایعات و بازیافت ساختمانی';
 
 export interface MaterialProduct {
   id: string;

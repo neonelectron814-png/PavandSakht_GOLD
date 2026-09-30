@@ -13,44 +13,48 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    overflow-y: auto;
   }
 
   body {
     background-color: #fcfbf9;
     color: #1c1d22;
     font-family: 'Vazirmatn', sans-serif !important;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
   }
 
   /* Universal button & input typography */
   button, input, select, textarea, span, p, h1, h2, h3, h4, h5, h6, a {
     font-family: 'Vazirmatn', sans-serif !important;
   }
-
-  /* Completely hide native scrollbar globally while keeping scrolling 100% active */
-  * {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  *::-webkit-scrollbar {
-    display: none;
-    width: 0px;
-    height: 0px;
-  }
 }
 
 /* ==========================================================================
-   INVISIBLE SMOOTH SCROLLBAR UTILITY
+   SMOOTH ELEGANT GOLDEN SCROLLBAR (قابل مشاهده و روان در تمام بخش‌ها)
    ========================================================================== */
 ::-webkit-scrollbar {
-  display: none !important;
-  width: 0px !important;
-  height: 0px !important;
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f3ec;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4ba88;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b88a31;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d4ba88 #f7f3ec;
 }
 
 .no-scrollbar::-webkit-scrollbar {

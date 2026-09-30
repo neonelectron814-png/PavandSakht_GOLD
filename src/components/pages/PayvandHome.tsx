@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { 
   MapPin, 
@@ -21,12 +21,14 @@ import {
   GoldenHandshake3D,
   GoldenMaterials3D,
   GoldenIndustrial3D,
+  GoldenScrapMetal3D,
   GoldenGavel3D,
   GoldenExcavator3D,
   GoldenDocumentSearch3D,
   GoldenEngineer3D,
   GoldenInstallment3D, 
-  GoldenAiMatch3D 
+  GoldenAiMatch3D,
+  Golden3DStudio 
 } from '../common/Golden3DIcons';
 import { AdOrderModal, SponsoredAd, PRESET_SPONSOR_MEDIA } from '../modals/AdOrderModal';
 
@@ -86,7 +88,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
     setCurrentAd(newAd);
   };
 
-  const categories = [
+  const categories = useMemo(() => [
     // 1. املاک و مستغلات (Real Estate Market)
     {
       id: 'real_estate',
@@ -117,7 +119,17 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'قیمت بورس',
       action: () => onNavigateTab('materials'),
     },
-    // 4. کارخانجات و شهرک‌های صنعتی (Manufacturers & Industrial Hubs)
+    // 4. ضایعات و بازیافت ساختمانی (Construction Scrap & Metal Waste)
+    {
+      id: 'scrap_metals',
+      title: 'ضایعات و بازیافت',
+      subtitle: 'آهن قراضه، میلگرد و تخریب',
+      isComponent: true,
+      component: GoldenScrapMetal3D,
+      badge: 'شکار ضایعات',
+      action: () => onNavigateTab('materials'),
+    },
+    // 5. کارخانجات و شهرک‌های صنعتی (Manufacturers & Industrial Hubs)
     {
       id: 'industrial',
       title: 'کارخانجات و شهرک‌ها',
@@ -127,7 +139,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'تولید دست اول',
       action: () => onNavigateTab('materials'),
     },
-    // 5. فرصت‌های طلایی و نرخ‌شکن (Distressed Deals & Bargains)
+    // 6. فرصت‌های طلایی و نرخ‌شکن (Distressed Deals & Bargains)
     {
       id: 'auctions_deals',
       title: 'فرصت‌های طلایی',
@@ -137,7 +149,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'زیر قیمت',
       action: () => onNavigateTab('rate_cutter'),
     },
-    // 6. پیوند عمران (Civil & Mining Heavy Machinery)
+    // 7. پیوند عمران (Civil & Mining Heavy Machinery)
     {
       id: 'machinery',
       title: 'پیوند عمران و معادن',
@@ -147,7 +159,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'تجهیزات راه و معدن',
       action: () => onNavigateTab('craftsmen'),
     },
-    // 7. استعلام قیمت و متراژ (Price & Specification Inquiry)
+    // 8. استعلام قیمت و متراژ (Price & Specification Inquiry)
     {
       id: 'inquiry',
       title: 'استعلام قیمت و متراژ',
@@ -157,7 +169,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'داده زنده',
       action: () => onNavigateTab('price_data'),
     },
-    // 8. پیمانکاران و مجریان ساخت (Contractors & Craftsmen)
+    // 9. پیمانکاران و مجریان ساخت (Contractors & Craftsmen)
     {
       id: 'contractors',
       title: 'پیمانکاران و مجریان',
@@ -167,7 +179,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'مجریان ذیصلاح',
       action: () => onNavigateTab('craftsmen'),
     },
-    // 9. فروش اقساطی (Instalment Sales)
+    // 10. فروش اقساطی (Instalment Sales)
     {
       id: 'installments',
       title: 'فروش اقساطی',
@@ -177,7 +189,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'شرایطی و منعطف',
       action: () => onNavigateTab('installments'),
     },
-    // 10. درخواست‌های مشتری و تطبیق هوشمند (Customer Requests & AI Matching)
+    // 11. درخواست‌های مشتری و تطبیق هوشمند (Customer Requests & AI Matching)
     {
       id: 'ai_matching',
       title: 'درخواست‌های مشتری',
@@ -187,10 +199,20 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'استعلام آنی',
       action: () => onNavigateTab('customer_requests'),
     },
-  ];
+    // 12. استودیو ۳بعدی و شبیه‌سازی هوش مصنوعی (3D AI Studio)
+    {
+      id: 'building_3d',
+      title: 'استودیو ۳بعدی و AI',
+      subtitle: 'مدل‌سازی و متره دیجیتال',
+      isComponent: true,
+      component: Golden3DStudio,
+      badge: 'شبیه‌سازی ۳D',
+      action: () => onNavigateTab('building_3d'),
+    },
+  ], [onNavigateTab]);
 
   return (
-    <div className="w-full flex flex-col bg-[#f6f4ef] text-[#111827] select-none font-['Vazirmatn',sans-serif] relative overflow-hidden pb-4" dir="rtl">
+    <div className="w-full flex flex-col bg-[#f6f4ef] text-[#111827] select-none font-['Vazirmatn',sans-serif] relative pb-28 sm:pb-32" dir="rtl">
       {/* Hidden SVG Gradient Definitions */}
       <SvgGoldDefs />
 
@@ -395,26 +417,26 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
               <motion.button
                 key={cat.id}
                 whileTap={{ scale: 0.94, y: 1 }}
-                whileHover={{ y: -2 }}
+                whileHover={{ y: -3 }}
                 onClick={cat.action}
-                className="bg-white rounded-[22px] px-2 py-2 border-2 border-[#e6dfd3] hover:border-[#caa758] shadow-[0_3px_0_#d5c8b2,0_5px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_0_#b88a31,0_8px_16px_rgba(180,130,40,0.14)] transition-all flex flex-col items-center justify-center text-center h-[124px] sm:h-[128px] cursor-pointer group select-none relative overflow-hidden"
+                className="bg-gradient-to-b from-white via-white to-[#fdfaf3] rounded-[24px] px-2.5 py-3 border-2 border-[#e2cca4] hover:border-[#b88a31] shadow-[0_4px_12px_rgba(180,130,40,0.08)] hover:shadow-[0_8px_20px_rgba(180,130,40,0.18)] transition-all flex flex-col items-center justify-between text-center h-[142px] sm:h-[148px] cursor-pointer group select-none relative overflow-hidden"
               >
-                {/* Golden 3D Accent corner line */}
-                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#e6be68] to-transparent opacity-80" />
+                {/* Golden 3D Accent top line */}
+                <div className="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-transparent via-[#d8a846] to-transparent opacity-90" />
 
-                {/* 3D Realistic Golden Icon - Compact & Centered */}
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transform group-hover:scale-106 transition-transform shrink-0">
+                {/* 3D Realistic Golden Icon - Prominent, Shiny & Centered */}
+                <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center transform group-hover:scale-110 transition-transform shrink-0 mt-1">
                   {IconComponent && (
                     <IconComponent className="w-full h-full" />
                   )}
                 </div>
 
                 {/* 2-line Label: Bigger, Crisp Vazir Persian Typography */}
-                <div className="mt-1.5 w-full px-0.5 flex flex-col items-center justify-center">
-                  <span className="block text-[13.5px] sm:text-sm font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
+                <div className="mt-1 w-full px-1 flex flex-col items-center justify-center pb-0.5">
+                  <span className="block text-[14px] sm:text-[14.5px] font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
                     {cat.title}
                   </span>
-                  <span className="block text-[11px] sm:text-[11.5px] font-bold text-[#644b1c] leading-tight tracking-tight mt-0.5 whitespace-nowrap">
+                  <span className="block text-[11px] sm:text-[11.5px] font-bold text-[#72521c] leading-tight tracking-tight mt-1 whitespace-nowrap">
                     {cat.subtitle}
                   </span>
                 </div>

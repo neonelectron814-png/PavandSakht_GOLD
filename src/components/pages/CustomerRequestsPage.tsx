@@ -26,7 +26,7 @@ interface CustomerRequestsPageProps {
 
 interface CustomerRequestItem {
   id: string;
-  category: 'stone' | 'tile' | 'rebar' | 'cement' | 'rental' | 'machinery';
+  category: 'stone' | 'tile' | 'rebar' | 'cement' | 'rental' | 'machinery' | 'scrap';
   title: string;
   requesterName: string;
   requesterRole: string;
@@ -194,6 +194,42 @@ const initialRequests: CustomerRequestItem[] = [
       },
     ],
   },
+  {
+    id: 'req-scrap-1',
+    category: 'scrap',
+    title: 'فروش ۳۰ تن ضایعات آهن، میلگرد و تیرآهن تخریب اسکلت فلزی',
+    requesterName: 'شرکت مهندسی پایاسازه البرز',
+    requesterRole: 'پیمانکار تخریب و نوسازی',
+    city: 'تهران - شهرک غرب',
+    volumeNeeded: '۳۰ تن آهن‌آلات ذوبی',
+    estimatedBudget: 975000000,
+    specs: 'تیرآهن ۱۸ تا ۲۴، میلگرد کلاف و شاخه با باسکول دیجیتال رسمی و تسویه نقدی',
+    status: 'quotes_ready',
+    date: 'امروز - ۱۱:۳۰',
+    code: 'PYS-REQ-407',
+    matchedSuppliers: [
+      {
+        id: 'sup-scrap-1',
+        supplierName: 'کارخانه فولاد و بازیافت قراضه آریا',
+        type: 'factory',
+        offeredPrice: 990000000,
+        unitPrice: '۳۳,۰۰۰ تومان / کیلوگرم',
+        location: 'شهرک صنعتی شورآباد',
+        rating: 4.9,
+        verified: true,
+      },
+      {
+        id: 'sup-scrap-2',
+        supplierName: 'مرکز بازیافت و ضایعات فلزات پارس',
+        type: 'distributor',
+        offeredPrice: 975000000,
+        unitPrice: '۳۲,۵۰۰ تومان / کیلوگرم',
+        location: 'بازار آهن شادآباد',
+        rating: 4.8,
+        verified: true,
+      },
+    ],
+  },
 ];
 
 export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEnterDealRoom }) => {
@@ -204,7 +240,7 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
   // New Request Form States
   const [showNewModal, setShowNewModal] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState('');
-  const [newCategory, setNewCategory] = useState<'stone' | 'tile' | 'rebar' | 'cement' | 'rental' | 'machinery'>('stone');
+  const [newCategory, setNewCategory] = useState<'stone' | 'tile' | 'rebar' | 'cement' | 'rental' | 'machinery' | 'scrap'>('stone');
   const [newVolume, setNewVolume] = useState('');
   const [newSpecs, setNewSpecs] = useState('');
   const [newBudget, setNewBudget] = useState('');
@@ -348,6 +384,18 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
         >
           <Building2 className="w-4 h-4 text-amber-800" />
           <span>تقاضای رهن و اجاره</span>
+        </button>
+
+        <button
+          onClick={() => setActiveCategory('scrap')}
+          className={`h-9 px-4 rounded-xl text-[15px] font-black shrink-0 transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+            activeCategory === 'scrap'
+              ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
+              : 'bg-white hover:bg-amber-50/60 text-slate-800 border-2 border-[#dfc282] shadow-2xs'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-amber-800" />
+          <span>ضایعات و بازیافت ساختمانی</span>
         </button>
       </div>
 

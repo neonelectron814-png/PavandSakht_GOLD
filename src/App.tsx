@@ -549,8 +549,8 @@ export default function App() {
         />
       )}
 
-      {/* Main Tab Views */}
-      <div className={`flex-1 w-full ${activeTab === 'home' ? 'pb-18' : 'pb-24'}`}>
+      {/* Main Tab Views with ample bottom scroll cushion */}
+      <div className="flex-1 w-full pb-28 sm:pb-32">
         {activeTab === 'home' ? (
           <PayvandHome
             onNavigateTab={(tab) => {
