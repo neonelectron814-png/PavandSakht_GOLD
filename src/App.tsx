@@ -31,6 +31,7 @@ import {
   playSubtleChime 
 } from './utils/realtimeEngine';
 import { ChevronLeft, Home as HomeIcon, MapPin, Search } from 'lucide-react';
+import { supabaseService } from './services/supabaseService';
 
 // Pages
 import { PayvandHome } from './components/pages/PayvandHome';
@@ -138,6 +139,44 @@ export default function App() {
   const [showPromoVideo, setShowPromoVideo] = useState<boolean>(false);
   const [pendingLoggedInUser, setPendingLoggedInUser] = useState<User | null>(null);
 
+  // Load properties from Supabase on mount
+  useEffect(() => {
+    supabaseService.getProperties().then((supabaseProps) => {
+      if (supabaseProps && supabaseProps.length > 0) {
+        const formattedProps: Property[] = supabaseProps.map((sp: any) => ({
+          id: sp.id,
+          code: `PYS-${sp.id.slice(0, 4)}`,
+          title: sp.title,
+          dealType: sp.deal_type || 'sale',
+          propertyType: sp.property_type || 'apartment',
+          city: sp.city || 'تهران',
+          district: sp.district || '',
+          price: Number(sp.price) || 0,
+          pricePerMeter: Number(sp.price_per_meter) || 0,
+          area: Number(sp.area) || 0,
+          rooms: Number(sp.rooms) || 0,
+          year: sp.year_built || 1403,
+          verifiedStatus: sp.verified_status || 'verified',
+          images: sp.images && sp.images.length > 0 ? sp.images : ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800'],
+          features: sp.features || ['سند تک‌برگ'],
+          description: sp.description || '',
+          ownerId: 'u-supabase',
+          ownerName: sp.owner_name || 'کاربر پیوندساخت',
+          ownerPhone: sp.owner_phone || '09121234567',
+          documentType: sp.document_type || 'سند تک‌برگ شش‌دانگ',
+          createdAt: 'امروز',
+          rating: Number(sp.rating) || 5,
+          viewsCount: sp.views_count || 1,
+        }));
+        setProperties((prev) => {
+          const existingIds = new Set(prev.map(p => p.id));
+          const newItems = formattedProps.filter(fp => !existingIds.has(fp.id));
+          return [...newItems, ...prev];
+        });
+      }
+    }).catch(err => console.warn('Supabase initial fetch info:', err));
+  }, []);
+
   // Real-Time Simulation Interval
   useEffect(() => {
     if (!isLiveActive) return;
@@ -145,7 +184,9 @@ export default function App() {
     const interval = setInterval(() => {
       setTickerItems((prev) => updateTickerItems(prev));
       const newEvent = generateNextLiveEvent();
-      setLiveEvents((prev) => [newEvent, ...prev.slice(0, 40)]);
+      if (newEvent) {
+        setLiveEvents((prev) => [newEvent, ...prev.slice(0, 40)]);
+      }
       if (isSoundEnabled) {
         playSubtleChime();
       }
@@ -302,6 +343,11 @@ export default function App() {
     };
 
     setProperties([newProp, ...properties]);
+    
+    // Sync with Supabase in background
+    supabaseService.createProperty(newPropPartial).catch((err) => {
+      console.warn('Supabase property insert sync fallback:', err);
+    });
   };
 
   const handleVerifyProperty = (id: string) => {
@@ -330,6 +376,11 @@ export default function App() {
     };
     setLiveEvents((prev) => [customEv, ...prev]);
     if (isSoundEnabled) playSubtleChime();
+
+    // Sync live event with Supabase
+    supabaseService.createLiveEvent(customEv).catch((err) => {
+      console.warn('Supabase live event insert sync fallback:', err);
+    });
   };
 
   const getPageTitle = (tab: string): string => {

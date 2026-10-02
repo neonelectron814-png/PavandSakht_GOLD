@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import payvandBrandLogoImg from '../../assets/images/Pavand.png';
 
-// 3D Realistic Golden Metallic Render Assets (Optimized WebP, ~5-20KB each, ultra-fast loading)
+// 3D Realistic Golden Metallic Render Assets (Optimized WebP/JPG, ~5-20KB each, ultra-fast loading)
 import goldVillaWebp from '../../assets/images/gold_villa_3d.webp';
 import goldHandshakeWebp from '../../assets/images/gold_handshake_3d.webp';
 import goldMaterialsWebp from '../../assets/images/gold_materials_3d.webp';
@@ -15,7 +15,10 @@ import goldInstallmentWebp from '../../assets/images/gold_installment_3d.webp';
 import goldAiMatchWebp from '../../assets/images/gold_ai_match_3d.webp';
 import goldStudioWebp from '../../assets/images/gold_studio_3d.webp';
 import goldDealroomWebp from '../../assets/images/gold_dealroom_3d.webp';
-import goldBarterWebp from '../../assets/images/gold_barter_3d.webp';
+import goldBarterWebp from '../../assets/images/gold_barter_3d_1790944250235.jpg';
+import goldAudioWebp from '../../assets/images/gold_audio_3d_1790944263415.jpg';
+import goldSecurityShieldWebp from '../../assets/images/gold_security_shield_3d_1790944277596.jpg';
+import goldUserDashboardWebp from '../../assets/images/gold_user_dashboard_3d_1790944296982.jpg';
 
 // Reusable Gold Gradient definitions for SVG fallback
 export const SvgGoldDefs: React.FC = () => (
@@ -373,13 +376,6 @@ export const GoldenDealRoom3D: React.FC<{ className?: string }> = ({ className =
     className={className}
     src={goldDealroomWebp}
     alt="اتاق معامله امن"
-    fallbackSvg={
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <GoldGradients />
-        <ellipse cx="50" cy="86" rx="36" ry="6" fill="#78500c" fillOpacity="0.22" />
-        <path d="M50 16L80 28V52C80 70 66 84 50 88C34 84 20 70 20 52V28L50 16Z" fill="url(#gold-radial)" stroke="#83570c" strokeWidth="1.8" />
-      </svg>
-    }
   />
 );
 
@@ -388,56 +384,33 @@ export const GoldenBarter3D: React.FC<{ className?: string }> = ({ className = "
   <GoldenRender3D
     className={className}
     src={goldBarterWebp}
-    alt="تهاتر و مبادله"
-    fallbackSvg={
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <GoldGradients />
-        <circle cx="50" cy="50" r="32" stroke="url(#gold-radial)" strokeWidth="6" />
-      </svg>
-    }
+    alt="تهاتر و مبادله هوشمند"
   />
 );
 
 // 15. Audio Intelligence 3D (استعلام صوتی هوشمند)
 export const GoldenAudio3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
-  <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <GoldGradients />
-      <ellipse cx="50" cy="86" rx="34" ry="5.5" fill="#78500c" fillOpacity="0.22" />
-      <path d="M24 54C24 35 34 22 50 22C66 22 76 35 76 54" stroke="url(#gold-radial)" strokeWidth="7" strokeLinecap="round" />
-      <rect x="18" y="48" width="12" height="24" rx="6" fill="url(#gold-metal-primary)" stroke="#83570c" strokeWidth="1.6" />
-      <rect x="70" y="48" width="12" height="24" rx="6" fill="url(#gold-metal-primary)" stroke="#83570c" strokeWidth="1.6" />
-      <line x1="42" y1="52" x2="42" y2="64" stroke="url(#gold-shadow)" strokeWidth="3" strokeLinecap="round" />
-      <line x1="47" y1="46" x2="47" y2="70" stroke="url(#gold-metal-primary)" strokeWidth="3.5" strokeLinecap="round" />
-      <line x1="53" y1="42" x2="53" y2="74" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
-      <line x1="58" y1="46" x2="58" y2="70" stroke="url(#gold-metal-primary)" strokeWidth="3.5" strokeLinecap="round" />
-      <line x1="63" y1="52" x2="63" y2="64" stroke="url(#gold-shadow)" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  </div>
+  <GoldenRender3D
+    className={className}
+    src={goldAudioWebp}
+    alt="استعلام صوتی هوشمند"
+  />
 );
 
 // 16. Security & Anti-Fraud Shield 3D (نظارت و امنیت ضد تقلب)
 export const GoldenShieldSecurity3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
-  <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <GoldGradients />
-      <ellipse cx="50" cy="86" rx="34" ry="5.5" fill="#78500c" fillOpacity="0.22" />
-      <path d="M50 18L78 28V52C78 68 66 82 50 86C34 82 22 68 22 52V28L50 18Z" fill="url(#gold-radial)" stroke="#83570c" strokeWidth="2" />
-      <path d="M50 25L72 33V52C72 65 62 76 50 80C38 76 28 65 28 52V33L50 25Z" fill="url(#gold-shadow)" stroke="#83570c" strokeWidth="1.5" />
-      <path d="M38 52L46 60L64 42" stroke="url(#gold-metal-primary)" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  </div>
+  <GoldenRender3D
+    className={className}
+    src={goldSecurityShieldWebp}
+    alt="امنیت و ضد تقلب"
+  />
 );
 
 // 17. User Dashboard 3D (داشبورد کاربری)
 export const GoldenUserDashboard3D: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) => (
-  <div className={`relative flex items-center justify-center shrink-0 ${className}`}>
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <GoldGradients />
-      <ellipse cx="50" cy="86" rx="34" ry="5.5" fill="#78500c" fillOpacity="0.22" />
-      <circle cx="50" cy="38" r="14" fill="url(#gold-radial)" stroke="#83570c" strokeWidth="2" />
-      <path d="M26 78C26 62 36 56 50 56C64 56 74 62 74 78Z" fill="url(#gold-shadow)" stroke="#83570c" strokeWidth="2" />
-      <circle cx="68" cy="68" r="11" fill="url(#gold-metal-primary)" stroke="#83570c" strokeWidth="1.5" />
-    </svg>
-  </div>
+  <GoldenRender3D
+    className={className}
+    src={goldUserDashboardWebp}
+    alt="داشبورد کاربری"
+  />
 );

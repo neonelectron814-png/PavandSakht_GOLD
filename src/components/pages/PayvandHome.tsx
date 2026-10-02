@@ -29,7 +29,8 @@ import {
   GoldenEngineer3D,
   GoldenInstallment3D, 
   GoldenAiMatch3D,
-  Golden3DStudio 
+  Golden3DStudio,
+  GoldenBarter3D
 } from '../common/Golden3DIcons';
 import { AdOrderModal, SponsoredAd, DEFAULT_AD, normalizeTargetUrl } from '../modals/AdOrderModal';
 import { AnimatedTypewriterTopic } from '../common/AnimatedTypewriterTopic';
@@ -190,15 +191,15 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'استعلام آنی',
       action: () => onNavigateTab('customer_requests'),
     },
-    // 12. استودیو ۳بعدی و شبیه‌سازی هوش مصنوعی (3D AI Studio)
+    // 12. تهاتر (Barter & Trade)
     {
-      id: 'building_3d',
-      title: 'استودیو ۳بعدی و AI',
-      subtitle: 'مدل‌سازی و متره دیجیتال',
+      id: 'barter',
+      title: 'تهاتر و مبادله',
+      subtitle: 'ملک، خودرو و متریال',
       isComponent: true,
-      component: Golden3DStudio,
-      badge: 'شبیه‌سازی ۳D',
-      action: () => onNavigateTab('building_3d'),
+      component: GoldenBarter3D,
+      badge: 'تهاتر تخصصی',
+      action: () => onNavigateTab('barter'),
     },
   ], [onNavigateTab]);
 
@@ -302,9 +303,9 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       {/* =========================================================================
           VIP SPONSORED ADVERTISING BANNER (بنر عریض ویژه تبلیغاتی / اسپانسری و رزرو بنر)
           ========================================================================= */}
-      <div className="w-full px-2 sm:px-3 mt-1.5 z-10 max-w-2xl mx-auto">
-        <div className="w-full relative rounded-[24px] sm:rounded-[28px] overflow-hidden border-2 border-[#dfc282] shadow-[0_8px_28px_rgba(180,130,40,0.22)] bg-black text-white">
-          {/* Full-Bleed Media Display - Expanded Width & Height taking the place of pulse bar */}
+      <div className="w-full px-2 sm:px-3 mt-2 z-10 max-w-2xl mx-auto">
+        <div className="w-full relative rounded-[26px] sm:rounded-[32px] overflow-hidden border-2 border-[#dfc282] shadow-[0_10px_35px_rgba(180,130,40,0.25)] bg-black text-white">
+          {/* Full-Bleed Grand Display Screen - Max Width & Height */}
           <div 
             onClick={() => {
               if (currentAd.targetUrl && currentAd.targetUrl !== '#') {
@@ -318,7 +319,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                 setIsAdModalOpen(true);
               }
             }}
-            className="relative w-full h-52 sm:h-64 md:h-72 overflow-hidden cursor-pointer group bg-black"
+            className="relative w-full h-64 sm:h-80 md:h-96 overflow-hidden cursor-pointer group bg-black"
           >
             {currentAd.mediaUrl.endsWith('.mp4') || currentAd.mediaUrl.includes('video') ? (
               <video
@@ -328,7 +329,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
               >
                 <source src={currentAd.mediaUrl} type="video/mp4" />
                 <source src="/videos/sample-ad.mp4" type="video/mp4" />
@@ -337,20 +338,23 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
               <img
                 src={currentAd.mediaUrl}
                 alt="تبلیغ رسانه‌ای"
-                className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
               />
             )}
 
+            {/* Subtle Gradient overlay for top and bottom controls */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none" />
+
             {/* Animated Typewriter Topic on Mobile Banner (Right Side) */}
-            <div className="absolute bottom-3 right-3 z-20 scale-85 sm:scale-100 origin-bottom-right">
+            <div className="absolute bottom-3 right-3 z-20 scale-90 sm:scale-100 origin-bottom-right">
               <AnimatedTypewriterTopic topic={currentAd.topic} />
             </div>
 
             {/* Destination URL Action / Hint Pill at bottom-left */}
             {currentAd.targetUrl && currentAd.targetUrl !== '#' && (
-              <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/85 backdrop-blur-md text-amber-300 border border-[#dfc282] text-[10px] font-black px-2.5 py-1 rounded-xl shadow-lg">
-                <ExternalLink className="w-3 h-3 stroke-[2.5]" />
-                <span>ورود به لینک</span>
+              <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 bg-black/85 backdrop-blur-md text-amber-300 border border-[#dfc282] text-xs font-black px-3 py-1.5 rounded-xl shadow-lg">
+                <ExternalLink className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>مشاهده وب‌سایت</span>
               </div>
             )}
 
@@ -362,15 +366,15 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                   e.stopPropagation();
                   setIsAdModalOpen(true);
                 }}
-                className="btn-3d-gold text-[#2c1b04] text-[11px] sm:text-xs font-black px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1 active:scale-95 transition-transform cursor-pointer"
+                className="btn-3d-gold text-[#2c1b04] text-xs font-black px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
               >
                 <Megaphone className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>برای ثبت تبلیغ</span>
+                <span>ثبت تبلیغ در مانیتور</span>
               </button>
 
               {/* Live Remaining Time Badge */}
-              <div className="bg-black/80 backdrop-blur-md text-amber-300 border border-amber-400/35 text-[10px] sm:text-[11px] font-black px-2.5 py-1.5 rounded-xl shadow-lg flex items-center gap-1 select-none">
-                <Clock className="w-3 h-3 text-amber-400" />
+              <div className="bg-black/80 backdrop-blur-md text-amber-300 border border-amber-400/35 text-[11px] font-black px-2.5 py-1.5 rounded-xl shadow-lg flex items-center gap-1 select-none">
+                <Clock className="w-3.5 h-3.5 text-amber-400" />
                 <span>باقیمانده: {formattedRemainingTime}</span>
               </div>
 
@@ -414,9 +418,11 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                   <span className="block text-[14px] sm:text-[14.5px] font-black text-slate-950 leading-tight tracking-tight whitespace-nowrap">
                     {cat.title}
                   </span>
-                  <span className="block text-[11px] sm:text-[11.5px] font-bold text-[#72521c] leading-tight tracking-tight mt-1 whitespace-nowrap">
-                    {cat.subtitle}
-                  </span>
+                  {cat.subtitle ? (
+                    <span className="block text-[11px] sm:text-[11.5px] font-bold text-[#72521c] leading-tight tracking-tight mt-1 whitespace-nowrap">
+                      {cat.subtitle}
+                    </span>
+                  ) : null}
                 </div>
               </motion.button>
             );

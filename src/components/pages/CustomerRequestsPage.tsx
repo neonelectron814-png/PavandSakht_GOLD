@@ -49,193 +49,12 @@ interface CustomerRequestItem {
   }[];
 }
 
-const initialRequests: CustomerRequestItem[] = [
-  {
-    id: 'req-1',
-    category: 'stone',
-    title: 'نیاز فوری به ۱,۰۰۰ متر سنگ تراورتن عباس‌آباد سوپر',
-    requesterName: 'مهندس حسینی (پروژه برج سپیدار)',
-    requesterRole: 'سازنده انبوه‌ساز',
-    city: 'تهران - منطقه ۱',
-    volumeNeeded: '۱,۰۰۰ متر مربع',
-    estimatedBudget: 1800000000,
-    specs: 'قد و پای بلند، کرم روشن یکدست، رزین اپوکسی، تحویل پای کارگاه فرمانیه',
-    status: 'quotes_ready',
-    date: 'امروز - ۱۰:۴۵',
-    code: 'PYS-REQ-401',
-    matchedSuppliers: [
-      {
-        id: 'sup-1',
-        supplierName: 'معدن سنگ عباس‌آباد محلات (سینه کار مستقیم)',
-        type: 'mine',
-        offeredPrice: 1650000000,
-        unitPrice: '۱,۶۵۰,۰۰۰ تومان / متر',
-        location: 'محلات، استان مرکزی',
-        rating: 4.9,
-        verified: true,
-      },
-      {
-        id: 'sup-2',
-        supplierName: 'صنایع سنگ پارس اسلب رضوان‌شهر',
-        type: 'factory',
-        offeredPrice: 1720000000,
-        unitPrice: '۱,۷۲۰,۰۰۰ تومان / متر',
-        location: 'شهرک صنعتی شمس‌آباد',
-        rating: 4.8,
-        verified: true,
-      },
-      {
-        id: 'sup-3',
-        supplierName: 'بازرگانی سنگ ستاره پایتخت',
-        type: 'distributor',
-        offeredPrice: 1790000000,
-        unitPrice: '۱,۷۹۰,۰۰۰ تومان / متر',
-        location: 'بازار سنگ فدک تهران',
-        rating: 4.7,
-        verified: true,
-      },
-    ],
-  },
-  {
-    id: 'req-2',
-    category: 'tile',
-    title: 'درخواست ۲,۰۰۰ متر کاشی و سرامیک پرسلان ۶۰×۶۰ و ۸۰×۸۰',
-    requesterName: 'دکتر صابری (مجتمع تجاری نگین)',
-    requesterRole: 'پیمانکار عمومی',
-    city: 'اصفهان',
-    volumeNeeded: '۲,۰۰۰ متر مربع',
-    estimatedBudget: 950000000,
-    specs: 'کالیبره مات ضد لغزش، خاک سفید پرسلان نانو، جذب آب زیر ۰.۵ درصد',
-    status: 'quotes_ready',
-    date: 'امروز - ۰۹:۱۵',
-    code: 'PYS-REQ-402',
-    matchedSuppliers: [
-      {
-        id: 'sup-4',
-        supplierName: 'کارخانه کاشی و سرامیک پرسپولیس یزد',
-        type: 'factory',
-        offeredPrice: 880000000,
-        unitPrice: '۴۴۰,۰۰۰ تومان / متر',
-        location: 'یزد - درب کارخانه',
-        rating: 4.9,
-        verified: true,
-      },
-      {
-        id: 'sup-5',
-        supplierName: 'تأمین مصالح ساختمانی اسپادانا',
-        type: 'distributor',
-        offeredPrice: 910000000,
-        unitPrice: '۴۵۵,۰۰۰ تومان / متر',
-        location: 'اصفهان - شهرک صنعتی جی',
-        rating: 4.8,
-        verified: true,
-      },
-    ],
-  },
-  {
-    id: 'req-3',
-    category: 'rental',
-    title: 'رهن و اجاره آپارتمان ۱۶۰ متری در منطقه ۲ (۱۰ میلیارد پیش + ۲۰ م اجاره)',
-    requesterName: 'آقای شریفی',
-    requesterRole: 'متقاضی مسکن',
-    city: 'تهران - سعادت‌آباد / شهرک غرب',
-    volumeNeeded: '۱۶۰ متر، ۳ خواب',
-    estimatedBudget: 10000000000,
-    specs: '۳ خواب مستر، ۲ پارکینگ سندی، نورگیر مستقیم جنوب، نزدیک به مترو میدان کتاب',
-    status: 'quotes_ready',
-    date: 'دیروز - ۱۸:۳۰',
-    code: 'PYS-REQ-403',
-    matchedSuppliers: [
-      {
-        id: 'sup-6',
-        supplierName: 'دفتر املاک امین صراف‌ها (کد ۱۸۴)',
-        type: 'agency',
-        offeredPrice: 10000000000,
-        unitPrice: '۱۰ میلیارد پیش + ۱۹.۵ م اجاره',
-        location: 'سعادت‌آباد، علامه شمالی',
-        rating: 5.0,
-        verified: true,
-      },
-      {
-        id: 'sup-7',
-        supplierName: 'کارگزاری رسمی مسکن شهرک غرب (کد ۲۰۹)',
-        type: 'agency',
-        offeredPrice: 10200000000,
-        unitPrice: '۹.۵ میلیارد پیش + ۲۲ م اجاره',
-        location: 'شهرک غرب، فاز ۱',
-        rating: 4.9,
-        verified: true,
-      },
-    ],
-  },
-  {
-    id: 'req-4',
-    category: 'rebar',
-    title: 'تأمین ۵۰ تن میلگرد سایز ۱۴ و ۱۶ اصفهان A3',
-    requesterName: 'مهندس کاظمی (اسکلت بتنی پردیس)',
-    requesterRole: 'مجری سازه',
-    city: 'کرج',
-    volumeNeeded: '۵۰ تن',
-    estimatedBudget: 1600000000,
-    specs: 'استاندارد ذوب‌آهن اصفهان، برگه آنالیز متالورژی آزمایشگاهی رسمی',
-    status: 'quotes_ready',
-    date: 'دیروز - ۱۴:۱۰',
-    code: 'PYS-REQ-404',
-    matchedSuppliers: [
-      {
-        id: 'sup-8',
-        supplierName: 'انبار مرکزی آهن و فولاد غرب کشور',
-        type: 'distributor',
-        offeredPrice: 1540000000,
-        unitPrice: '۳۰,۸۰۰ تومان / کیلوگرم',
-        location: 'تهران، بازار آهن شادآباد',
-        rating: 4.9,
-        verified: true,
-      },
-    ],
-  },
-  {
-    id: 'req-scrap-1',
-    category: 'scrap',
-    title: 'فروش ۳۰ تن ضایعات آهن، میلگرد و تیرآهن تخریب اسکلت فلزی',
-    requesterName: 'شرکت مهندسی پایاسازه البرز',
-    requesterRole: 'پیمانکار تخریب و نوسازی',
-    city: 'تهران - شهرک غرب',
-    volumeNeeded: '۳۰ تن آهن‌آلات ذوبی',
-    estimatedBudget: 975000000,
-    specs: 'تیرآهن ۱۸ تا ۲۴، میلگرد کلاف و شاخه با باسکول دیجیتال رسمی و تسویه نقدی',
-    status: 'quotes_ready',
-    date: 'امروز - ۱۱:۳۰',
-    code: 'PYS-REQ-407',
-    matchedSuppliers: [
-      {
-        id: 'sup-scrap-1',
-        supplierName: 'کارخانه فولاد و بازیافت قراضه آریا',
-        type: 'factory',
-        offeredPrice: 990000000,
-        unitPrice: '۳۳,۰۰۰ تومان / کیلوگرم',
-        location: 'شهرک صنعتی شورآباد',
-        rating: 4.9,
-        verified: true,
-      },
-      {
-        id: 'sup-scrap-2',
-        supplierName: 'مرکز بازیافت و ضایعات فلزات پارس',
-        type: 'distributor',
-        offeredPrice: 975000000,
-        unitPrice: '۳۲,۵۰۰ تومان / کیلوگرم',
-        location: 'بازار آهن شادآباد',
-        rating: 4.8,
-        verified: true,
-      },
-    ],
-  },
-];
+const initialRequests: CustomerRequestItem[] = [];
 
 export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEnterDealRoom }) => {
   const [requests, setRequests] = useState<CustomerRequestItem[]>(initialRequests);
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [expandedReqId, setExpandedReqId] = useState<string>(initialRequests[0].id);
+  const [expandedReqId, setExpandedReqId] = useState<string>('');
 
   // New Request Form States
   const [showNewModal, setShowNewModal] = useState<boolean>(false);
@@ -400,8 +219,14 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
       </div>
 
       {/* Requests Feed Grid */}
-      <div className="space-y-4">
-        {filteredRequests.map((req) => {
+      {filteredRequests.length === 0 ? (
+        <div className="bg-white rounded-[28px] p-10 text-center space-y-3 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
+          <p className="text-slate-950 text-base font-black">هیچ درخواست یا تقاضایی ثبت نشده است.</p>
+          <p className="text-[14px] text-slate-600 font-bold">برای ثبت تقاضای تأمین متریال یا استعلام قیمت از دکمه «ثبت تقاضای خرید جدید» استفاده فرمایید.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredRequests.map((req) => {
           const isExpanded = expandedReqId === req.id;
           return (
             <div
@@ -501,12 +326,13 @@ export const CustomerRequestsPage: React.FC<CustomerRequestsPageProps> = ({ onEn
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
       {/* New Request Modal */}
       {showNewModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm" dir="rtl">
-          <div className="bg-[#fbf9f4] rounded-[32px] p-5 sm:p-6 w-full max-w-lg border-2 border-[#dfc282] shadow-[0_20px_60px_rgba(160,118,48,0.25)] space-y-4 max-h-[90vh] overflow-y-auto no-scrollbar">
+          <div className="bg-[#fbf9f4] rounded-[32px] p-5 sm:p-6 w-full max-w-lg border-2 border-[#dfc282] shadow-[0_20px_60px_rgba(160,118,48,0.25)] space-y-4 max-h-[90vh] overflow-y-auto custom-gold-scrollbar">
             <div className="flex items-center justify-between border-b border-[#ede6d8] pb-3">
               <h3 className="font-black text-base text-slate-950 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-700" />

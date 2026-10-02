@@ -293,7 +293,7 @@ export const Header: React.FC<HeaderProps> = ({
                     </button>
                   </div>
 
-                  <div className="p-3.5 space-y-2.5 overflow-y-auto no-scrollbar flex-1">
+                  <div className="p-3.5 space-y-2.5 overflow-y-auto custom-gold-scrollbar flex-1 overscroll-contain">
                     {roleConfigs.map((role) => {
                       const Icon = role.icon;
                       const isCurrent = role.id === activeRole;

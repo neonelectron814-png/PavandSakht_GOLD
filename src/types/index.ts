@@ -58,6 +58,7 @@ export interface Property {
   isRateCutter?: boolean; // نرخ‌شکن
   discountPercent?: number;
   discountReason?: string;
+  rateCutterReason?: string;
   // ویژگی‌های اختصاصی رهن و اجاره
   rentalDetails?: {
     depositPrice: number; // ودیعه / رهن به تومان

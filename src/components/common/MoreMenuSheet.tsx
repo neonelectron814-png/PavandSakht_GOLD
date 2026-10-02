@@ -22,9 +22,6 @@ import {
   Golden3DStudio,
   GoldenBarter3D,
   GoldenDealRoom3D,
-  GoldenAudio3D,
-  GoldenShieldSecurity3D,
-  GoldenUserDashboard3D,
 } from './Golden3DIcons';
 
 interface MoreMenuSheetProps {
@@ -162,30 +159,6 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
       IconComponent: GoldenBarter3D,
       badge: 'تهاتر رسمی',
     },
-    {
-      id: 'audio_analysis',
-      category: 'tools',
-      title: 'استعلام صوتی و تحلیل هوشمند',
-      subtitle: 'جستجو و تطبیق نیازمندی ملکی با فرمان صوتی',
-      IconComponent: GoldenAudio3D,
-      badge: 'صوتی AI',
-    },
-    {
-      id: 'admin_panel',
-      category: 'tools',
-      title: 'پنل نظارت و امنیت ضد تقلب',
-      subtitle: 'سامانه غربالگری و تایید اصالت آگهی‌ها',
-      IconComponent: GoldenShieldSecurity3D,
-      badge: 'امنیت سامانه',
-    },
-    {
-      id: 'role_dashboard',
-      category: 'tools',
-      title: 'داشبورد کاربری من',
-      subtitle: 'مدیریت فایل‌ها، استعلام‌ها و پیام‌ها',
-      IconComponent: GoldenUserDashboard3D,
-      badge: 'میز کار',
-    },
   ], []);
 
   const displayedCategories = useMemo(() => {
@@ -230,7 +203,7 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 15 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-lg max-h-[88vh] bg-[#fbf9f4] border-2 border-[#dfc282] rounded-[30px] shadow-[0_25px_60px_rgba(150,105,30,0.32)] flex flex-col text-slate-900 overflow-hidden z-10"
+            className="relative w-full max-w-lg h-[86vh] max-h-[90vh] bg-[#fbf9f4] border-2 border-[#dfc282] rounded-[30px] shadow-[0_25px_60px_rgba(150,105,30,0.32)] flex flex-col text-slate-900 overflow-hidden z-10"
             onClick={(e) => e.stopPropagation()}
             style={{ willChange: 'transform, opacity' }}
           >
@@ -319,8 +292,8 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
 
             {/* List of Category Cards with 3D Golden WebP Icons */}
             <div 
-              className="p-3 sm:p-4 space-y-2.5 overflow-y-auto max-h-[60vh] overscroll-contain" 
-              style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'thin' }}
+              className="p-3 sm:p-4 space-y-2.5 flex-1 min-h-0 overflow-y-auto custom-gold-scrollbar overscroll-contain" 
+              style={{ WebkitOverflowScrolling: 'touch' }}
             >
               {displayedCategories.map((item) => {
                 const IconComponent = item.IconComponent;
@@ -336,8 +309,8 @@ export const MoreMenuSheet: React.FC<MoreMenuSheetProps> = ({
                         : 'bg-white border-[#ebdcc4] hover:border-[#caa758] hover:bg-[#fffdf9] hover:shadow-[0_4px_14px_rgba(180,130,40,0.08)]'
                     }`}
                   >
-                    {/* Right: 3D Golden WebP Icon in rounded badge */}
-                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-50/50 border border-amber-200/50 flex items-center justify-center shrink-0 p-1 transform group-hover:scale-108 transition-transform">
+                    {/* Right: Pure 3D Golden Icon without background box or border */}
+                    <div className="w-13 h-13 sm:w-15 sm:h-15 flex items-center justify-center shrink-0 transform group-hover:scale-110 transition-transform">
                       <IconComponent className="w-full h-full" />
                     </div>
 

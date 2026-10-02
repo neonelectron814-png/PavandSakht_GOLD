@@ -272,7 +272,7 @@ const CandlestickSvgChart: React.FC<CandlestickSvgChartProps> = ({ data, lastPri
 // MAIN PAGE COMPONENT
 // =========================================================================
 export const PriceDataCenterPage: React.FC = () => {
-  const [selectedIndex, setSelectedIndex] = useState<PriceIndex>(mockPriceIndices[0]);
+  const [selectedIndex, setSelectedIndex] = useState<PriceIndex | undefined>(mockPriceIndices[0]);
   const [chartType, setChartType] = useState<'candlestick' | 'line'>('candlestick');
   const [timeFrame, setTimeFrame] = useState<TimeFrameType>('1W');
 
@@ -283,6 +283,7 @@ export const PriceDataCenterPage: React.FC = () => {
 
   // Generate realistic data based on selected index and timeframe
   useEffect(() => {
+    if (!selectedIndex) return;
     const basePrice = selectedIndex.avgPricePerMeter;
     const points: ChartPoint[] = [];
 
@@ -459,7 +460,7 @@ export const PriceDataCenterPage: React.FC = () => {
 
   const handleEstimate = (e: React.FormEvent) => {
     e.preventDefault();
-    const basePerMeter = lastTickPrice || selectedIndex.avgPricePerMeter;
+    const basePerMeter = lastTickPrice || (selectedIndex ? selectedIndex.avgPricePerMeter : 0);
     const yearFactor = 1 - (1403 - year) * 0.015;
     const floorFactor = 1 + (floor - 1) * 0.01;
     const calculatedPerMeter = Math.round(basePerMeter * Math.max(0.7, yearFactor) * floorFactor);
@@ -473,6 +474,35 @@ export const PriceDataCenterPage: React.FC = () => {
     { id: '1M', label: 'ماهانه', subLabel: '۱۲ ماه' },
     { id: '1Y', label: 'سالانه', subLabel: 'چندساله' },
   ];
+
+  if (!selectedIndex) {
+    return (
+      <div className="space-y-6 pb-14 text-[#1c1d22]" dir="rtl">
+        <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] relative overflow-hidden">
+          <div className="inline-flex items-center gap-1.5 btn-3d-gold text-[#2c1b04] px-3 py-1 rounded-lg text-xs font-black mb-2 shadow-2xs">
+            <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>دیتاسنتر و شاخص رسمی قیمت مسکن و مصالح</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-950">
+            استعلام قیمت، نمودار روند و ارزش‌گذاری هوشمند
+          </h1>
+          <p className="text-xs sm:text-[13px] text-slate-700 font-bold mt-1 max-w-xl leading-relaxed">
+            داده‌های ثبت‌شده بر اساس معاملات قطعی اعتبارسنجی‌شده در بستر سامانه.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-[28px] p-12 text-center space-y-3 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
+          <div className="w-14 h-14 rounded-2xl btn-3d-gold text-[#2c1b04] mx-auto flex items-center justify-center">
+            <TrendingUp className="w-7 h-7" />
+          </div>
+          <h3 className="text-base font-black text-slate-950">تمام داده‌های پیش‌فرض با موفقیت پاک شدند</h3>
+          <p className="text-xs text-slate-600 font-bold max-w-md mx-auto leading-relaxed">
+            سامانه در حالت خام و آماده ثبت اطلاعات واقعی قرار دارد. به محض ورود اولین معاملات و شاخص‌ها، نمودارها و آمارها تشکیل خواهند شد.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-12 text-[#1c1d22]">

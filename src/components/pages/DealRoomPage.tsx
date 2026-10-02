@@ -255,7 +255,7 @@ export const DealRoomPage: React.FC<DealRoomPageProps> = ({
             )}
 
             {/* Notes List */}
-            <div className="space-y-2 max-h-56 overflow-y-auto no-scrollbar">
+            <div className="space-y-2 max-h-56 overflow-y-auto custom-gold-scrollbar pl-1">
               {notes.map((n, i) => (
                 <div key={i} className="p-3 rounded-xl bg-[#faf8f4] border border-[#e4ddd0] text-xs font-bold text-slate-800 leading-relaxed">
                   {n}

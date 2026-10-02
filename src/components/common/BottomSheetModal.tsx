@@ -56,8 +56,8 @@ export const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
           </button>
         </div>
 
-        {/* Sheet Content Body */}
-        <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-4">
+        {/* Sheet Content Body with smooth custom gold scrollbar */}
+        <div className="flex-1 min-h-0 overflow-y-auto custom-gold-scrollbar px-5 py-4 overscroll-contain touch-pan-y">
           {children}
         </div>
       </div>

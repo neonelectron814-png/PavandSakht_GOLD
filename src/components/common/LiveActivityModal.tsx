@@ -287,8 +287,8 @@ export const LiveActivityModal: React.FC<LiveActivityModalProps> = ({
           </form>
         )}
 
-        {/* Events Feed List */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5">
+        {/* Events Feed List with smooth custom gold scrollbar */}
+        <div className="flex-1 min-h-0 overflow-y-auto custom-gold-scrollbar p-3 sm:p-4 space-y-2.5 overscroll-contain touch-pan-y">
           {filteredEvents.length === 0 ? (
             <div className="text-center py-12 text-slate-500 text-xs font-bold">
               رویدادی در این دسته یافت نشد. منتظر پالس بعدی جریان زنده باشید...

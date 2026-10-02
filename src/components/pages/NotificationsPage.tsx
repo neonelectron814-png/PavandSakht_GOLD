@@ -32,45 +32,56 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={onMarkAllAsRead}
-          className="btn-3d-gold text-[11px] font-black text-[#2c1b04] px-2.5 py-1.5 rounded-lg shadow-2xs self-start sm:self-auto cursor-pointer active:scale-95 transition-transform shrink-0"
-        >
-          علامت‌گذاری همه به عنوان خوانده‌شده
-        </button>
+        {notifications.length > 0 && (
+          <button
+            onClick={onMarkAllAsRead}
+            className="btn-3d-gold text-[11px] font-black text-[#2c1b04] px-2.5 py-1.5 rounded-lg shadow-2xs self-start sm:self-auto cursor-pointer active:scale-95 transition-transform shrink-0"
+          >
+            علامت‌گذاری همه به عنوان خوانده‌شده
+          </button>
+        )}
       </div>
 
       {/* Notifications List */}
-      <div className="space-y-3">
-        {notifications.map((n) => (
-          <div
-            key={n.id}
-            onClick={() => n.linkTab && onNavigateTab(n.linkTab)}
-            className={`p-4 rounded-[22px] border-2 transition-all cursor-pointer ${
-              n.read
-                ? 'bg-white border-[#e6dfd3] hover:border-[#caa758] text-slate-900 shadow-[0_3px_0_#d5c8b2]'
-                : 'bg-[#fffdfa] border-[#dfc282] text-slate-950 shadow-[0_3px_0_#caa758,0_6px_14px_rgba(180,130,40,0.08)]'
-            }`}
-          >
-            <div className="flex items-center justify-between gap-2 mb-1.5">
-              <span className={`text-[14.5px] sm:text-base flex items-center gap-2 ${n.read ? 'font-black text-slate-800' : 'font-black text-slate-950'}`}>
-                {!n.read ? (
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-600 ring-2 ring-amber-200 shrink-0 animate-pulse" />
-                ) : (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" />
-                )}
-                <span>{n.title}</span>
-              </span>
-              <span className="text-xs font-black text-amber-900 shrink-0">{n.date}</span>
-            </div>
-            
-            {/* Body Text: High Contrast, Solid Dark Slate */}
-            <p className={`text-xs sm:text-[13px] leading-relaxed ${n.read ? 'text-slate-600 font-bold' : 'text-slate-900 font-black'}`}>
-              {n.message}
-            </p>
+      {notifications.length === 0 ? (
+        <div className="bg-white rounded-[26px] p-10 text-center space-y-3 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
+          <div className="w-12 h-12 rounded-2xl btn-3d-gold text-[#2c1b04] mx-auto flex items-center justify-center">
+            <Bell className="w-6 h-6" />
           </div>
-        ))}
-      </div>
+          <p className="text-slate-950 font-black text-base">هیچ پیام یا اعلانی در حال حاضر وجود ندارد.</p>
+          <p className="text-xs text-slate-600 font-bold">رویدادهای جدید و وضعیت قراردادها در این بخش به شما اطلاع‌رسانی خواهد شد.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {notifications.map((n) => (
+            <div
+              key={n.id}
+              onClick={() => n.linkTab && onNavigateTab(n.linkTab)}
+              className={`p-4 rounded-[22px] border-2 transition-all cursor-pointer ${
+                n.read
+                  ? 'bg-white border-[#e6dfd3] hover:border-[#caa758] text-slate-900 shadow-[0_3px_0_#d5c8b2]'
+                  : 'bg-[#fffdfa] border-[#dfc282] text-slate-950 shadow-[0_3px_0_#caa758,0_6px_14px_rgba(180,130,40,0.08)]'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className={`text-[14.5px] sm:text-base flex items-center gap-2 ${n.read ? 'font-black text-slate-800' : 'font-black text-slate-950'}`}>
+                  {!n.read ? (
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-600 ring-2 ring-amber-200 shrink-0 animate-pulse" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" />
+                  )}
+                  <span>{n.title}</span>
+                </span>
+                <span className="text-xs font-black text-amber-900 shrink-0">{n.date}</span>
+              </div>
+              
+              <p className={`text-xs sm:text-[13px] leading-relaxed ${n.read ? 'text-slate-600 font-bold' : 'text-slate-900 font-black'}`}>
+                {n.message}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
 
     </div>
   );

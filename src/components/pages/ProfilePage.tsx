@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { User, UserRole } from '../../types';
 import { 
   ShieldCheck, 
   ChevronLeft, 
   UserCheck,
   Smartphone,
-  Download
+  Download,
+  Camera,
+  Loader2,
+  CheckCircle2
 } from 'lucide-react';
 import { toPersianDigits } from '../../utils/formatters';
+import { supabaseService } from '../../services/supabaseService';
 
 interface ProfilePageProps {
   currentUser: User;
@@ -16,6 +20,7 @@ interface ProfilePageProps {
   onNavigateTab: (tab: string) => void;
   onLogout?: () => void;
   onPlayPromoVideo?: () => void;
+  onAvatarUpdated?: (newAvatarUrl: string) => void;
 }
 
 const roleTitles: Record<UserRole, string> = {
@@ -38,18 +43,75 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   onNavigateTab,
   onLogout,
   onPlayPromoVideo,
+  onAvatarUpdated,
 }) => {
+  const [avatarSrc, setAvatarSrc] = useState<string>(currentUser.avatar);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      setUploadSuccess(false);
+
+      // Upload to Supabase Storage bucket 'avatars'
+      const publicUrl = await supabaseService.uploadAvatar(file, currentUser.id);
+      setAvatarSrc(publicUrl);
+      
+      // Update in user profile table
+      await supabaseService.updateProfileAvatar(currentUser.id, publicUrl);
+      
+      if (onAvatarUpdated) {
+        onAvatarUpdated(publicUrl);
+      }
+
+      setUploadSuccess(true);
+      setTimeout(() => setUploadSuccess(false), 3000);
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <div className="space-y-5 pb-16 max-w-3xl mx-auto" dir="rtl">
       
       {/* Profile Header Card */}
       <div className="bg-white p-5 sm:p-6 rounded-[28px] border-2 border-[#dfc282] space-y-4 shadow-[0_4px_16px_rgba(180,130,40,0.12)] relative overflow-hidden">
         <div className="flex items-center gap-4">
-          <img
-            src={currentUser.avatar}
-            alt={currentUser.name}
-            className="w-16 h-16 rounded-2xl object-cover border-2 border-[#dfc282] shrink-0 shadow-md"
-          />
+          {/* Avatar with Supabase upload camera button */}
+          <div className="relative group shrink-0">
+            <img
+              src={avatarSrc}
+              alt={currentUser.name}
+              className="w-18 h-18 rounded-2xl object-cover border-2 border-[#dfc282] shadow-md transition-all group-hover:brightness-90"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full btn-3d-gold text-[#2c1b04] border border-[#dfc282] flex items-center justify-center cursor-pointer shadow-md hover:scale-110 active:scale-95 transition-all"
+              title="تغییر و آپلود عکس پروفایل در Supabase"
+            >
+              {isUploading ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2c1b04]" />
+              ) : (
+                <Camera className="w-3.5 h-3.5" />
+              )}
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleAvatarFileChange}
+              accept="image/*"
+              className="hidden"
+            />
+          </div>
+
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h1 className="text-lg sm:text-xl font-black text-slate-950">{currentUser.name}</h1>
@@ -62,6 +124,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
             <p className="text-xs text-amber-900 font-black font-mono dir-ltr text-right">{currentUser.phone}</p>
             <p className="text-xs text-slate-800 font-bold leading-relaxed">{currentUser.bio}</p>
+            {uploadSuccess && (
+              <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 mt-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>تصویر پروفایل در فضای ابری Supabase ذخیره شد.</span>
+              </p>
+            )}
           </div>
         </div>
 

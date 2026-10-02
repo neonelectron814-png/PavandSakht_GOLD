@@ -298,7 +298,7 @@ export const AudioAnalysisPage: React.FC = () => {
               )}
 
               {activeTab === 'transcript' && (
-                <div className="space-y-3 max-h-96 overflow-y-auto pr-1 no-scrollbar">
+                <div className="space-y-3 max-h-96 overflow-y-auto pr-1 custom-gold-scrollbar">
                   {selectedRecord.transcript.map((line, idx) => (
                     <div key={idx} className="p-3.5 rounded-xl bg-[#faf8f4] border-2 border-[#e6dfd3] text-xs space-y-1">
                       <div className="flex items-center justify-between text-xs text-amber-950 font-mono font-bold">

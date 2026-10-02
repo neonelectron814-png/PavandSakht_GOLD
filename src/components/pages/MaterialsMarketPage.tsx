@@ -216,7 +216,13 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
       </div>
 
       {/* Material Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {filteredMaterials.length === 0 ? (
+        <div className="bg-white rounded-[28px] p-10 text-center space-y-3 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
+          <p className="text-slate-950 text-base font-black">هیچ محصول متریالی در این دسته‌بندی ثبت نشده است.</p>
+          <p className="text-[14px] text-slate-600 font-bold">کارخانجات و معادن محترم می‌توانند از طریق دکمه «استعلام قیمت عمومی» محصولات خود را عرضه نمایند.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredMaterials.map((item) => (
           <div
             key={item.id}
@@ -296,7 +302,8 @@ export const MaterialsMarketPage: React.FC<MaterialsMarketPageProps> = ({ onOpen
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

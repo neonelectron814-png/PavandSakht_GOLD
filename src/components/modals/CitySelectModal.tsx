@@ -504,8 +504,7 @@ export const CitySelectModal: React.FC<CitySelectModalProps> = ({
 
           {/* Cities List with 31 Provinces (Smooth Vertical Scroll) */}
           <div 
-            className="overflow-y-auto p-4 sm:p-5 space-y-5 flex-1 max-h-[56vh] scroll-smooth"
-            style={{ scrollbarWidth: 'thin' }}
+            className="p-4 sm:p-5 space-y-5 flex-1 min-h-0 overflow-y-auto custom-gold-scrollbar overscroll-contain touch-pan-y scroll-smooth"
           >
             {/* Quick Option: All Iran */}
             <button

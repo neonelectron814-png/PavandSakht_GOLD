@@ -33,88 +33,7 @@ interface InstallmentOffer {
   features: string[];
 }
 
-const mockInstallmentOffers: InstallmentOffer[] = [
-  {
-    id: 'inst-1',
-    category: 'property',
-    title: 'آپارتمان ۱۴۰ متری نوساز کلید نخورده',
-    code: 'PYS-INST-101',
-    totalPrice: 12000000000,
-    cashPercent: 35,
-    months: 24,
-    monthlyInstallment: 360000000,
-    guaranteeType: 'رهن سند رسمی تا تسویه کامل',
-    supplierName: 'شرکت ساختمانی سازه‌گستر پردیس',
-    city: 'تهران - منطقه ۲',
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=700',
-    badge: 'طرح اقساطی انبوه‌ساز',
-    features: ['۳۵٪ پیش‌پرداخت نقد', 'اقساط ۲۴ ماهه بدون ضامن', 'تحویل فوری کلید'],
-  },
-  {
-    id: 'inst-2',
-    category: 'material',
-    title: 'تأمین سبد میلگرد و تیرآهن اصفهان (۴۰ تن)',
-    code: 'PYS-INST-102',
-    totalPrice: 1800000000,
-    cashPercent: 30,
-    months: 12,
-    monthlyInstallment: 115000000,
-    guaranteeType: 'چک صیادی بنفش + سفته الکترونیک',
-    supplierName: 'آهن و فولاد آریا پایتخت',
-    city: 'اصفهان / تحویل سراسری',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=700',
-    badge: 'متریال پای‌کار',
-    features: ['۳۰٪ پیش‌پرداخت', '۱۲ فقره چک صیادی ماهانه', 'ارسال مستقیم از کارخانه'],
-  },
-  {
-    id: 'inst-3',
-    category: 'material',
-    title: 'کاشی و سرامیک پرسلان کالیبره ۱۲۰۰ متر مربع',
-    code: 'PYS-INST-103',
-    totalPrice: 720000000,
-    cashPercent: 25,
-    months: 10,
-    monthlyInstallment: 58000000,
-    guaranteeType: 'چک صیادی معتبر بانکی',
-    supplierName: 'صنایع سرامیک صبا یزد',
-    city: 'یزد / ارسال سراسری',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=700',
-    badge: 'خرید مستقیم کارخانه',
-    features: ['۲۵٪ نقد', 'اقساط ۱۰ ماهه با کارمزد بانکی', 'تضمین کیفیت گرید A'],
-  },
-  {
-    id: 'inst-4',
-    category: 'machinery',
-    title: 'بیل مکانیکی کوماتسو PC220 خط ۷ صفر',
-    code: 'PYS-INST-104',
-    totalPrice: 8500000000,
-    cashPercent: 40,
-    months: 36,
-    monthlyInstallment: 175000000,
-    guaranteeType: 'اسناد مالکیت ماشین‌آلات + چک تضمین',
-    supplierName: 'ماشین‌آلات سنگین هپکو پارت',
-    city: 'اراک / تحویل در محل کارگاه',
-    image: 'https://images.unsplash.com/photo-1579829366248-204fe8413f31?auto=format&fit=crop&q=80&w=700',
-    badge: 'ماشین‌آلات عمرانی',
-    features: ['۴۰٪ نقد اولیه', 'اقساط ۳۶ ماهه بدون واسطه', 'گارانتی ۱ ساله موتور'],
-  },
-  {
-    id: 'inst-5',
-    category: 'home_appliances',
-    title: 'پکیج کامل لوازم خانگی و تاسیسات توکار مسکونی',
-    code: 'PYS-INST-105',
-    totalPrice: 420000000,
-    cashPercent: 20,
-    months: 18,
-    monthlyInstallment: 24500000,
-    guaranteeType: 'سفته الکترونیک بدون ضامن معتبر',
-    supplierName: 'تاسیسات و لوازم خانگی اروند',
-    city: 'تهران / ارسال و نصب رایگان',
-    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=700',
-    badge: 'تجهیز کامل واحد',
-    features: ['۲۰٪ پیش‌پرداخت ویژه انبوه‌ساز', 'اقساط ۱۸ ماهه', 'نصب رایگان'],
-  },
-];
+const mockInstallmentOffers: InstallmentOffer[] = [];
 
 export const InstallmentPage: React.FC<InstallmentPageProps> = ({ onEnterDealRoom }) => {
   const [activeCategory, setActiveCategory] = useState<'all' | 'property' | 'material' | 'machinery' | 'home_appliances'>('all');
@@ -314,79 +233,86 @@ export const InstallmentPage: React.FC<InstallmentPageProps> = ({ onEnterDealRoo
       </div>
 
       {/* Offers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {filteredOffers.map((offer) => (
-          <div
-            key={offer.id}
-            className="bg-white rounded-[28px] p-5 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4 flex flex-col justify-between hover:shadow-xl transition-all"
-          >
-            <div className="space-y-3">
-              {/* Image & Badge */}
-              <div className="relative h-44 rounded-2xl overflow-hidden">
-                <img
-                  src={offer.image}
-                  alt={offer.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <span className="absolute top-2.5 right-2.5 bg-slate-900/90 text-white text-xs font-black px-2.5 py-1 rounded-xl backdrop-blur-md">
-                  {offer.badge}
-                </span>
-                <span className="absolute bottom-2.5 left-2.5 btn-3d-gold text-[#2c1b04] font-black text-xs px-2.5 py-1 rounded-xl shadow-md">
-                  {offer.months} قسط ماهانه
-                </span>
-              </div>
-
-              <div>
-                <h3 className="font-black text-base text-slate-950">{offer.title}</h3>
-                <p className="text-xs text-slate-600 font-bold mt-0.5">{offer.supplierName} • {offer.city}</p>
-              </div>
-
-              {/* Price Details */}
-              <div className="p-3.5 bg-[#faf8f4] rounded-2xl border-2 border-[#e6dfd3] space-y-2 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-600 font-bold">قیمت تمام‌شده:</span>
-                  <span className="font-black text-[15px] text-slate-950 font-mono">{formatTomanShort(offer.totalPrice)} تومان</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-600 font-bold">پیش‌پرداخت نقد ({toPersianDigits(offer.cashPercent)}٪):</span>
-                  <span className="font-black text-[15px] text-amber-950 font-mono">
-                    {formatTomanShort(Math.round(offer.totalPrice * (offer.cashPercent / 100)))} تومان
+      {filteredOffers.length === 0 ? (
+        <div className="bg-white rounded-[28px] p-10 text-center space-y-3 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)]">
+          <p className="text-slate-950 text-base font-black">هیچ پیشنهاد اقساطی در این دسته‌بندی ثبت نشده است.</p>
+          <p className="text-[14px] text-slate-600 font-bold">تولیدکنندگان و انبوه‌سازان می‌توانند طرح‌های فروش اقساطی خود را در این بخش ثبت نمایند.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {filteredOffers.map((offer) => (
+            <div
+              key={offer.id}
+              className="bg-white rounded-[28px] p-5 border-2 border-[#dfc282] shadow-[0_4px_16px_rgba(180,130,40,0.1)] space-y-4 flex flex-col justify-between hover:shadow-xl transition-all"
+            >
+              <div className="space-y-3">
+                {/* Image & Badge */}
+                <div className="relative h-44 rounded-2xl overflow-hidden">
+                  <img
+                    src={offer.image}
+                    alt={offer.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <span className="absolute top-2.5 right-2.5 bg-slate-900/90 text-white text-xs font-black px-2.5 py-1 rounded-xl backdrop-blur-md">
+                    {offer.badge}
+                  </span>
+                  <span className="absolute bottom-2.5 left-2.5 btn-3d-gold text-[#2c1b04] font-black text-xs px-2.5 py-1 rounded-xl shadow-md">
+                    {offer.months} قسط ماهانه
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-600 font-bold">قسط ماهانه:</span>
-                  <span className="font-black text-[15px] text-emerald-900 font-mono">{formatTomanShort(offer.monthlyInstallment)} / ماه</span>
+
+                <div>
+                  <h3 className="font-black text-base text-slate-950">{offer.title}</h3>
+                  <p className="text-xs text-slate-600 font-bold mt-0.5">{offer.supplierName} • {offer.city}</p>
                 </div>
-                <div className="flex justify-between items-center text-xs border-t border-[#ede6d8] pt-1.5">
-                  <span className="text-slate-600 font-bold">نوع ضمانت:</span>
-                  <span className="font-black text-slate-900">{offer.guaranteeType}</span>
+
+                {/* Price Details */}
+                <div className="p-3.5 bg-[#faf8f4] rounded-2xl border-2 border-[#e6dfd3] space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 font-bold">قیمت تمام‌شده:</span>
+                    <span className="font-black text-[15px] text-slate-950 font-mono">{formatTomanShort(offer.totalPrice)} تومان</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 font-bold">پیش‌پرداخت نقد ({toPersianDigits(offer.cashPercent)}٪):</span>
+                    <span className="font-black text-[15px] text-amber-950 font-mono">
+                      {formatTomanShort(Math.round(offer.totalPrice * (offer.cashPercent / 100)))} تومان
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 font-bold">قسط ماهانه:</span>
+                    <span className="font-black text-[15px] text-emerald-900 font-mono">{formatTomanShort(offer.monthlyInstallment)} / ماه</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs border-t border-[#ede6d8] pt-1.5">
+                    <span className="text-slate-600 font-bold">نوع ضمانت:</span>
+                    <span className="font-black text-slate-900">{offer.guaranteeType}</span>
+                  </div>
+                </div>
+
+                {/* Bullet Features */}
+                <div className="flex flex-wrap gap-1.5">
+                  {offer.features.map((f, i) => (
+                    <span key={i} className="text-xs bg-amber-50 text-amber-950 font-black px-2.5 py-1 rounded-lg border border-amber-200">
+                      ✓ {f}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Bullet Features */}
-              <div className="flex flex-wrap gap-1.5">
-                {offer.features.map((f, i) => (
-                  <span key={i} className="text-xs bg-amber-50 text-amber-950 font-black px-2.5 py-1 rounded-lg border border-amber-200">
-                    ✓ {f}
-                  </span>
-                ))}
+              {/* Action Button (Compact, 15px Font Size) */}
+              <div className="pt-2 flex items-center gap-2">
+                <button
+                  onClick={() => onEnterDealRoom(offer.code)}
+                  className="w-full h-10 btn-3d-gold text-[#2c1b04] text-[15px] font-black rounded-xl flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-transform cursor-pointer"
+                >
+                  <Lock className="w-4 h-4 stroke-[2.5]" />
+                  <span>انتقال به اتاق معامله امن جهت عقد قرارداد</span>
+                </button>
               </div>
             </div>
-
-            {/* Action Button (Compact, 15px Font Size) */}
-            <div className="pt-2 flex items-center gap-2">
-              <button
-                onClick={() => onEnterDealRoom(offer.code)}
-                className="w-full h-10 btn-3d-gold text-[#2c1b04] text-[15px] font-black rounded-xl flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-transform cursor-pointer"
-              >
-                <Lock className="w-4 h-4 stroke-[2.5]" />
-                <span>انتقال به اتاق معامله امن جهت عقد قرارداد</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
