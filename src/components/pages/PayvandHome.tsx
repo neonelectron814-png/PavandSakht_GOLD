@@ -323,12 +323,16 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
             {currentAd.mediaUrl.endsWith('.mp4') || currentAd.mediaUrl.includes('video') ? (
               <video
                 src={currentAd.mediaUrl}
+                poster="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200"
                 autoPlay
                 loop
                 muted
                 playsInline
                 className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
-              />
+              >
+                <source src={currentAd.mediaUrl} type="video/mp4" />
+                <source src="/videos/sample-ad.mp4" type="video/mp4" />
+              </video>
             ) : (
               <img
                 src={currentAd.mediaUrl}

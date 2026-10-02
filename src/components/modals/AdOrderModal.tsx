@@ -56,7 +56,7 @@ export function normalizeTargetUrl(rawUrl: string): string {
 
 export const DEFAULT_AD: SponsoredAd = {
   id: 'ad-default',
-  mediaUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+  mediaUrl: '/videos/sample-ad.mp4',
   mediaType: 'video',
   phoneNumber: '09121234567',
   topic: 'پروژه‌های عمرانی و ساختمانی',
@@ -71,7 +71,7 @@ export const PRESET_SPONSOR_MEDIA = [
   {
     id: 'default-video',
     title: 'تیزر ویدیویی ساختمانی',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    url: '/videos/sample-ad.mp4',
     mediaType: 'video' as const,
   }
 ];
@@ -131,7 +131,7 @@ export const AdOrderModal: React.FC<AdOrderModalProps> = ({
   // Upload & Media State (Max 1GB)
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [mediaPreviewUrl, setMediaPreviewUrl] = useState<string>(
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    '/videos/sample-ad.mp4'
   );
   const [uploadError, setUploadError] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);

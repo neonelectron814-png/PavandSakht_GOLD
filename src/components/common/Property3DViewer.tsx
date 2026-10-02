@@ -121,76 +121,76 @@ export const Property3DViewer: React.FC<Property3DViewerProps> = ({
       </div>
 
       {/* Interactive Controls Bar Above 3D Model */}
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-[#faf8f4] p-2.5 sm:p-3 rounded-2xl border-2 border-[#dfc282]">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 bg-[#faf8f4] p-3 sm:p-3.5 rounded-2xl border-2 border-[#dfc282] shadow-2xs">
         
         {/* Lighting Mode Selector */}
-        <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-          <span className="text-[11px] sm:text-xs text-slate-700 font-black ml-1 hidden xs:inline">نور:</span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-xs text-slate-800 font-black ml-1">نور:</span>
           <button
             onClick={() => handleConfigChange({ lightingMode: 'day' })}
-            className={`h-7.5 sm:h-8 px-2 sm:px-2.5 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+            className={`h-9 px-3 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
               buildingConfig.lightingMode === 'day'
-                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                : 'bg-white text-slate-700 hover:bg-amber-50 border border-[#dfc282]'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-xs'
+                : 'bg-white text-slate-800 hover:bg-amber-50 border-2 border-[#dfc282]'
             }`}
           >
-            <Sun className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600" />
+            <Sun className="w-4 h-4 text-amber-600" />
             <span>روز</span>
           </button>
           <button
             onClick={() => handleConfigChange({ lightingMode: 'sunset' })}
-            className={`h-7.5 sm:h-8 px-2 sm:px-2.5 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+            className={`h-9 px-3 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
               buildingConfig.lightingMode === 'sunset'
-                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                : 'bg-white text-slate-700 hover:bg-amber-50 border border-[#dfc282]'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-xs'
+                : 'bg-white text-slate-800 hover:bg-amber-50 border-2 border-[#dfc282]'
             }`}
           >
-            <Sunset className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-600" />
+            <Sunset className="w-4 h-4 text-orange-600" />
             <span>غروب</span>
           </button>
           <button
             onClick={() => handleConfigChange({ lightingMode: 'night' })}
-            className={`h-7.5 sm:h-8 px-2 sm:px-2.5 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+            className={`h-9 px-3 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
               buildingConfig.lightingMode === 'night'
-                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                : 'bg-white text-slate-700 hover:bg-amber-50 border border-[#dfc282]'
+                ? 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white shadow-xs'
+                : 'bg-white text-slate-800 hover:bg-amber-50 border-2 border-[#dfc282]'
             }`}
           >
-            <Moon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-600" />
+            <Moon className="w-4 h-4 text-indigo-500" />
             <span>شب</span>
           </button>
         </div>
 
         {/* View Mode Switches: Exploded, Wireframe */}
-        <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => handleConfigChange({ isExploded: !buildingConfig.isExploded })}
-            className={`h-7.5 sm:h-8 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+            className={`h-9 px-3.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
               buildingConfig.isExploded
-                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                : 'bg-white text-slate-800 hover:bg-amber-50 border border-[#dfc282]'
+                ? 'btn-3d-gold text-[#2c1b04] shadow-xs border-2 border-[#caa758]'
+                : 'bg-white text-slate-900 hover:bg-amber-50 border-2 border-[#dfc282]'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-amber-800" />
-            <span>{buildingConfig.isExploded ? 'انفجاری فعال' : 'دید انفجاری'}</span>
+            <Layers className="w-4 h-4 text-amber-800" />
+            <span>{buildingConfig.isExploded ? 'انفجاری (فعال)' : 'دید انفجاری'}</span>
           </button>
 
           <button
             onClick={() => handleConfigChange({ isWireframe: !buildingConfig.isWireframe })}
-            className={`h-7.5 sm:h-8 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+            className={`h-9 px-3.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
               buildingConfig.isWireframe
-                ? 'btn-3d-gold text-[#2c1b04] shadow-2xs'
-                : 'bg-white text-slate-800 hover:bg-amber-50 border border-[#dfc282]'
+                ? 'bg-blue-600 text-white shadow-xs border-2 border-blue-400'
+                : 'bg-white text-slate-900 hover:bg-amber-50 border-2 border-[#dfc282]'
             }`}
           >
-            <Eye className="w-3.5 h-3.5 text-amber-800" />
-            <span>{buildingConfig.isWireframe ? 'اسکلت فعال' : 'نقشه اسکلت'}</span>
+            <Eye className="w-4 h-4 text-amber-800" />
+            <span>{buildingConfig.isWireframe ? 'اسکلت (فعال)' : 'نقشه اسکلت'}</span>
           </button>
         </div>
       </div>
 
       {/* 3D WebGL Canvas Main Viewer Container */}
-      <div className="h-[320px] sm:h-[420px] md:h-[460px] w-full rounded-2xl overflow-hidden border-2 border-[#dfc282] shadow-inner relative bg-slate-950">
+      <div className="w-full relative rounded-3xl shadow-lg">
         <BuildingWebGLCanvas 
           config={buildingConfig} 
           onConfigChange={handleConfigChange} 

@@ -496,89 +496,106 @@ export const BuildingWebGLCanvas: React.FC<BuildingWebGLCanvasProps> = ({
       </div>
 
       {/* Quick 3D Viewport Toolbar (Floating Bottom-Right) */}
-      <div className="absolute bottom-3.5 right-3.5 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-2xl border border-white/15 shadow-xl">
+      <div className="absolute bottom-2.5 right-2.5 z-30 flex items-center gap-1 sm:gap-1.5 bg-black/85 backdrop-blur-md p-1.5 rounded-2xl border-2 border-[#dfc282] shadow-[0_4px_18px_rgba(0,0,0,0.5)]">
         {/* Toggle Exploded View */}
         <button
           type="button"
           onClick={() => onConfigChange?.({ isExploded: !config.isExploded })}
-          className={`p-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 ${
-            config.isExploded ? 'bg-amber-500 text-slate-950 font-black shadow-md' : 'text-slate-300 hover:text-white'
+          className={`h-8 px-2 sm:px-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 active:scale-95 ${
+            config.isExploded 
+              ? 'btn-3d-gold text-[#2c1b04] shadow-md' 
+              : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
           }`}
           title="تفکیک طبقات / حالت انفجاری"
         >
-          <Layers className="w-3.5 h-3.5" />
-          <span className="text-[11px] hidden sm:inline">تفکیک طبقات</span>
+          <Layers className="w-3.5 h-3.5 text-amber-400" />
+          <span className="text-[10.5px] font-black">تفکیک</span>
         </button>
 
         {/* Toggle X-Ray Wireframe */}
         <button
           type="button"
           onClick={() => onConfigChange?.({ isWireframe: !config.isWireframe })}
-          className={`p-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 ${
-            config.isWireframe ? 'bg-blue-500 text-white shadow-md' : 'text-slate-300 hover:text-white'
+          className={`h-8 px-2 sm:px-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 active:scale-95 ${
+            config.isWireframe 
+              ? 'bg-blue-600 text-white shadow-md border border-blue-400' 
+              : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
           }`}
-          title="نمای اشعه ایکس و اسکلت فلزی/بتنی"
+          title="نمای اسکلت سازه"
         >
-          <Zap className="w-3.5 h-3.5" />
-          <span className="text-[11px] hidden sm:inline">اسکلت سازه</span>
+          <Zap className="w-3.5 h-3.5 text-cyan-300" />
+          <span className="text-[10.5px] font-black">اسکلت</span>
         </button>
 
         {/* Auto Rotate Toggle */}
         <button
           type="button"
           onClick={() => setIsAutoRotating(!isAutoRotating)}
-          className={`p-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-            isAutoRotating ? 'bg-white/20 text-amber-300' : 'text-slate-400 hover:text-white'
+          className={`h-8 px-2 sm:px-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 active:scale-95 ${
+            isAutoRotating 
+              ? 'btn-3d-gold text-[#2c1b04] shadow-xs' 
+              : 'bg-white/10 text-slate-300 hover:text-white border border-white/20'
           }`}
           title="چرخش خودکار"
         >
           <RotateCw className={`w-3.5 h-3.5 ${isAutoRotating ? 'animate-spin' : ''}`} />
+          <span className="text-[10.5px] font-black">چرخش</span>
         </button>
 
         {/* Reset Camera View */}
         <button
           type="button"
           onClick={resetView}
-          className="p-2 rounded-xl text-slate-300 hover:text-white text-xs font-black transition-all cursor-pointer"
+          className="h-8 px-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[10.5px] font-black transition-all cursor-pointer flex items-center gap-1 active:scale-95"
           title="بازنشانی زاویه دید"
         >
-          <Compass className="w-3.5 h-3.5" />
+          <Compass className="w-3.5 h-3.5 text-amber-400" />
+          <span className="text-[10.5px]">زاویه</span>
         </button>
       </div>
 
       {/* Floating Bottom-Left Lighting Mode Selector */}
-      <div className="absolute bottom-3.5 left-3.5 z-20 flex items-center gap-1 bg-black/60 backdrop-blur-md p-1 rounded-2xl border border-white/15 shadow-xl">
+      <div className="absolute bottom-2.5 left-2.5 z-30 flex items-center gap-1 bg-black/85 backdrop-blur-md p-1.5 rounded-2xl border-2 border-[#dfc282] shadow-[0_4px_18px_rgba(0,0,0,0.5)]">
         <button
           type="button"
           onClick={() => onConfigChange?.({ lightingMode: 'day' })}
-          className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-            config.lightingMode === 'day' ? 'bg-amber-400 text-slate-950 shadow-xs' : 'text-slate-400 hover:text-white'
+          className={`h-8 px-2 rounded-xl transition-all cursor-pointer flex items-center gap-1 active:scale-95 ${
+            config.lightingMode === 'day' 
+              ? 'btn-3d-gold text-[#2c1b04] shadow-xs font-black' 
+              : 'text-slate-300 hover:text-white'
           }`}
           title="نور روز کامل"
         >
-          <Sun className="w-4 h-4" />
+          <Sun className="w-3.5 h-3.5 text-amber-500" />
+          <span className="text-[10px] font-black">روز</span>
         </button>
 
         <button
           type="button"
           onClick={() => onConfigChange?.({ lightingMode: 'sunset' })}
-          className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-            config.lightingMode === 'sunset' ? 'bg-orange-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+          className={`h-8 px-2 rounded-xl transition-all cursor-pointer flex items-center gap-1 active:scale-95 ${
+            config.lightingMode === 'sunset' 
+              ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-xs font-black' 
+              : 'text-slate-300 hover:text-white'
           }`}
           title="نور غروب و گلدن هور"
         >
-          <Sunset className="w-4 h-4" />
+          <Sunset className="w-3.5 h-3.5 text-orange-400" />
+          <span className="text-[10px] font-black">غروب</span>
         </button>
 
         <button
           type="button"
           onClick={() => onConfigChange?.({ lightingMode: 'night' })}
-          className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-            config.lightingMode === 'night' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+          className={`h-8 px-2 rounded-xl transition-all cursor-pointer flex items-center gap-1 active:scale-95 ${
+            config.lightingMode === 'night' 
+              ? 'bg-gradient-to-r from-indigo-600 to-blue-700 text-white shadow-xs font-black' 
+              : 'text-slate-300 hover:text-white'
           }`}
           title="نور شب و نورپردازی نمای ساختمان"
         >
-          <Moon className="w-4 h-4" />
+          <Moon className="w-3.5 h-3.5 text-indigo-300" />
+          <span className="text-[10px] font-black">شب</span>
         </button>
       </div>
 
