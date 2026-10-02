@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   mockUsers, 
   mockProperties, 
@@ -22,6 +22,7 @@ import { CitySelectModal, IRAN_ALL_PROVINCES } from './components/modals/CitySel
 import { LiveTickerBar } from './components/common/LiveTickerBar';
 import { LiveActivityModal } from './components/common/LiveActivityModal';
 import { MoreMenuSheet } from './components/common/MoreMenuSheet';
+import { FullscreenPromoVideoModal } from './components/common/FullscreenPromoVideoModal';
 import { 
   initialTickerItems, 
   initialLiveEvents, 
@@ -133,6 +134,10 @@ export default function App() {
   const [isMoreMenuSheetOpen, setIsMoreMenuSheetOpen] = useState<boolean>(false);
   const [submitModalType, setSubmitModalType] = useState<'property' | 'material_quote' | 'barter' | 'partnership'>('property');
 
+  // Fullscreen 10-Second Promotional Video State (Non-skippable ad on login/register)
+  const [showPromoVideo, setShowPromoVideo] = useState<boolean>(false);
+  const [pendingLoggedInUser, setPendingLoggedInUser] = useState<User | null>(null);
+
   // Real-Time Simulation Interval
   useEffect(() => {
     if (!isLiveActive) return;
@@ -164,20 +169,33 @@ export default function App() {
       bio: 'کاربر احراز هویت شده در سامانه پیوندساخت',
     };
 
-    setLoggedInUser(userToSet);
-    setIsAuthenticated(true);
-    if (userToSet.role) {
-      setActiveRole(userToSet.role);
-    }
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('payvand_auth_token', 'true');
-        localStorage.setItem('payvand_user_data', JSON.stringify(userToSet));
-      } catch {
-        // storage disabled or restricted
+    // Stage user and trigger 10-second non-closable full-screen sponsor promotional video
+    setPendingLoggedInUser(userToSet);
+    setShowPromoVideo(true);
+  };
+
+  const handlePromoVideoFinished = useCallback(() => {
+    setShowPromoVideo(false);
+
+    if (pendingLoggedInUser) {
+      setLoggedInUser(pendingLoggedInUser);
+      if (pendingLoggedInUser.role) {
+        setActiveRole(pendingLoggedInUser.role);
+      }
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('payvand_auth_token', 'true');
+          localStorage.setItem('payvand_user_data', JSON.stringify(pendingLoggedInUser));
+        } catch {
+          // storage disabled or restricted
+        }
       }
     }
-  };
+
+    setIsAuthenticated(true);
+    setActiveTab('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pendingLoggedInUser]);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -517,6 +535,7 @@ export default function App() {
             onRoleChange={handleRoleChange}
             onNavigateTab={(tab) => setActiveTab(tab)}
             onLogout={handleLogout}
+            onPlayPromoVideo={() => setShowPromoVideo(true)}
           />
         );
 
@@ -563,8 +582,8 @@ export default function App() {
         />
       )}
 
-      {/* Main Tab Views with ample bottom scroll cushion */}
-      <div className="flex-1 w-full pb-28 sm:pb-32">
+      {/* Main Tab Views with minimal bottom scroll cushion */}
+      <div className="flex-1 w-full pb-14 sm:pb-16">
         {activeTab === 'home' ? (
           <PayvandHome
             onNavigateTab={(tab) => {
@@ -606,6 +625,17 @@ export default function App() {
       />
     </div>
   );
+
+  // If promotional video is active after login/register, show it full-screen (covers 100% of viewport, unclosable, 10s countdown)
+  if (showPromoVideo) {
+    return (
+      <FullscreenPromoVideoModal
+        isOpen={true}
+        onFinished={handlePromoVideoFinished}
+        durationSeconds={10}
+      />
+    );
+  }
 
   // If not authenticated, render the AuthScreen first
   if (!isAuthenticated) {
@@ -842,6 +872,13 @@ export default function App() {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
+      />
+
+      {/* Fullscreen 10-Second Promotional Video Interstitial */}
+      <FullscreenPromoVideoModal
+        isOpen={showPromoVideo}
+        onFinished={handlePromoVideoFinished}
+        durationSeconds={10}
       />
 
     </div>

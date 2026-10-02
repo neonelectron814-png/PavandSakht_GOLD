@@ -15,6 +15,7 @@ interface ProfilePageProps {
   onRoleChange: (role: UserRole) => void;
   onNavigateTab: (tab: string) => void;
   onLogout?: () => void;
+  onPlayPromoVideo?: () => void;
 }
 
 const roleTitles: Record<UserRole, string> = {
@@ -36,6 +37,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   onRoleChange,
   onNavigateTab,
   onLogout,
+  onPlayPromoVideo,
 }) => {
   return (
     <div className="space-y-5 pb-16 max-w-3xl mx-auto" dir="rtl">
@@ -148,12 +150,25 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           <ChevronLeft className="w-4.5 h-4.5 text-slate-500" />
         </button>
 
+        {onPlayPromoVideo && (
+          <button
+            onClick={onPlayPromoVideo}
+            className="w-full p-4 flex items-center justify-between hover:bg-amber-50/50 transition-colors text-amber-950 font-black cursor-pointer text-right"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-amber-700">🎬</span>
+              <span>مشاهده ویدیوی تبلیغاتی ورود (۱۰ ثانیه)</span>
+            </div>
+            <ChevronLeft className="w-4.5 h-4.5 text-amber-600" />
+          </button>
+        )}
+
         {onLogout && (
           <button
             onClick={onLogout}
             className="w-full p-4 flex items-center justify-between hover:bg-rose-50/50 transition-colors text-rose-700 font-black cursor-pointer text-right"
           >
-            <span>خروج از حساب کاربری</span>
+            <span>خروج از حساب کاربری (مشاهده فرم ورود و ثبت‌نام)</span>
             <ChevronLeft className="w-4.5 h-4.5 text-rose-400" />
           </button>
         )}

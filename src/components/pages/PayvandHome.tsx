@@ -110,7 +110,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       badge: 'قیمت بورس',
       action: () => onNavigateTab('materials'),
     },
-    // 4. ضایعات و بازیافت ساختمانی (Construction Scrap & Metal Waste)
+    // 2. ضایعات و بازیافت ساختمانی (Construction Scrap & Metal Waste)
     {
       id: 'scrap_metals',
       title: 'ضایعات و بازیافت',
@@ -203,28 +203,28 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
   ], [onNavigateTab]);
 
   return (
-    <div className="w-full flex flex-col bg-[#f6f4ef] text-[#111827] select-none font-['Vazirmatn',sans-serif] relative pb-28 sm:pb-32" dir="rtl">
+    <div className="w-full flex flex-col bg-[#f6f4ef] text-[#111827] select-none font-['Vazirmatn',sans-serif] relative pb-6 sm:pb-7" dir="rtl">
       {/* Hidden SVG Gradient Definitions */}
       <SvgGoldDefs />
 
       {/* =========================================================================
           TOP HEADER: BRAND LOGO ON RIGHT (RTL), TITLE, AND ACTIONS ON LEFT
           ========================================================================= */}
-      <header className="w-full pt-3 px-4 pb-2 relative flex items-center justify-between z-10">
+      <header className="w-full pt-1.5 px-3.5 pb-0 relative flex items-center justify-between z-10">
         
-        {/* Right side in RTL: Prominent Solo Brand Logo (No border, No extra text, Larger) */}
+        {/* Right side in RTL: Prominent Solo Brand Logo */}
         <motion.button 
           whileTap={{ scale: 0.95 }}
           onClick={() => onNavigateTab('home')}
-          className="flex items-center cursor-pointer p-0.5 select-none z-20 group"
+          className="flex items-center cursor-pointer p-0 select-none z-20 group"
           title="پیوندساخت - صفحه اصلی"
         >
-          <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 flex items-center justify-center">
-            <PayvandLogoV3 className="w-16 h-16 sm:w-[72px] sm:h-[72px] object-contain" />
+          <div className="w-12 h-12 sm:w-13 sm:h-13 shrink-0 flex items-center justify-center">
+            <PayvandLogoV3 className="w-12 h-12 sm:w-13 sm:h-13 object-contain" />
           </div>
         </motion.button>
 
-        {/* Left side in RTL: 3D Gold Logout Button & Notification Bell Button (Smaller, Sleeker) */}
+        {/* Left side in RTL: 3D Gold Logout Button & Notification Bell Button */}
         <div className="flex items-center gap-1.5 z-20">
           {onLogout && (
             <motion.button
@@ -256,7 +256,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       {/* =========================================================================
           SEARCH & CITY ROW (Search on Right in RTL, City selector on Left in RTL)
           ========================================================================= */}
-      <div className="w-full px-4 mt-2 z-10 flex items-center gap-2" dir="rtl">
+      <div className="w-full px-3 mt-1 z-10 flex items-center gap-2" dir="rtl">
         {/* Main Search Bar (Right side in RTL) */}
         <form
           onSubmit={handleSearchSubmit}
@@ -300,37 +300,11 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          DYNAMIC LIVE MARKET PULSE BAR (پالس زنده و پویای بازار)
-          ========================================================================= */}
-      <div className="w-full px-3 sm:px-4 mt-2 z-10 max-w-2xl mx-auto">
-        <motion.div 
-          whileTap={{ scale: 0.98 }}
-          onClick={() => onOpenLiveFeed && onOpenLiveFeed()}
-          className="w-full bg-gradient-to-r from-amber-50 via-amber-100/90 to-amber-50 rounded-2xl border-2 border-[#dfc282] px-4 py-2.5 flex items-center justify-between shadow-[0_2px_8px_rgba(180,130,40,0.08)] cursor-pointer hover:border-[#b88a31] transition-all group select-none"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="relative flex h-2.5 w-2.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600" />
-            </span>
-            <span className="text-xs sm:text-[13px] font-black text-[#422904] truncate">
-              پالس زنده بازار: <span className="text-emerald-800 font-extrabold">۲۴ معامله و استعلام در جریان</span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1 text-xs font-black text-amber-800 group-hover:text-amber-950 shrink-0">
-            <span>مشاهده تابلو</span>
-            <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          </div>
-        </motion.div>
-      </div>
-
-      {/* =========================================================================
           VIP SPONSORED ADVERTISING BANNER (بنر عریض ویژه تبلیغاتی / اسپانسری و رزرو بنر)
           ========================================================================= */}
-      <div className="w-full px-2.5 sm:px-4 mt-2.5 z-10 max-w-2xl mx-auto">
-        <div className="w-full relative rounded-[28px] overflow-hidden border-2 border-[#dfc282] shadow-[0_8px_24px_rgba(180,130,40,0.2)] bg-black text-white">
-          {/* Full-Bleed Media Display - ONLY Video, GIF, or Photo */}
+      <div className="w-full px-2 sm:px-3 mt-1.5 z-10 max-w-2xl mx-auto">
+        <div className="w-full relative rounded-[24px] sm:rounded-[28px] overflow-hidden border-2 border-[#dfc282] shadow-[0_8px_28px_rgba(180,130,40,0.22)] bg-black text-white">
+          {/* Full-Bleed Media Display - Expanded Width & Height taking the place of pulse bar */}
           <div 
             onClick={() => {
               if (currentAd.targetUrl && currentAd.targetUrl !== '#') {
@@ -344,7 +318,7 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
                 setIsAdModalOpen(true);
               }
             }}
-            className="relative w-full h-44 sm:h-52 md:h-60 overflow-hidden cursor-pointer group bg-black"
+            className="relative w-full h-52 sm:h-64 md:h-72 overflow-hidden cursor-pointer group bg-black"
           >
             {currentAd.mediaUrl.endsWith('.mp4') || currentAd.mediaUrl.includes('video') ? (
               <video
@@ -409,8 +383,8 @@ export const PayvandHome: React.FC<PayvandHomeProps> = ({
       </div>
 
       {/* Main Categories Grid - Exactly 2 Columns Side-by-Side */}
-      <main className="w-full px-2.5 sm:px-4 mt-2 z-10 max-w-2xl mx-auto">
-        <div className="grid grid-cols-2 gap-3" dir="rtl">
+      <main className="w-full px-2 sm:px-3 mt-2 z-10 max-w-2xl mx-auto">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3" dir="rtl">
           {categories.map((cat) => {
             const IconComponent = cat.isComponent ? cat.component : null;
             return (
