@@ -35,31 +35,45 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [show3DInspector, setShow3DInspector] = useState(true);
 
+  if (!property) {
+    return (
+      <div className="p-8 text-center bg-white rounded-3xl border-2 border-[#dfc282] max-w-lg mx-auto my-12 space-y-4">
+        <p className="font-bold text-slate-700">اطلاعات این ملک در دسترس نیست یا پرونده حذف شده است.</p>
+        <button onClick={onBack} className="btn-3d-gold px-6 py-2 rounded-xl font-black cursor-pointer">
+          بازگشت به فهرست املاک
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 pb-16 max-w-5xl mx-auto text-[#1c1d22]" dir="rtl">
       
-      {/* Top Back Navigation Bar */}
-      <div className="flex items-center justify-between">
+      {/* Top Back Navigation Bar - Responsive & Optimized for Mobile */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 bg-white p-3 sm:p-4 rounded-2xl border-2 border-[#dfc282] shadow-2xs">
         <button
           onClick={onBack}
-          className="h-9 px-4 rounded-xl btn-3d-gold text-[#2c1b04] text-[15px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer"
+          className="h-9 px-3 sm:px-4 rounded-xl btn-3d-gold text-[#2c1b04] text-xs sm:text-[14px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer shrink-0"
         >
           <ChevronRight className="w-4 h-4 stroke-[2.5]" />
-          <span>بازگشت به فهرست املاک</span>
+          <span>بازگشت<span className="hidden sm:inline"> به فهرست املاک</span></span>
         </button>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setShow3DInspector(!show3DInspector)}
-            className="h-9 px-3.5 rounded-xl bg-white hover:bg-amber-50 text-slate-900 border-2 border-[#dfc282] text-[15px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer"
+            className="h-9 px-3 rounded-xl bg-white hover:bg-amber-50 text-slate-900 border-2 border-[#dfc282] text-xs sm:text-[13.5px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer shrink-0"
           >
             <Box className="w-4 h-4 text-amber-800" />
-            <span>{show3DInspector ? 'پنهان‌سازی ۳ بعدی' : 'نمایش بازرس ۳ بعدی'}</span>
+            <span>{show3DInspector ? 'پنهان‌سازی ۳بعدی' : 'نمایش مدل ۳بعدی'}</span>
           </button>
 
-          <span className="font-mono text-xs font-black bg-[#faf8f4] text-slate-950 px-3.5 py-1.5 rounded-xl border-2 border-[#dfc282] shadow-2xs">
-            کد پرونده: {property.code}
-          </span>
+          <div className="bg-[#faf8f4] text-slate-950 px-3 py-1.5 rounded-xl border-2 border-[#dfc282] shadow-2xs flex items-center gap-1 text-xs font-black shrink-0">
+            <span className="text-slate-600 font-bold">کد پرونده:</span>
+            <span dir="ltr" className="font-mono font-black text-amber-950 tracking-wider">
+              {property.code}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -225,10 +239,10 @@ export const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({
 
         <button
           onClick={() => onEnterDealRoom(property.code)}
-          className="w-full sm:w-auto h-10 px-5 btn-3d-gold text-[#2c1b04] font-black text-[15px] rounded-xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer shrink-0 active:scale-95 transition-transform"
+          className="w-full sm:w-auto h-10 px-4 sm:px-5 btn-3d-gold text-[#2c1b04] font-black text-xs sm:text-[14.5px] rounded-xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer shrink-0 active:scale-95 transition-transform"
         >
           <Lock className="w-4 h-4 stroke-[2.5]" />
-          <span>ورود به اتاق معامله محرمانه</span>
+          <span>ورود به اتاق معامله</span>
         </button>
       </div>
 

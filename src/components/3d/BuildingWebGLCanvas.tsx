@@ -46,6 +46,7 @@ export const BuildingWebGLCanvas: React.FC<BuildingWebGLCanvasProps> = ({
 
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [webGlSupported, setWebGlSupported] = useState(true);
 
   // Mouse interaction state
   const isDraggingRef = useRef(false);
@@ -108,110 +109,118 @@ export const BuildingWebGLCanvas: React.FC<BuildingWebGLCanvasProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || 600;
-    const height = container.clientHeight || 450;
+    try {
+      const width = container.clientWidth || 600;
+      const height = container.clientHeight || 450;
 
-    // 1. Scene
-    const scene = new THREE.Scene();
-    sceneRef.current = scene;
+      // 1. Scene
+      const scene = new THREE.Scene();
+      sceneRef.current = scene;
 
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(22, 18, 26);
-    camera.lookAt(0, 4, 0);
+      // 2. Camera
+      const camera = new THREE.PerspectiveCamera(40, width / (height || 1), 0.1, 1000);
+      camera.position.set(22, 18, 26);
+      camera.lookAt(0, 4, 0);
 
-    // 3. Renderer with shadow maps
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    rendererRef.current = renderer;
+      // 3. Renderer with shadow maps
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      rendererRef.current = renderer;
 
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
+      container.innerHTML = '';
+      container.appendChild(renderer.domElement);
 
-    // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
+      // 4. Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
-    dirLight.position.set(25, 35, 20);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
-    scene.add(dirLight);
+      const dirLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
+      dirLight.position.set(25, 35, 20);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      scene.add(dirLight);
 
-    const fillLight = new THREE.DirectionalLight(0x8bc34a, 0.3);
-    fillLight.position.set(-20, 10, -15);
-    scene.add(fillLight);
+      const fillLight = new THREE.DirectionalLight(0x8bc34a, 0.3);
+      fillLight.position.set(-20, 10, -15);
+      scene.add(fillLight);
 
-    // Ground Grid & Cadastral Perimeter
-    const gridHelper = new THREE.GridHelper(40, 40, 0xd4a749, 0x334155);
-    gridHelper.position.y = -0.05;
-    scene.add(gridHelper);
+      // Ground Grid & Cadastral Perimeter
+      const gridHelper = new THREE.GridHelper(40, 40, 0xd4a749, 0x334155);
+      gridHelper.position.y = -0.05;
+      scene.add(gridHelper);
 
-    // Base Land Plot Plate
-    const plotGeo = new THREE.BoxGeometry(18, 0.4, 18);
-    const plotMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
-      roughness: 0.8,
-      metalness: 0.2,
-    });
-    const plotMesh = new THREE.Mesh(plotGeo, plotMat);
-    plotMesh.position.y = -0.2;
-    plotMesh.receiveShadow = true;
-    scene.add(plotMesh);
+      // Base Land Plot Plate
+      const plotGeo = new THREE.BoxGeometry(18, 0.4, 18);
+      const plotMat = new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        roughness: 0.8,
+        metalness: 0.2,
+      });
+      const plotMesh = new THREE.Mesh(plotGeo, plotMat);
+      plotMesh.position.y = -0.2;
+      plotMesh.receiveShadow = true;
+      scene.add(plotMesh);
 
-    // Cadastral Gold Perimeter Boundary
-    const edgesGeo = new THREE.EdgesGeometry(plotGeo);
-    const goldLineMat = new THREE.LineBasicMaterial({ color: 0xd4a749, linewidth: 2 });
-    const goldBoundaries = new THREE.LineSegments(edgesGeo, goldLineMat);
-    goldBoundaries.position.y = -0.2;
-    scene.add(goldBoundaries);
+      // Cadastral Gold Perimeter Boundary
+      const edgesGeo = new THREE.EdgesGeometry(plotGeo);
+      const goldLineMat = new THREE.LineBasicMaterial({ color: 0xd4a749, linewidth: 2 });
+      const goldBoundaries = new THREE.LineSegments(edgesGeo, goldLineMat);
+      goldBoundaries.position.y = -0.2;
+      scene.add(goldBoundaries);
 
-    // 5. Building Group Root
-    const buildingGroup = new THREE.Group();
-    scene.add(buildingGroup);
-    buildingGroupRef.current = buildingGroup;
+      // 5. Building Group Root
+      const buildingGroup = new THREE.Group();
+      scene.add(buildingGroup);
+      buildingGroupRef.current = buildingGroup;
 
-    // Animation Loop
-    const animate = () => {
-      animFrameIdRef.current = requestAnimationFrame(animate);
+      // Animation Loop
+      const animate = () => {
+        animFrameIdRef.current = requestAnimationFrame(animate);
 
-      if (isAutoRotating && !isDraggingRef.current) {
-        rotationRef.current.y += 0.0035;
-      }
+        if (isAutoRotating && !isDraggingRef.current) {
+          rotationRef.current.y += 0.0035;
+        }
 
-      if (buildingGroupRef.current) {
-        buildingGroupRef.current.rotation.x = rotationRef.current.x;
-        buildingGroupRef.current.rotation.y = rotationRef.current.y;
-      }
+        if (buildingGroupRef.current) {
+          buildingGroupRef.current.rotation.x = rotationRef.current.x;
+          buildingGroupRef.current.rotation.y = rotationRef.current.y;
+        }
 
-      renderer.render(scene, camera);
-    };
+        if (rendererRef.current && sceneRef.current) {
+          renderer.render(scene, camera);
+        }
+      };
 
-    animate();
+      animate();
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!container || !rendererRef.current) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      rendererRef.current.setSize(w, h);
-    };
+      // Resize Handler
+      const handleResize = () => {
+        if (!container || !rendererRef.current) return;
+        const w = container.clientWidth || 300;
+        const h = container.clientHeight || 300;
+        if (h <= 0) return;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        rendererRef.current.setSize(w, h);
+      };
 
-    window.addEventListener('resize', handleResize);
+      window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
-      if (rendererRef.current && rendererRef.current.domElement) {
-        rendererRef.current.dispose();
-      }
-    };
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
+        if (rendererRef.current && rendererRef.current.domElement) {
+          rendererRef.current.dispose();
+        }
+      };
+    } catch (err) {
+      console.warn('WebGL initialization caught gracefully:', err);
+      setWebGlSupported(false);
+    }
   }, []);
 
   // Update Building Geometry when config changes
@@ -459,8 +468,18 @@ export const BuildingWebGLCanvas: React.FC<BuildingWebGLCanvasProps> = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleMouseUp}
-        className="w-full h-[360px] sm:h-[440px] cursor-grab active:cursor-grabbing"
-      />
+        className="w-full h-[360px] sm:h-[440px] cursor-grab active:cursor-grabbing relative flex items-center justify-center"
+      >
+        {!webGlSupported && (
+          <div className="text-center p-6 space-y-2 z-10 text-white bg-slate-900/80 rounded-2xl border border-amber-500/30">
+            <Box className="w-12 h-12 text-amber-400 mx-auto animate-pulse" />
+            <h4 className="font-black text-sm text-amber-200">نمای شبیه‌سازی سازه سه‌بعدی</h4>
+            <p className="text-xs text-slate-300 max-w-xs">
+              پلان ساختمانی {toPersianDigits(config.floorsCount)} طبقه با متراژ {toPersianDigits(config.floorArea)} مترمربع
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Top Floating Badge & Specs */}
       <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-2 flex-wrap">

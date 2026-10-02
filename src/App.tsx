@@ -18,7 +18,7 @@ import { BottomNav } from './components/common/BottomNav';
 import { FAB } from './components/common/FAB';
 import { BottomSheetModal } from './components/common/BottomSheetModal';
 import { SubmitModal } from './components/modals/SubmitModal';
-import { CitySelectModal } from './components/modals/CitySelectModal';
+import { CitySelectModal, IRAN_ALL_PROVINCES } from './components/modals/CitySelectModal';
 import { LiveTickerBar } from './components/common/LiveTickerBar';
 import { LiveActivityModal } from './components/common/LiveActivityModal';
 import { MoreMenuSheet } from './components/common/MoreMenuSheet';
@@ -29,7 +29,7 @@ import {
   updateTickerItems, 
   playSubtleChime 
 } from './utils/realtimeEngine';
-import { ChevronLeft, Home as HomeIcon } from 'lucide-react';
+import { ChevronLeft, Home as HomeIcon, MapPin, Search } from 'lucide-react';
 
 // Pages
 import { PayvandHome } from './components/pages/PayvandHome';
@@ -54,26 +54,32 @@ import { Building3DStudioPage } from './components/pages/Building3DStudioPage';
 import { AuthScreen } from './components/pages/AuthScreen';
 
 export default function App() {
-  // Authentication State
+  // Authentication State (defaults to true so the app loads immediately without being blocked)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('payvand_auth_token') === 'true';
+    try {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('payvand_auth_token');
+        return token === 'false' ? false : true;
+      }
+    } catch {
+      return true;
     }
-    return false;
+    return true;
   });
 
   const [loggedInUser, setLoggedInUser] = useState<User | null>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('payvand_user_data');
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch {
-          return null;
+    try {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('payvand_user_data');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && parsed.name) return parsed;
         }
       }
+    } catch {
+      return mockUsers[0];
     }
-    return null;
+    return mockUsers[0];
   });
 
   // Navigation State
@@ -164,8 +170,12 @@ export default function App() {
       setActiveRole(userToSet.role);
     }
     if (typeof window !== 'undefined') {
-      localStorage.setItem('payvand_auth_token', 'true');
-      localStorage.setItem('payvand_user_data', JSON.stringify(userToSet));
+      try {
+        localStorage.setItem('payvand_auth_token', 'true');
+        localStorage.setItem('payvand_user_data', JSON.stringify(userToSet));
+      } catch {
+        // storage disabled or restricted
+      }
     }
   };
 
@@ -173,8 +183,12 @@ export default function App() {
     setIsAuthenticated(false);
     setLoggedInUser(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('payvand_auth_token');
-      localStorage.removeItem('payvand_user_data');
+      try {
+        localStorage.setItem('payvand_auth_token', 'false');
+        localStorage.removeItem('payvand_user_data');
+      } catch {
+        // storage disabled or restricted
+      }
     }
     setActiveTab('home');
   };
@@ -737,24 +751,48 @@ export default function App() {
         isOpen={isFilterSheetOpen}
         onClose={() => setIsFilterSheetOpen(false)}
         title="فیلترهای پیشرفته جستجوی املاک و مصالح"
-        subtitle="محدودسازی نتایج بر اساس شهر، نوع معامله و اعتبارسنجی"
+        subtitle="محدودسازی نتایج بر اساس تمام استان‌ها، شهرها، نوع معامله و اعتبارسنجی"
       >
         <div className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-950 font-black text-xs sm:text-[13px] mb-2">انتخاب شهر یا استان:</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-slate-950 font-black text-xs sm:text-[13px]">
+                انتخاب استان و شهر (۳۱ استان سراسر کشور):
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsFilterSheetOpen(false);
+                  setIsCityModalOpen(true);
+                }}
+                className="text-[11px] font-black text-amber-900 bg-amber-100/80 hover:bg-amber-200 border border-amber-300 px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+              >
+                <MapPin className="w-3 h-3 text-amber-700" />
+                <span>جستجوی هوشمند در نقشه</span>
+              </button>
+            </div>
+
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               className="w-full bg-white border-2 border-[#dfc282] focus:border-[#caa758] rounded-xl px-3.5 py-3 text-slate-950 font-black text-xs shadow-2xs focus:outline-none transition-all cursor-pointer"
             >
-              <option value="همه شهرهای ایران">همه شهرهای ایران</option>
-              <option value="تهران">تهران</option>
-              <option value="اصفهان">اصفهان</option>
-              <option value="مازندران و گیلان">مازندران و گیلان</option>
-              <option value="شیراز">شیراز</option>
-              <option value="مشهد">مشهد</option>
-              <option value="کیش">کیش</option>
+              <option value="همه شهرهای ایران">همه شهرهای ایران (سراسر کشور)</option>
+              
+              {/* All 31 Provinces & Their Major Cities */}
+              {IRAN_ALL_PROVINCES.map((pGroup) => (
+                <optgroup key={pGroup.province} label={`استان ${pGroup.province}`}>
+                  {pGroup.cities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
             </select>
+            <p className="text-[11px] text-slate-500 font-bold mt-1.5">
+              شهر فعلی انتخابی: <strong className="text-amber-950">{selectedCity}</strong>
+            </p>
           </div>
 
           <div>

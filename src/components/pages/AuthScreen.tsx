@@ -407,6 +407,26 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                 </>
               )}
             </button>
+
+            {/* Quick Guest / Demo Access Button so user is never blocked */}
+            <button
+              type="button"
+              onClick={() => {
+                onLoginSuccess({
+                  phone: '09123456789',
+                  name: 'حسین محمدی (کاربر مهمان)',
+                  role: selectedRole,
+                  verified: true,
+                  creditScore: 95,
+                  location: 'تهران',
+                  badgeTitle: 'عضو تأییدشده',
+                });
+              }}
+              className="w-full mt-2.5 py-2.5 rounded-xl bg-slate-100 hover:bg-amber-100/60 border border-slate-300 text-slate-800 text-[11.5px] font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+              <span>ورود مستقیم به عنوان مهمان / مشاهده کامل سامانه</span>
+            </button>
           </form>
         )}
 
