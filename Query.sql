@@ -1,10 +1,8 @@
 -- =========================================================================
 -- PAYVAND SAKHT (پیوندساخت) - ENTERPRISE PRODUCTION-GRADE SECURE SUPABASE SQL
--- Project URL: https://pvuavjzdsmvzybuscdih.supabase.co
--- Author: Senior Supabase & PostgreSQL Security Engineer
+-- FIXED VERSION
 -- =========================================================================
 
--- Enable Necessary PostgreSQL Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
@@ -12,11 +10,9 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- SECTION 1: SECURITY AUDIT & HELPER FUNCTIONS (SECURITY DEFINER HARDENING)
 -- =========================================================================
 
--- Secure function to check if the current user is an admin
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN AS $$
 BEGIN
-    -- Check if current session is postgres, service_role, or has admin role in profiles
     IF current_user IN ('postgres', 'service_role') THEN
         RETURN TRUE;
     END IF;
@@ -28,7 +24,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
--- Secure function to get current user ID as text safely
 CREATE OR REPLACE FUNCTION public.get_auth_user_id()
 RETURNS TEXT AS $$
 BEGIN
@@ -36,7 +31,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
--- Secure Audit Log Trigger Function
 CREATE OR REPLACE FUNCTION public.log_security_audit_event()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -45,35 +39,34 @@ BEGIN
         TG_TABLE_NAME,
         TG_OP,
         COALESCE(NEW.id::TEXT, OLD.id::TEXT, 'unknown'),
-        COALESCE(public.get_auth_user_id(), current_user)
+        COALESCE(public.get_auth_user_id(), 'system')
     );
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
--- 1. Enforce Profile Security (Strict Role Hardening & Seed Bypass for Service Role/Postgres)
+-- 1. Enforce Profile Security
+-- FIX #3: در INSERT، ادمینِ احرازهویت‌شده هم بای‌پس شد (قبلاً role ادمین هم buyer می‌شد)
 CREATE OR REPLACE FUNCTION public.enforce_profile_security()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Allow service_role or postgres (migrations/seed) full control
     IF current_user IN ('postgres', 'service_role') THEN
         NEW.updated_at := timezone('utc'::text, now());
         RETURN NEW;
     END IF;
 
     IF TG_OP = 'INSERT' THEN
-        -- Normal user registration: force role to buyer, lock sensitive fields
-        NEW.role := 'buyer';
-        NEW.verified_identity := FALSE;
-        NEW.credit_score := 95;
-        NEW.badge_title := 'عضو تأییدشده';
+        IF NOT public.is_admin() THEN
+            NEW.role := 'buyer';
+            NEW.verified_identity := FALSE;
+            NEW.credit_score := 95;
+            NEW.badge_title := 'عضو تأییدشده';
+        END IF;
     ELSIF TG_OP = 'UPDATE' THEN
         IF NOT public.is_admin() THEN
-            -- Normal user CANNOT change their role at all
             IF NEW.role IS DISTINCT FROM OLD.role THEN
                 RAISE EXCEPTION 'Role modification is strictly restricted to administrators.';
             END IF;
-            -- Prevent normal users from changing verification fields
             IF NEW.verified_identity IS DISTINCT FROM OLD.verified_identity THEN
                 NEW.verified_identity := OLD.verified_identity;
             END IF;
@@ -100,7 +93,6 @@ BEGIN
         RETURN NEW;
     END IF;
 
-    -- Normal owner cannot modify system verification or rating fields
     IF NEW.verified_status IS DISTINCT FROM OLD.verified_status THEN
         NEW.verified_status := OLD.verified_status;
     END IF;
@@ -145,7 +137,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
--- 4. Enforce Review Verification Security (Normal users cannot forge verified_transaction)
+-- 4. Enforce Review Verification Security
 CREATE OR REPLACE FUNCTION public.enforce_review_security()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -168,11 +160,60 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
+-- 5. Enforce General System Fields Hardening
+CREATE OR REPLACE FUNCTION public.enforce_general_system_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF current_user IN ('postgres', 'service_role') OR public.is_admin() THEN
+        RETURN NEW;
+    END IF;
+
+    IF TG_TABLE_NAME = 'barter_offers' THEN
+        IF NEW.owner_id IS DISTINCT FROM OLD.owner_id OR NEW.match_score_percent IS DISTINCT FROM OLD.match_score_percent OR NEW.status IS DISTINCT FROM OLD.status THEN
+            NEW.owner_id := OLD.owner_id;
+            NEW.match_score_percent := OLD.match_score_percent;
+            NEW.status := OLD.status;
+        END IF;
+    ELSIF TG_TABLE_NAME = 'customer_requests' THEN
+        IF NEW.customer_id IS DISTINCT FROM OLD.customer_id OR NEW.matched_count IS DISTINCT FROM OLD.matched_count OR NEW.status IS DISTINCT FROM OLD.status THEN
+            NEW.customer_id := OLD.customer_id;
+            NEW.matched_count := OLD.matched_count;
+            NEW.status := OLD.status;
+        END IF;
+    ELSIF TG_TABLE_NAME = 'notifications' THEN
+        IF NEW.user_id IS DISTINCT FROM OLD.user_id OR NEW.message IS DISTINCT FROM OLD.message OR NEW.type IS DISTINCT FROM OLD.type THEN
+            NEW.user_id := OLD.user_id;
+            NEW.message := OLD.message;
+            NEW.type := OLD.type;
+        END IF;
+    ELSIF TG_TABLE_NAME = 'deal_rooms' THEN
+        IF NEW.buyer_id IS DISTINCT FROM OLD.buyer_id OR NEW.seller_id IS DISTINCT FROM OLD.seller_id OR NEW.assigned_agent_id IS DISTINCT FROM OLD.assigned_agent_id THEN
+            RAISE EXCEPTION 'Deal room membership is immutable for normal users.';
+        END IF;
+    ELSIF TG_TABLE_NAME = 'deal_room_documents' THEN
+        IF NEW.deal_room_id IS DISTINCT FROM OLD.deal_room_id THEN
+            RAISE EXCEPTION 'Cannot move document to another deal room.';
+        END IF;
+    ELSIF TG_TABLE_NAME = 'scrap_materials' THEN
+        IF NEW.owner_id IS DISTINCT FROM OLD.owner_id THEN
+            NEW.owner_id := OLD.owner_id;
+        END IF;
+    ELSIF TG_TABLE_NAME = 'partnerships' THEN
+        IF NEW.owner_id IS DISTINCT FROM OLD.owner_id THEN
+            NEW.owner_id := OLD.owner_id;
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+
 
 -- =========================================================================
 -- SECTION 2: STORAGE BUCKETS & STRICT RLS POLICIES FOR STORAGE
 -- =========================================================================
 
+-- FIX #6: آپدیت کامل فیلدهای باکت در اجرای مجدد
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES 
   ('avatars', 'avatars', true, 5242880, ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
@@ -182,7 +223,10 @@ VALUES
   ('scrap-images', 'scrap-images', true, 10485760, ARRAY['image/jpeg', 'image/png', 'image/webp']),
   ('ad-media', 'ad-media', true, 52428800, ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm']),
   ('deal-documents', 'deal-documents', false, 20971520, ARRAY['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
-ON CONFLICT (id) DO UPDATE SET public = EXCLUDED.public;
+ON CONFLICT (id) DO UPDATE SET 
+  public = EXCLUDED.public, 
+  file_size_limit = EXCLUDED.file_size_limit, 
+  allowed_mime_types = EXCLUDED.allowed_mime_types;
 
 DROP POLICY IF EXISTS "Public Read Public Buckets" ON storage.objects;
 CREATE POLICY "Public Read Public Buckets" ON storage.objects 
@@ -198,17 +242,24 @@ WITH CHECK (
     AND auth.uid()::text = (storage.foldername(name))[1]
 );
 
+-- FIX #4: محدودیت bucket_id اضافه شد (قبلاً به deal-documents هم نشت می‌کرد)
 DROP POLICY IF EXISTS "Owner Update Storage" ON storage.objects;
 CREATE POLICY "Owner Update Storage" ON storage.objects 
 FOR UPDATE TO authenticated 
-USING (auth.uid()::text = (storage.foldername(name))[1] OR public.is_admin());
+USING (
+    bucket_id IN ('avatars', 'property-images', 'material-images', 'craftsmen-portfolios', 'scrap-images', 'ad-media')
+    AND (auth.uid()::text = (storage.foldername(name))[1] OR public.is_admin())
+);
 
 DROP POLICY IF EXISTS "Owner Delete Storage" ON storage.objects;
 CREATE POLICY "Owner Delete Storage" ON storage.objects 
 FOR DELETE TO authenticated 
-USING (auth.uid()::text = (storage.foldername(name))[1] OR public.is_admin());
+USING (
+    bucket_id IN ('avatars', 'property-images', 'material-images', 'craftsmen-portfolios', 'scrap-images', 'ad-media')
+    AND (auth.uid()::text = (storage.foldername(name))[1] OR public.is_admin())
+);
 
--- Deal Documents Private Bucket Read Policy
+-- Deal Documents Private Bucket Policies
 DROP POLICY IF EXISTS "Deal Members Read Documents Storage" ON storage.objects;
 CREATE POLICY "Deal Members Read Documents Storage" ON storage.objects 
 FOR SELECT TO authenticated 
@@ -270,7 +321,6 @@ USING (
 -- SECTION 3: CORE TABLES SCHEMA, CONSTRAINTS & FOREIGN KEYS
 -- =========================================================================
 
--- 1. USERS PROFILES TABLE
 CREATE TABLE IF NOT EXISTS public.users_profiles (
     id VARCHAR(100) PRIMARY KEY,
     phone_number VARCHAR(20) UNIQUE NOT NULL CHECK (phone_number ~ '^09[0-9]{9}$'),
@@ -289,7 +339,8 @@ CREATE TABLE IF NOT EXISTS public.users_profiles (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Public View for Users Profiles (Strictly non-sensitive fields only)
+-- FIX #2: ویوها security DEFINER شدند (حذف security_invoker) تا anon هم بتواند بخواند؛
+-- فیلتر سختگیرانه WHERE به خود ویو منتقل شد
 CREATE OR REPLACE VIEW public.users_profiles_public AS
 SELECT 
     id,
@@ -302,7 +353,6 @@ SELECT
     created_at
 FROM public.users_profiles;
 
--- 2. PROPERTIES BASE TABLE & PRIVATE SPLIT TABLE
 CREATE TABLE IF NOT EXISTS public.properties (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(50) UNIQUE,
@@ -353,7 +403,6 @@ CREATE TABLE IF NOT EXISTS public.properties (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Sensitive Property Details Table
 CREATE TABLE IF NOT EXISTS public.properties_private (
     property_id UUID PRIMARY KEY REFERENCES public.properties(id) ON DELETE CASCADE,
     address TEXT,
@@ -363,7 +412,6 @@ CREATE TABLE IF NOT EXISTS public.properties_private (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Public View for Properties
 CREATE OR REPLACE VIEW public.properties_public AS
 SELECT 
     p.id,
@@ -410,7 +458,6 @@ SELECT
 FROM public.properties p
 WHERE p.verified_status = 'verified';
 
--- 3. MATERIALS TABLE & PUBLIC VIEW (Hiding supplier_id/license if needed)
 CREATE TABLE IF NOT EXISTS public.materials (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(50),
@@ -434,20 +481,21 @@ CREATE TABLE IF NOT EXISTS public.materials (
     monthly_extraction_tons NUMERIC(10, 2),
     assay_purity_percent NUMERIC(5, 2),
     grade VARCHAR(50),
-    license_number VARCHAR(100), -- Sensitive internal
+    license_number VARCHAR(100),
     is_direct_from_quarry BOOLEAN DEFAULT TRUE,
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- FIX #2: فقط مواد تأییدشده از ویو عمومی
 CREATE OR REPLACE VIEW public.materials_public AS
 SELECT 
     id, code, title, category, supplier_type, supplier_name, city, price_per_unit, unit, 
     min_order_quantity, delivery_time_days, verified_status, images, spec_sheet_url, description, 
     rating, quarry_name, monthly_extraction_tons, assay_purity_percent, grade, is_direct_from_quarry, created_at
-FROM public.materials;
+FROM public.materials
+WHERE verified_status = 'verified';
 
--- 4. CRAFTSMEN TABLE & PUBLIC VIEW (Hiding direct phone number from public API)
 CREATE TABLE IF NOT EXISTS public.craftsmen (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(150) NOT NULL,
@@ -457,7 +505,7 @@ CREATE TABLE IF NOT EXISTS public.craftsmen (
     rating NUMERIC(2, 1) DEFAULT 5.0,
     projects_done INTEGER DEFAULT 0,
     availability VARCHAR(50) DEFAULT 'ready',
-    phone VARCHAR(20) NOT NULL, -- Sensitive internal
+    phone VARCHAR(20) NOT NULL,
     avatar_url TEXT,
     portfolio_images TEXT[] DEFAULT ARRAY[]::TEXT[],
     bio TEXT,
@@ -471,7 +519,6 @@ SELECT
     avatar_url, portfolio_images, bio, verified_badge, created_at
 FROM public.craftsmen;
 
--- 5. SCRAP MATERIALS TABLE
 CREATE TABLE IF NOT EXISTS public.scrap_materials (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(255) NOT NULL,
@@ -493,7 +540,6 @@ SELECT
     id, title, scrap_type, city, district, estimated_weight_tons, suggested_price_per_kg, is_auction, seller_name, images, created_at
 FROM public.scrap_materials;
 
--- 6. DEAL ROOMS TABLE (Strictly Private - Members Only)
 CREATE TABLE IF NOT EXISTS public.deal_rooms (
     id VARCHAR(100) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -520,7 +566,6 @@ CREATE TABLE IF NOT EXISTS public.deal_rooms (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 7. DEAL ROOM DOCUMENTS TABLE
 CREATE TABLE IF NOT EXISTS public.deal_room_documents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     deal_room_id VARCHAR(100) REFERENCES public.deal_rooms(id) ON DELETE CASCADE,
@@ -532,7 +577,6 @@ CREATE TABLE IF NOT EXISTS public.deal_room_documents (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 8. BARTER OFFERS TABLE
 CREATE TABLE IF NOT EXISTS public.barter_offers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     owner_id VARCHAR(100) REFERENCES public.users_profiles(id) ON DELETE SET NULL,
@@ -549,7 +593,6 @@ CREATE TABLE IF NOT EXISTS public.barter_offers (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 9. PARTNERSHIPS TABLE
 CREATE TABLE IF NOT EXISTS public.partnerships (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(255) NOT NULL,
@@ -563,7 +606,6 @@ CREATE TABLE IF NOT EXISTS public.partnerships (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 10. CUSTOMER REQUESTS TABLE
 CREATE TABLE IF NOT EXISTS public.customer_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     customer_id VARCHAR(100) REFERENCES public.users_profiles(id) ON DELETE SET NULL,
@@ -580,7 +622,6 @@ CREATE TABLE IF NOT EXISTS public.customer_requests (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 11. PRICE INDICES TABLE
 CREATE TABLE IF NOT EXISTS public.price_indices (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     city VARCHAR(100) NOT NULL,
@@ -593,7 +634,6 @@ CREATE TABLE IF NOT EXISTS public.price_indices (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 12. LIVE EVENTS TABLE
 CREATE TABLE IF NOT EXISTS public.live_events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     type VARCHAR(50) NOT NULL,
@@ -608,7 +648,6 @@ CREATE TABLE IF NOT EXISTS public.live_events (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 13. AD CAMPAIGNS TABLE & PUBLIC VIEW (Hiding payment reference & contact number)
 CREATE TABLE IF NOT EXISTS public.ad_campaigns (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     business_name VARCHAR(200) NOT NULL,
@@ -632,9 +671,8 @@ CREATE OR REPLACE VIEW public.ad_campaigns_public AS
 SELECT 
     id, business_name, headline, sub_headline, badge_text, media_url, media_format, starts_at, expires_at
 FROM public.ad_campaigns
-WHERE status = 'active';
+WHERE status = 'active' AND expires_at > timezone('utc'::text, now());
 
--- 14. NOTIFICATIONS TABLE (Strictly Private - User Owns Notifications)
 CREATE TABLE IF NOT EXISTS public.notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id VARCHAR(100) REFERENCES public.users_profiles(id) ON DELETE CASCADE,
@@ -646,7 +684,6 @@ CREATE TABLE IF NOT EXISTS public.notifications (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 15. USER REVIEWS TABLE
 CREATE TABLE IF NOT EXISTS public.user_reviews (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     author_id VARCHAR(100) REFERENCES public.users_profiles(id) ON DELETE SET NULL,
@@ -658,7 +695,6 @@ CREATE TABLE IF NOT EXISTS public.user_reviews (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 16. SECURITY AUDIT LOGS TABLE (Admin Only)
 CREATE TABLE IF NOT EXISTS public.security_audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     table_name VARCHAR(100) NOT NULL,
@@ -671,7 +707,7 @@ CREATE TABLE IF NOT EXISTS public.security_audit_logs (
 
 
 -- =========================================================================
--- SECTION 4: PERFORMANCE INDEXES FOR RLS & FOREIGN KEYS
+-- SECTION 4: PERFORMANCE INDEXES
 -- =========================================================================
 CREATE INDEX IF NOT EXISTS idx_properties_owner ON public.properties (owner_id);
 CREATE INDEX IF NOT EXISTS idx_properties_city ON public.properties (city);
@@ -705,6 +741,31 @@ CREATE TRIGGER trg_enforce_review_security
     BEFORE INSERT OR UPDATE ON public.user_reviews
     FOR EACH ROW EXECUTE FUNCTION public.enforce_review_security();
 
+DROP TRIGGER IF EXISTS trg_enforce_general_barter ON public.barter_offers;
+CREATE TRIGGER trg_enforce_general_barter
+    BEFORE UPDATE ON public.barter_offers
+    FOR EACH ROW EXECUTE FUNCTION public.enforce_general_system_fields();
+
+DROP TRIGGER IF EXISTS trg_enforce_general_requests ON public.customer_requests;
+CREATE TRIGGER trg_enforce_general_requests
+    BEFORE UPDATE ON public.customer_requests
+    FOR EACH ROW EXECUTE FUNCTION public.enforce_general_system_fields();
+
+DROP TRIGGER IF EXISTS trg_enforce_general_notifications ON public.notifications;
+CREATE TRIGGER trg_enforce_general_notifications
+    BEFORE UPDATE ON public.notifications
+    FOR EACH ROW EXECUTE FUNCTION public.enforce_general_system_fields();
+
+DROP TRIGGER IF EXISTS trg_enforce_general_deal_rooms ON public.deal_rooms;
+CREATE TRIGGER trg_enforce_general_deal_rooms
+    BEFORE UPDATE ON public.deal_rooms
+    FOR EACH ROW EXECUTE FUNCTION public.enforce_general_system_fields();
+
+DROP TRIGGER IF EXISTS trg_enforce_general_deal_docs ON public.deal_room_documents;
+CREATE TRIGGER trg_enforce_general_deal_docs
+    BEFORE UPDATE ON public.deal_room_documents
+    FOR EACH ROW EXECUTE FUNCTION public.enforce_general_system_fields();
+
 DROP TRIGGER IF EXISTS trg_audit_properties ON public.properties;
 CREATE TRIGGER trg_audit_properties
     AFTER INSERT OR UPDATE OR DELETE ON public.properties
@@ -720,7 +781,6 @@ CREATE TRIGGER trg_audit_deal_rooms
 -- SECTION 6: STRICT ROW LEVEL SECURITY (RLS) POLICIES
 -- =========================================================================
 
--- Enable RLS on all base tables
 ALTER TABLE public.users_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.properties_private ENABLE ROW LEVEL SECURITY;
@@ -751,10 +811,17 @@ FOR UPDATE TO authenticated
 USING (id = public.get_auth_user_id() OR public.is_admin())
 WITH CHECK (id = public.get_auth_user_id() OR public.is_admin());
 
+-- FIX #5: ادمین هم بتواند پروفایل دیگران را درج کند
 DROP POLICY IF EXISTS "Users insert own profile" ON public.users_profiles;
 CREATE POLICY "Users insert own profile" ON public.users_profiles 
 FOR INSERT TO authenticated 
-WITH CHECK (id = public.get_auth_user_id());
+WITH CHECK (id = public.get_auth_user_id() OR public.is_admin());
+
+-- FIX #5: پلیسی DELETE جا افتاده بود (کاربر/ادمین نمی‌توانست پروفایل حذف کند)
+DROP POLICY IF EXISTS "Users delete own profile" ON public.users_profiles;
+CREATE POLICY "Users delete own profile" ON public.users_profiles 
+FOR DELETE TO authenticated 
+USING (id = public.get_auth_user_id() OR public.is_admin());
 
 -- 2. properties RLS
 DROP POLICY IF EXISTS "Owner or admin read properties base" ON public.properties;
@@ -812,9 +879,10 @@ WITH CHECK (
 );
 
 -- 3. materials RLS
-DROP POLICY IF EXISTS "Public read materials" ON public.materials;
-CREATE POLICY "Public read materials" ON public.materials 
-FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Supplier admin select materials" ON public.materials;
+CREATE POLICY "Supplier admin select materials" ON public.materials 
+FOR SELECT TO authenticated 
+USING (supplier_id = public.get_auth_user_id() OR public.is_admin());
 
 DROP POLICY IF EXISTS "Supplier manage materials" ON public.materials;
 CREATE POLICY "Supplier manage materials" ON public.materials 
@@ -823,9 +891,10 @@ USING (supplier_id = public.get_auth_user_id() OR public.is_admin())
 WITH CHECK (supplier_id = public.get_auth_user_id() OR public.is_admin());
 
 -- 4. craftsmen RLS
-DROP POLICY IF EXISTS "Public read craftsmen" ON public.craftsmen;
-CREATE POLICY "Public read craftsmen" ON public.craftsmen 
-FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Admin craftsmen select" ON public.craftsmen;
+CREATE POLICY "Admin craftsmen select" ON public.craftsmen 
+FOR SELECT TO authenticated 
+USING (true);
 
 DROP POLICY IF EXISTS "Admin manage craftsmen" ON public.craftsmen;
 CREATE POLICY "Admin manage craftsmen" ON public.craftsmen 
@@ -833,9 +902,10 @@ FOR ALL TO authenticated
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- 5. scrap_materials RLS
-DROP POLICY IF EXISTS "Public read scrap" ON public.scrap_materials;
-CREATE POLICY "Public read scrap" ON public.scrap_materials 
-FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Owner admin scrap select" ON public.scrap_materials;
+CREATE POLICY "Owner admin scrap select" ON public.scrap_materials 
+FOR SELECT TO authenticated 
+USING (owner_id = public.get_auth_user_id() OR public.is_admin());
 
 DROP POLICY IF EXISTS "Owner manage scrap" ON public.scrap_materials;
 CREATE POLICY "Owner manage scrap" ON public.scrap_materials 
@@ -884,9 +954,10 @@ USING (public.is_admin())
 WITH CHECK (public.is_admin());
 
 -- 8. barter_offers RLS
-DROP POLICY IF EXISTS "Public read barter" ON public.barter_offers;
-CREATE POLICY "Public read barter" ON public.barter_offers 
-FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Owner admin barter select" ON public.barter_offers;
+CREATE POLICY "Owner admin barter select" ON public.barter_offers 
+FOR SELECT TO authenticated 
+USING (owner_id = public.get_auth_user_id() OR public.is_admin());
 
 DROP POLICY IF EXISTS "Owner manage barter" ON public.barter_offers;
 CREATE POLICY "Owner manage barter" ON public.barter_offers 
@@ -895,9 +966,10 @@ USING (owner_id = public.get_auth_user_id() OR public.is_admin())
 WITH CHECK (owner_id = public.get_auth_user_id() OR public.is_admin());
 
 -- 9. partnerships RLS
-DROP POLICY IF EXISTS "Public read partnerships" ON public.partnerships;
-CREATE POLICY "Public read partnerships" ON public.partnerships 
-FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Owner admin partnership select" ON public.partnerships;
+CREATE POLICY "Owner admin partnership select" ON public.partnerships 
+FOR SELECT TO authenticated 
+USING (owner_id = public.get_auth_user_id() OR public.is_admin());
 
 DROP POLICY IF EXISTS "Owner manage partnerships" ON public.partnerships;
 CREATE POLICY "Owner manage partnerships" ON public.partnerships 
@@ -928,9 +1000,10 @@ FOR INSERT TO authenticated
 WITH CHECK (public.is_admin());
 
 -- 13. ad_campaigns RLS
-DROP POLICY IF EXISTS "Public read active ads" ON public.ad_campaigns;
-CREATE POLICY "Public read active ads" ON public.ad_campaigns 
-FOR SELECT USING (status = 'active');
+DROP POLICY IF EXISTS "Admin only ad campaigns select" ON public.ad_campaigns;
+CREATE POLICY "Admin only ad campaigns select" ON public.ad_campaigns 
+FOR SELECT TO authenticated 
+USING (public.is_admin());
 
 DROP POLICY IF EXISTS "Admin manage ads" ON public.ad_campaigns;
 CREATE POLICY "Admin manage ads" ON public.ad_campaigns 
@@ -938,11 +1011,12 @@ FOR ALL TO authenticated
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- 14. notifications RLS
+-- FIX #5: بای‌پس ادمین اضافه شد (ادمین نمی‌توانست نوتیفیکیشن بفرستد)
 DROP POLICY IF EXISTS "Users access own notifications" ON public.notifications;
 CREATE POLICY "Users access own notifications" ON public.notifications 
 FOR ALL TO authenticated 
-USING (user_id = public.get_auth_user_id())
-WITH CHECK (user_id = public.get_auth_user_id());
+USING (user_id = public.get_auth_user_id() OR public.is_admin())
+WITH CHECK (user_id = public.get_auth_user_id() OR public.is_admin());
 
 -- 15. user_reviews RLS
 DROP POLICY IF EXISTS "Public read reviews" ON public.user_reviews;
@@ -960,7 +1034,13 @@ FOR UPDATE TO authenticated
 USING (author_id = public.get_auth_user_id() OR public.is_admin())
 WITH CHECK (author_id = public.get_auth_user_id() OR public.is_admin());
 
--- 16. security_audit_logs RLS (Admin Only)
+-- FIX #5: DELETE جا افتاده بود
+DROP POLICY IF EXISTS "Author delete own reviews" ON public.user_reviews;
+CREATE POLICY "Author delete own reviews" ON public.user_reviews 
+FOR DELETE TO authenticated 
+USING (author_id = public.get_auth_user_id() OR public.is_admin());
+
+-- 16. security_audit_logs RLS
 DROP POLICY IF EXISTS "Admin only read audit logs" ON public.security_audit_logs;
 CREATE POLICY "Admin only read audit logs" ON public.security_audit_logs 
 FOR SELECT TO authenticated 
@@ -968,14 +1048,28 @@ USING (public.is_admin());
 
 
 -- =========================================================================
--- SECTION 7: DEFAULT PRIVILEGES HARDENING (DENY BY DEFAULT)
+-- SECTION 7: DEFAULT PRIVILEGES HARDENING + FIX #1 (GRANT مجدد)
 -- =========================================================================
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, ANON, AUTHENTICATED;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLES FROM PUBLIC, ANON, AUTHENTICATED;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE USAGE, SELECT, UPDATE ON SEQUENCES FROM PUBLIC, ANON, AUTHENTICATED;
+
+-- FIX #1 (کشنده): RLS بدون GRANT بی‌اثر است؛ پس از REVOKE، دسترسی جداول پایه بازگردانده شد.
+-- دسترسی واقعی ردیف‌ها توسط Section 6 (RLS) کنترل می‌شود.
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, authenticated;
+
+-- GRANT SELECT روی ویوهای عمومی
+GRANT SELECT ON public.users_profiles_public TO anon, authenticated;
+GRANT SELECT ON public.properties_public TO anon, authenticated;
+GRANT SELECT ON public.materials_public TO anon, authenticated;
+GRANT SELECT ON public.craftsmen_public TO anon, authenticated;
+GRANT SELECT ON public.scrap_materials_public TO anon, authenticated;
+GRANT SELECT ON public.ad_campaigns_public TO anon, authenticated;
 
 
 -- =========================================================================
--- SECTION 8: LOCK DOWN SECURITY DEFINER FUNCTIONS (REVOKE PUBLIC EXECUTE)
+-- SECTION 8: LOCK DOWN SECURITY DEFINER FUNCTIONS
 -- =========================================================================
 REVOKE EXECUTE ON FUNCTION public.is_admin() FROM PUBLIC, ANON;
 GRANT EXECUTE ON FUNCTION public.is_admin() TO AUTHENTICATED, SERVICE_ROLE;
@@ -998,6 +1092,9 @@ GRANT EXECUTE ON FUNCTION public.enforce_property_private_security() TO SERVICE_
 REVOKE EXECUTE ON FUNCTION public.enforce_review_security() FROM PUBLIC, ANON, AUTHENTICATED;
 GRANT EXECUTE ON FUNCTION public.enforce_review_security() TO SERVICE_ROLE;
 
+REVOKE EXECUTE ON FUNCTION public.enforce_general_system_fields() FROM PUBLIC, ANON, AUTHENTICATED;
+GRANT EXECUTE ON FUNCTION public.enforce_general_system_fields() TO SERVICE_ROLE;
+
 
 -- =========================================================================
 -- SECTION 9: INITIAL SAFE SEED DATA
@@ -1019,50 +1116,40 @@ ON CONFLICT (property_id) DO NOTHING;
 
 
 -- =========================================================================
--- SECTION 10: REAL EXECUTABLE SECURITY TESTS (قابل اجرا در Supabase SQL Editor)
+-- SECTION 10: REAL EXECUTABLE SECURITY TESTS
 -- =========================================================================
 DO $$
 BEGIN
     RAISE NOTICE 'Executing Real Security Tests for Pyvand Sakht...';
     
-    -- Test 1: Verify profile insert enforcement function exists
     ASSERT (SELECT proname FROM pg_proc WHERE proname = 'enforce_profile_security') IS NOT NULL, 'Test 1 Failed: enforce_profile_security missing';
     
-    -- Test 2: Verify users_profiles_public view does not contain sensitive columns
     ASSERT NOT EXISTS (
         SELECT 1 FROM information_schema.columns 
         WHERE table_name = 'users_profiles_public' 
           AND column_name IN ('phone_number', 'national_id', 'credit_score')
     ), 'Test 2 Failed: users_profiles_public leaks sensitive columns';
 
-    -- Test 3: Verify ad_campaigns_public view hides payment & contact info
     ASSERT NOT EXISTS (
         SELECT 1 FROM information_schema.columns 
         WHERE table_name = 'ad_campaigns_public' 
           AND column_name IN ('contact_number', 'total_paid_toman', 'payment_reference_id')
     ), 'Test 3 Failed: ad_campaigns_public leaks payment info';
 
-    -- Test 4: Verify default privileges deny public execute on new functions
     ASSERT EXISTS (
         SELECT 1 FROM pg_default_acl acl
         JOIN pg_namespace n ON n.oid = acl.defaclnamespace
         WHERE n.nspname = 'public' AND acl.defaclobjtype = 'f'
     ), 'Test 4 Failed: Default privileges for functions not set';
 
+    -- FIX: تست جدید — اطمینان از GRANT جداول پایه
+    ASSERT EXISTS (
+        SELECT 1 FROM information_schema.role_table_grants 
+        WHERE table_schema = 'public' 
+          AND grantee = 'authenticated' 
+          AND privilege_type = 'SELECT'
+          AND table_name = 'users_profiles'
+    ), 'Test 5 Failed: Base table grants missing';
+
     RAISE NOTICE 'All Real Security Tests Passed Successfully!';
 END $$;
-
-
--- =========================================================================
--- FINAL SECURITY AUDIT
--- =========================================================================
-/*
-1. Function Execute Default: با دستور `ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, ANON, AUTHENTICATED;` پیش‌فرض توابع جدید به Deny تنظیم شد.
-2. Public Profile View: ویوی `users_profiles_public` دقیقاً به فیلدهای غیرحساس (`id`, `full_name`, `city`, `avatar_url`, `bio`, `company_name`, `mine_name`, `created_at`) محدود شد.
-3. Public Catalog Tables Data Leakage: ویوی‌های امن برای مواد (`materials_public`)، استادکاران (`craftsmen_public`)، ضایعات (`scrap_materials_public`) و تبلیغات (`ad_campaigns_public`) ایجاد شدند تا اطلاعات تماس و مالی پنهان بمانند.
-4. Ad Campaign Data Leakage: ویوی `ad_campaigns_public` اطلاعات تماس و مبالغ را از دید عمومی پنهان کرد.
-5. Default Table Privileges: با دستور `ALTER DEFAULT PRIVILEGES` دسترسی پیش‌فرض جداول جدید محدود شد.
-6. Role Hardening: تریگر `enforce_profile_security` تغییر نقش توسط کاربران عادی را غیرممکن ساخت.
-7. Real Security Tests: بلوک اجرایی `DO $$ ... ASSERT ... $$` برای تست‌های اتوماتیک در دیتابیس اضافه شد.
-8. Seed Behavior: استثنا برای کاربر `postgres` و `service_role` در تریگرها جهت حفظ صحت داده‌های Seed در نظر گرفته شد.
-*/
