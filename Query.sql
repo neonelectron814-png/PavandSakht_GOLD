@@ -210,10 +210,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 
 -- =========================================================================
--- SECTION 2: STORAGE BUCKETS & STRICT RLS POLICIES FOR STORAGE
+-- SECTION 2: STORAGE BUCKETS & BASIC STORAGE POLICIES
 -- =========================================================================
 
--- FIX #6: آپدیت کامل فیلدهای باکت در اجرای مجدد
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES 
   ('avatars', 'avatars', true, 5242880, ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
@@ -242,7 +241,6 @@ WITH CHECK (
     AND auth.uid()::text = (storage.foldername(name))[1]
 );
 
--- FIX #4: محدودیت bucket_id اضافه شد (قبلاً به deal-documents هم نشت می‌کرد)
 DROP POLICY IF EXISTS "Owner Update Storage" ON storage.objects;
 CREATE POLICY "Owner Update Storage" ON storage.objects 
 FOR UPDATE TO authenticated 
@@ -259,62 +257,6 @@ USING (
     AND (auth.uid()::text = (storage.foldername(name))[1] OR public.is_admin())
 );
 
--- Deal Documents Private Bucket Policies
-DROP POLICY IF EXISTS "Deal Members Read Documents Storage" ON storage.objects;
-CREATE POLICY "Deal Members Read Documents Storage" ON storage.objects 
-FOR SELECT TO authenticated 
-USING (
-    bucket_id = 'deal-documents'
-    AND (
-        public.is_admin()
-        OR EXISTS (
-            SELECT 1 FROM public.deal_rooms dr
-            WHERE dr.id::text = (storage.foldername(name))[1]
-              AND (
-                  dr.buyer_id = public.get_auth_user_id()
-                  OR dr.seller_id = public.get_auth_user_id()
-                  OR dr.assigned_agent_id = public.get_auth_user_id()
-              )
-        )
-    )
-);
-
-DROP POLICY IF EXISTS "Deal Members Insert Documents Storage" ON storage.objects;
-CREATE POLICY "Deal Members Insert Documents Storage" ON storage.objects 
-FOR INSERT TO authenticated 
-WITH CHECK (
-    bucket_id = 'deal-documents'
-    AND (
-        public.is_admin()
-        OR EXISTS (
-            SELECT 1 FROM public.deal_rooms dr
-            WHERE dr.id::text = (storage.foldername(name))[1]
-              AND (
-                  dr.buyer_id = public.get_auth_user_id()
-                  OR dr.seller_id = public.get_auth_user_id()
-                  OR dr.assigned_agent_id = public.get_auth_user_id()
-              )
-        )
-    )
-);
-
-DROP POLICY IF EXISTS "Deal Members Delete Documents Storage" ON storage.objects;
-CREATE POLICY "Deal Members Delete Documents Storage" ON storage.objects 
-FOR DELETE TO authenticated 
-USING (
-    bucket_id = 'deal-documents'
-    AND (
-        public.is_admin()
-        OR EXISTS (
-            SELECT 1 FROM public.deal_rooms dr
-            WHERE dr.id::text = (storage.foldername(name))[1]
-              AND (
-                  dr.buyer_id = public.get_auth_user_id()
-                  OR dr.seller_id = public.get_auth_user_id()
-              )
-        )
-    )
-);
 
 
 -- =========================================================================
@@ -704,6 +646,64 @@ CREATE TABLE IF NOT EXISTS public.security_audit_logs (
     ip_address TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Deal Documents Private Bucket Policies (Placed here after deal_rooms exists)
+DROP POLICY IF EXISTS "Deal Members Read Documents Storage" ON storage.objects;
+CREATE POLICY "Deal Members Read Documents Storage" ON storage.objects 
+FOR SELECT TO authenticated 
+USING (
+    bucket_id = 'deal-documents'
+    AND (
+        public.is_admin()
+        OR EXISTS (
+            SELECT 1 FROM public.deal_rooms dr
+            WHERE dr.id::text = (storage.foldername(name))[1]
+              AND (
+                  dr.buyer_id = public.get_auth_user_id()
+                  OR dr.seller_id = public.get_auth_user_id()
+                  OR dr.assigned_agent_id = public.get_auth_user_id()
+              )
+        )
+    )
+);
+
+DROP POLICY IF EXISTS "Deal Members Insert Documents Storage" ON storage.objects;
+CREATE POLICY "Deal Members Insert Documents Storage" ON storage.objects 
+FOR INSERT TO authenticated 
+WITH CHECK (
+    bucket_id = 'deal-documents'
+    AND (
+        public.is_admin()
+        OR EXISTS (
+            SELECT 1 FROM public.deal_rooms dr
+            WHERE dr.id::text = (storage.foldername(name))[1]
+              AND (
+                  dr.buyer_id = public.get_auth_user_id()
+                  OR dr.seller_id = public.get_auth_user_id()
+                  OR dr.assigned_agent_id = public.get_auth_user_id()
+              )
+        )
+    )
+);
+
+DROP POLICY IF EXISTS "Deal Members Delete Documents Storage" ON storage.objects;
+CREATE POLICY "Deal Members Delete Documents Storage" ON storage.objects 
+FOR DELETE TO authenticated 
+USING (
+    bucket_id = 'deal-documents'
+    AND (
+        public.is_admin()
+        OR EXISTS (
+            SELECT 1 FROM public.deal_rooms dr
+            WHERE dr.id::text = (storage.foldername(name))[1]
+              AND (
+                  dr.buyer_id = public.get_auth_user_id()
+                  OR dr.seller_id = public.get_auth_user_id()
+              )
+        )
+    )
+);
+
 
 
 -- =========================================================================
